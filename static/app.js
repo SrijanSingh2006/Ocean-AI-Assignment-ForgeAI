@@ -11,6 +11,9 @@ const icons = {
   upload: '<path d="M12 16V4m-4 4 4-4 4 4M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/>',
   "chevron-right": '<path d="m9 18 6-6-6-6"/>',
   menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/>',
+  moon: '<path d="M20.8 14.1A9 9 0 0 1 9.9 3.2a9 9 0 1 0 10.9 10.9Z"/>',
+  monitor: '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/>',
   sparkles: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Zm7 11v6m-3-3h6M4 3v4M2 5h4"/>',
   target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
   check: '<path d="m5 12 4 4L19 6"/>',
@@ -77,8 +80,12 @@ function toast(message) {
 
 function refreshNav() {
   const active = state.location === "run" ? "history" : state.location;
-  $("nav").innerHTML = navItems.map(([key, symbol, title]) => `
-    <a href="#${key}" class="nav-item ${key === active ? "active" : ""}" ${key === active ? 'aria-current="page"' : ""}>${icon(symbol)} <span>${title}</span></a>`).join("");
+  const nav = $("nav");
+  if (nav.dataset.current !== active) {
+    nav.dataset.current = active;
+    nav.innerHTML = navItems.map(([key, symbol, title]) => `
+      <a href="#${key}" class="nav-item ${key === active ? "active" : ""}" ${key === active ? 'aria-current="page"' : ""}>${icon(symbol)} <span>${title}</span></a>`).join("");
+  }
   $("page-name").textContent = state.location === "run" ? "Run report" : navItems.find(([key]) => key === active)?.[2] || "Agent factory";
   $("runtime-title").textContent = state.workspace.model_online ? "Local model online" : "Offline runtime";
   $("runtime-subtitle").textContent = state.workspace.model_online ? state.workspace.model : "Deterministic fallback";
@@ -89,7 +96,7 @@ function pipeline(run) {
   const key = run?.stage === "scoring" ? "evals" : run?.stage;
   const active = Math.max(0, stages.findIndex(([stage]) => stage === key));
   return `<div class="pipeline" aria-label="Build stages">${stages.map(([, symbol, title], i) =>
-    `<div class="pipeline-step ${i < active || run?.status === "complete" ? "done" : i === active ? "active" : ""}" ${i === active ? 'aria-current="step"' : ""}>
+    `<div class="pipeline-step ${i < active || run?.status === "complete" ? "done" : i === active ? "active" : ""}" ${i === active && run?.status !== "complete" ? 'aria-current="step"' : ""}>
       <span>${icon(i < active || run?.status === "complete" ? "check" : symbol)}</span><span>${title}</span></div>`).join("")}</div>`;
 }
 
@@ -114,8 +121,8 @@ function demoCards() {
 function buildScreen() {
   return `<div class="screen">
     <section class="hero">
-      <div class="hero-copy"><div class="eyebrow">${icon("sparkles")} AGENT FACTORY</div>
-        <h1>Build a grounded agent.</h1>
+      <div class="hero-copy">
+        <h1>Build a <span>grounded agent.</span></h1>
         <p>Turn a brief and a document set into a tested agent with verifiable answers.</p>
       </div>
     </section>
@@ -183,8 +190,10 @@ function buildScreen() {
 function historyScreen() {
   const rows = state.runs.map((item) => `<div class="history-row">
     <div><strong>${esc(item.name)}</strong><small>${item.demo ? "Recorded demonstration" : esc(new Date(item.created).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }))}</small></div>
-    ${badge(titleFor(item.status), item.status === "complete" ? "good" : item.status === "failed" ? "bad" : "warn")}
-    ${item.score === undefined ? "<span></span>" : badge(`${item.score}%`)}
+    <div class="history-meta">
+      ${badge(titleFor(item.status), item.status === "complete" ? "good" : item.status === "failed" ? "bad" : "warn")}
+      ${item.score === undefined ? "" : badge(`${item.score}%`)}
+    </div>
     <a class="btn small" href="#run/${esc(item.id)}">${icon("file")} Open run</a>
   </div>`).join("");
   return `<div class="screen"><div class="page-heading"><div><h1>Run history</h1><p>Open a recorded build, inspect its evidence, or test its agent.</p></div>
@@ -425,8 +434,10 @@ function route() {
   } else if (state.location === "chat" && id) {
     state.chatId = id;
   }
-  $("sidebar").classList.remove("open");
+  const menuWasOpen = $("sidebar").classList.contains("open");
+  setMenu(false);
   render();
+  if (menuWasOpen) $("main").focus();
   window.scrollTo(0, 0);
   if (state.location === "history" || state.location === "chat") {
     loadRuns().then(() => {
@@ -506,6 +517,35 @@ async function sendMessage(question) {
   }
 }
 
+const smallScreen = window.matchMedia?.("(max-width: 650px)");
+
+function setMenu(open, restoreFocus = false) {
+  const sidebar = $("sidebar");
+  sidebar.classList.toggle("open", open);
+  $("open-menu").setAttribute("aria-expanded", String(open));
+  $("menu-backdrop").hidden = !open;
+  document.querySelector(".main-shell").inert = open;
+  $("skip-link").inert = open;
+  document.body.classList.toggle("menu-open", open);
+  if (open) {
+    sidebar.setAttribute("role", "dialog");
+    sidebar.setAttribute("aria-modal", "true");
+    sidebar.setAttribute("aria-label", "Workspace navigation");
+    $("close-menu").focus();
+  } else {
+    sidebar.removeAttribute("role");
+    sidebar.removeAttribute("aria-modal");
+    sidebar.removeAttribute("aria-label");
+    if (restoreFocus) $("open-menu").focus();
+  }
+}
+
+smallScreen?.addEventListener?.("change", (event) => { if (!event.matches) setMenu(false); });
+$("skip-link").addEventListener("click", (event) => {
+  event.preventDefault();
+  $("main").focus();
+});
+
 document.querySelectorAll("[data-icon]").forEach((node) => { node.innerHTML = icon(node.dataset.icon); });
 document.addEventListener("input", (event) => {
   const { id, value } = event.target;
@@ -525,10 +565,16 @@ document.addEventListener("change", (event) => {
   else if (["model", "checkpoint", "tournament"].includes(id)) state[id] = checked;
 });
 document.addEventListener("click", async (event) => {
+  const navLink = event.target.closest('#sidebar a[href^="#"]');
+  if (navLink && navLink.hash === window.location.hash && $("sidebar").classList.contains("open")) {
+    setMenu(false);
+    $("main").focus();
+  }
   const button = event.target.closest("[data-action]");
   if (!button) return;
   const { action, value } = button.dataset;
-  if (action === "menu") $("sidebar").classList.toggle("open");
+  if (action === "menu") setMenu(true);
+  else if (action === "close-menu") setMenu(false, true);
   else if (action === "browse") $("files").click();
   else if (action === "remove-file") {
     state.files.splice(Number(value), 1);
@@ -597,12 +643,12 @@ document.addEventListener("submit", async (event) => {
   }
 });
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") $("sidebar").classList.remove("open");
+  if (event.key === "Escape" && $("sidebar").classList.contains("open")) setMenu(false, true);
   if (event.key === "Enter" && (event.ctrlKey || event.metaKey) && state.location === "build") {
     event.preventDefault();
     $("build-form").requestSubmit();
   }
 });
 window.addEventListener("hashchange", route);
-api("/api/workspace").then((info) => { state.workspace = info; route(); }).catch((error) => { route(); toast(error.message); });
+api("/api/workspace").then((info) => { state.workspace = info; render(); }).catch((error) => toast(error.message));
 route();

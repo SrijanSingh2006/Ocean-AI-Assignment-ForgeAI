@@ -183,7 +183,8 @@ class FactoryTests(unittest.TestCase):
                  ("files", ("Courier-Reception.md", COURIER, "text/markdown"))]
         with patch.object(web, "RUNS", self.root / "web"), TestClient(web.app) as client:
             self.assertIn("ForgeAI Studio", client.get("/").text)
-            for asset in ("app.js", "style.css", "forge-hero.webp", "forge-icon.svg"):
+            self.assertIn('aria-label="Color theme"', client.get("/").text)
+            for asset in ("app.js", "theme.js", "style.css", "forge-hero.webp", "forge-icon.svg"):
                 self.assertEqual(client.get(f"/static/{asset}").status_code, 200)
             self.assertEqual(client.get("/api/workspace").status_code, 200)
             self.assertEqual(client.post("/api/runs", data={"brief": BRIEF}).status_code, 422)

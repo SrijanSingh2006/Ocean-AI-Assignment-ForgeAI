@@ -12,6 +12,8 @@ python launch.py
 
 The launcher creates a project-local virtual environment, installs the dependencies, starts Studio, and opens it in your browser. Use `python launch.py --with-model` to start Qwen as part of the same command on Linux x86-64. An already-running compatible local model can be reused on any platform.
 
+Choose **Light**, **Dark**, or **Match device theme** from the top bar. The choice is saved in your browser. Studio respects your device's reduced-motion setting.
+
 Load a sample project or enter your own brief and add documents. Enable **Review requirements** for the interview. Leave it disabled for an unattended run. Report tabs provide the requirements, evaluations, definition, and repair log. **Open chat** loads the generated definition and **Export run** downloads the outputs and source files.
 
 For manual startup, install with `python -m pip install -e .` and run `python -m forgeai serve`. The default app address is `http://127.0.0.1:8000`.
@@ -88,8 +90,9 @@ Each demo contains `brief.txt`, its original `documents/`, and these evidence fi
 python -m pip install -e '.[test]'
 python -m unittest discover -s tests -v
 node --check static/app.js
+node --check static/theme.js
 ```
 
-The automated suite covers a separate exhibition-policy corpus, unsupported scope, targeted repairs, mutation regression, evidence integrity, document extraction, tools, and a multipart upload → review → build → chat → download flow through FastAPI. The recorded demos cover the local-model path.
+The automated suite covers a separate exhibition-policy corpus, unsupported scope, targeted repairs, latency and token limits, evidence integrity, document extraction, all tool dispatch paths, and a multipart upload → review → build → chat → download flow through FastAPI. The four Qwen sample runs passed all 24 cases in their respective generated suites. People Operations passed 24 out of 24 cases compared with 22 for the hand-written definition. The revised policies flagged three newly failing cases on the original suite.
 
 Scores measure the generated suite for the supplied corpus. The optimizer and evaluation generator share that corpus, and a perfect score does not predict unseen-query accuracy. Lexical retrieval can miss paraphrases and source lists may expose incomplete topics. The response extracts verifiable passages, which can be wordier than a bespoke answer. Scanned-image PDFs need OCR before use. The web app is a single-user local workspace. Run data is persisted under `.runs/web/`, or the directory set with `FORGE_RUN_DIR`. Keep the service on loopback when using private documents.
