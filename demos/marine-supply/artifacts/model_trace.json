@@ -1,0 +1,78 @@
+{
+  "name": "qwen2.5-0.5b",
+  "mode": "local_model",
+  "tokens": 1717,
+  "budget": 12000,
+  "calls": [
+    {
+      "stage": "intake",
+      "status": "ok",
+      "tokens": 401,
+      "output": {
+        "audience": "marine procurement coordinators",
+        "tone": "professional",
+        "questions": [
+          "What is the purpose of the assistant?",
+          "What types of documents does the assistant cover?",
+          "What are the main features of the assistant?",
+          "What are the main functions of the assistant?",
+          "What are the main benefits of the assistant?"
+        ]
+      }
+    },
+    {
+      "stage": "definition",
+      "status": "ok",
+      "tokens": 184,
+      "output": {
+        "name": "Document Assistant",
+        "role": "Identifies and extracts relevant information from documents related to marine procurement."
+      }
+    },
+    {
+      "stage": "eval_generation",
+      "status": "ok",
+      "tokens": 160,
+      "output": {
+        "topic": "Dockside delivery",
+        "document": "Dockside Logistics",
+        "question": "What is the main topic of Dockside Logistics' document on Dockside delivery?"
+      }
+    },
+    {
+      "stage": "eval_generation",
+      "status": "ok",
+      "tokens": 153,
+      "output": {
+        "question": "What does Part Catalogue document about FG-070 Fuel gauge sender?"
+      }
+    },
+    {
+      "stage": "critic",
+      "status": "ok",
+      "tokens": 387,
+      "output": {
+        "patch": "E19",
+        "reason": "Prompt defect: Clarify the query for vague or names a document without enough detail."
+      }
+    },
+    {
+      "stage": "critic",
+      "status": "ok",
+      "tokens": 256,
+      "output": {
+        "patch": "E19",
+        "reason": "clarify"
+      }
+    },
+    {
+      "stage": "critic",
+      "status": "ok",
+      "tokens": 176,
+      "output": {
+        "patch": "group_retrieval",
+        "reason": "one short sentence"
+      }
+    }
+  ]
+}

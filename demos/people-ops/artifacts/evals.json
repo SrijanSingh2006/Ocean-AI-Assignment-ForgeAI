@@ -1,0 +1,356 @@
+[
+  {
+    "id": "E01",
+    "category": "answerable",
+    "question": "What does the Hybrid Work Guide document about remote work?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Hybrid-Work-Guide.md",
+        "passage_id": "d01p001c01",
+        "key_facts": [
+          "Employees in eligible shore roles may work remotely up to two days each week.",
+          "The team lead approves the days in the shared team calendar."
+        ]
+      }
+    ],
+    "generation": "validated model paraphrase"
+  },
+  {
+    "id": "E02",
+    "category": "answerable",
+    "question": "What does Hybrid Work Guide document about Core availability?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Hybrid-Work-Guide.md",
+        "passage_id": "d01p002c01",
+        "key_facts": [
+          "Remote staff must be reachable between 10:00 and 15:00 local office time.",
+          "Use the team chat status to indicate a planned absence during those hours."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E03",
+    "category": "answerable",
+    "question": "What does Hybrid Work Guide document about Home office equipment?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Hybrid-Work-Guide.md",
+        "passage_id": "d01p003c01",
+        "key_facts": [
+          "The service desk issues a headset and laptop stand on request.",
+          "A manager must preauthorize purchases made outside the equipment catalogue."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E04",
+    "category": "answerable",
+    "question": "What does Hybrid Work Guide document about Desk booking?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Hybrid-Work-Guide.md",
+        "passage_id": "d01p004c01",
+        "key_facts": [
+          "Reserve a desk in the office booking app by 17:00 on the previous working day.",
+          "Cancel unneeded bookings before 09:00 on the day."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E05",
+    "category": "answerable",
+    "question": "What does Hybrid Work Guide document about Remote access?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Hybrid-Work-Guide.md",
+        "passage_id": "d01p005c01",
+        "key_facts": [
+          "Company files may be accessed only from managed laptops using the approved VPN.",
+          "Report suspected device loss by phone to the service desk immediately."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E06",
+    "category": "answerable",
+    "question": "What does Leave Handbook document about Leave notice?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Leave-Handbook.md",
+        "passage_id": "d02p002c01",
+        "key_facts": [
+          "Submit ordinary leave requests in the PeopleHub portal at least ten working days before departure.",
+          "A line manager must approve the request before booking travel."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E07",
+    "category": "answerable",
+    "question": "What does Leave Handbook document about Sick leave?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Leave-Handbook.md",
+        "passage_id": "d02p003c01",
+        "key_facts": [
+          "Notify your line manager before 09:30 local time on the first day of sickness.",
+          "A medical certificate is required after three consecutive working days."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E08",
+    "category": "answerable",
+    "question": "What does Leave Handbook document about Parental leave?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Leave-Handbook.md",
+        "passage_id": "d02p004c01",
+        "key_facts": [
+          "Applications for planned parental leave should reach People Operations at least eight weeks before the expected start.",
+          "Managers must confirm the handover plan separately."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E09",
+    "category": "answerable",
+    "question": "What does Leave Handbook document about Public holidays?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Leave-Handbook.md",
+        "passage_id": "d02p005c01",
+        "key_facts": [
+          "The local office calendar determines public holidays for shore employees.",
+          "If a holiday falls during approved annual leave, the holiday does not reduce the annual leave balance."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E10",
+    "category": "answerable",
+    "question": "What does Travel And Expenses document about Travel reimbursements?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Travel-and-Expenses.md",
+        "passage_id": "d03p001c01",
+        "key_facts": [
+          "Submit travel reimbursements in the expense portal within 30 calendar days of returning.",
+          "Attach itemized receipts for every claimed expense."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E11",
+    "category": "answerable",
+    "question": "What does Travel And Expenses document about Hotel limits?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Travel-and-Expenses.md",
+        "passage_id": "d03p002c01",
+        "key_facts": [
+          "The standard overnight hotel cap is EUR 145 per night before local taxes.",
+          "A regional director may approve a higher amount before travel."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E12",
+    "category": "answerable",
+    "question": "What does Travel And Expenses document about Rail booking?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Travel-and-Expenses.md",
+        "passage_id": "d03p003c01",
+        "key_facts": [
+          "Book standard class rail unless a documented accessibility need requires a different fare.",
+          "Use the corporate booking channel for rail journeys."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E13",
+    "category": "answerable",
+    "question": "What does Travel And Expenses document about Mileage claims?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Travel-and-Expenses.md",
+        "passage_id": "d03p004c01",
+        "key_facts": [
+          "Approved private vehicle trips are reimbursed at EUR 0.42 per kilometre.",
+          "Record the route and distance in the expense portal."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E14",
+    "category": "cross_document",
+    "question": "For Hybrid Work Guide, what is documented about Remote work, and separately, for Leave Handbook, what is documented about Annual leave?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Hybrid-Work-Guide.md",
+        "passage_id": "d01p001c01",
+        "key_facts": [
+          "Employees in eligible shore roles may work remotely up to two days each week.",
+          "The team lead approves the days in the shared team calendar."
+        ]
+      },
+      {
+        "document": "Leave-Handbook.md",
+        "passage_id": "d02p001c01",
+        "key_facts": [
+          "Permanent shore employees receive 22 paid annual leave days per calendar year.",
+          "Carryover is capped at five days and expires on 31 March of the next year."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E15",
+    "category": "cross_document",
+    "question": "For Hybrid Work Guide, what is documented about Core availability, and separately, for Leave Handbook, what is documented about Leave notice?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Hybrid-Work-Guide.md",
+        "passage_id": "d01p002c01",
+        "key_facts": [
+          "Remote staff must be reachable between 10:00 and 15:00 local office time.",
+          "Use the team chat status to indicate a planned absence during those hours."
+        ]
+      },
+      {
+        "document": "Leave-Handbook.md",
+        "passage_id": "d02p002c01",
+        "key_facts": [
+          "Submit ordinary leave requests in the PeopleHub portal at least ten working days before departure.",
+          "A line manager must approve the request before booking travel."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E16",
+    "category": "cross_document",
+    "question": "For Hybrid Work Guide, what is documented about Home office equipment, and separately, for Leave Handbook, what is documented about Sick leave?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Hybrid-Work-Guide.md",
+        "passage_id": "d01p003c01",
+        "key_facts": [
+          "The service desk issues a headset and laptop stand on request.",
+          "A manager must preauthorize purchases made outside the equipment catalogue."
+        ]
+      },
+      {
+        "document": "Leave-Handbook.md",
+        "passage_id": "d02p003c01",
+        "key_facts": [
+          "Notify your line manager before 09:30 local time on the first day of sickness.",
+          "A medical certificate is required after three consecutive working days."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E17",
+    "category": "cross_document",
+    "question": "For Hybrid Work Guide, what is documented about Desk booking, and separately, for Leave Handbook, what is documented about Parental leave?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Hybrid-Work-Guide.md",
+        "passage_id": "d01p004c01",
+        "key_facts": [
+          "Reserve a desk in the office booking app by 17:00 on the previous working day.",
+          "Cancel unneeded bookings before 09:00 on the day."
+        ]
+      },
+      {
+        "document": "Leave-Handbook.md",
+        "passage_id": "d02p004c01",
+        "key_facts": [
+          "Applications for planned parental leave should reach People Operations at least eight weeks before the expected start.",
+          "Managers must confirm the handover plan separately."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E18",
+    "category": "ambiguous",
+    "question": "What does it say?",
+    "expected_status": "clarify",
+    "expected_grounding": []
+  },
+  {
+    "id": "E19",
+    "category": "ambiguous",
+    "question": "Can you explain more?",
+    "expected_status": "clarify",
+    "expected_grounding": []
+  },
+  {
+    "id": "E20",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on live vessel tracking coordinates?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  },
+  {
+    "id": "E21",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on individual salary records?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  },
+  {
+    "id": "E22",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on medical diagnosis?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  },
+  {
+    "id": "E23",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on income tax filing deadline?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  },
+  {
+    "id": "E24",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on personal medical diagnosis?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  }
+]

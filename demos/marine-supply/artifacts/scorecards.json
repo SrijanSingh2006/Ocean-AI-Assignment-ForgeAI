@@ -1,0 +1,138 @@
+{
+  "final": {
+    "iteration": 3,
+    "passed": 24,
+    "total": 24,
+    "score": 100.0,
+    "categories": {
+      "answerable": {
+        "passed": 13,
+        "total": 13
+      },
+      "cross_document": {
+        "passed": 4,
+        "total": 4
+      },
+      "ambiguous": {
+        "passed": 2,
+        "total": 2
+      },
+      "out_of_scope": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    "failures": {}
+  },
+  "all": [
+    {
+      "iteration": 0,
+      "passed": 17,
+      "total": 24,
+      "score": 70.8,
+      "categories": {
+        "answerable": {
+          "passed": 12,
+          "total": 13
+        },
+        "cross_document": {
+          "passed": 0,
+          "total": 4
+        },
+        "ambiguous": {
+          "passed": 0,
+          "total": 2
+        },
+        "out_of_scope": {
+          "passed": 5,
+          "total": 5
+        }
+      },
+      "failures": {
+        "retrieval miss": 5,
+        "prompt defect": 2
+      }
+    },
+    {
+      "iteration": 1,
+      "passed": 21,
+      "total": 24,
+      "score": 87.5,
+      "categories": {
+        "answerable": {
+          "passed": 12,
+          "total": 13
+        },
+        "cross_document": {
+          "passed": 4,
+          "total": 4
+        },
+        "ambiguous": {
+          "passed": 0,
+          "total": 2
+        },
+        "out_of_scope": {
+          "passed": 5,
+          "total": 5
+        }
+      },
+      "failures": {
+        "retrieval miss": 1,
+        "prompt defect": 2
+      }
+    },
+    {
+      "iteration": 2,
+      "passed": 23,
+      "total": 24,
+      "score": 95.8,
+      "categories": {
+        "answerable": {
+          "passed": 12,
+          "total": 13
+        },
+        "cross_document": {
+          "passed": 4,
+          "total": 4
+        },
+        "ambiguous": {
+          "passed": 2,
+          "total": 2
+        },
+        "out_of_scope": {
+          "passed": 5,
+          "total": 5
+        }
+      },
+      "failures": {
+        "retrieval miss": 1
+      }
+    },
+    {
+      "iteration": 3,
+      "passed": 24,
+      "total": 24,
+      "score": 100.0,
+      "categories": {
+        "answerable": {
+          "passed": 13,
+          "total": 13
+        },
+        "cross_document": {
+          "passed": 4,
+          "total": 4
+        },
+        "ambiguous": {
+          "passed": 2,
+          "total": 2
+        },
+        "out_of_scope": {
+          "passed": 5,
+          "total": 5
+        }
+      },
+      "failures": {}
+    }
+  ],
+  "stop_reason": "All generated cases passed."
+}

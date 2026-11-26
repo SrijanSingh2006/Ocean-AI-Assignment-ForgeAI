@@ -1,0 +1,98 @@
+{
+  "scope": "Build a policy assistant for shore-based operations staff. Cover annual leave, sick leave, remote work, travel reimbursements, and live vessel tracking coordinates. Refuse individual salary records and medical diagnosis. Keep a concise, professional tone. Use the supplied policies as the source of truth.",
+  "audience": "shore-based operations staff",
+  "tone": "a concise, professional tone",
+  "must_answer": [
+    {
+      "topic": "annual leave",
+      "basis": "document",
+      "evidence": [
+        {
+          "document": "Leave-Handbook.md",
+          "passage": "d02p001c01"
+        },
+        {
+          "document": "Leave-Handbook.md",
+          "passage": "d02p005c01"
+        }
+      ]
+    },
+    {
+      "topic": "sick leave",
+      "basis": "document",
+      "evidence": [
+        {
+          "document": "Leave-Handbook.md",
+          "passage": "d02p003c01"
+        }
+      ]
+    },
+    {
+      "topic": "remote work",
+      "basis": "document",
+      "evidence": [
+        {
+          "document": "Hybrid-Work-Guide.md",
+          "passage": "d01p001c01"
+        },
+        {
+          "document": "Hybrid-Work-Guide.md",
+          "passage": "d01p002c01"
+        }
+      ]
+    },
+    {
+      "topic": "travel reimbursements",
+      "basis": "document",
+      "evidence": [
+        {
+          "document": "Travel-and-Expenses.md",
+          "passage": "d03p001c01"
+        },
+        {
+          "document": "Travel-and-Expenses.md",
+          "passage": "d03p005c01"
+        }
+      ]
+    }
+  ],
+  "must_refuse": [
+    "individual salary records",
+    "medical diagnosis",
+    "Requests without verifiable source evidence"
+  ],
+  "groundability_gaps": [
+    {
+      "topic": "live vessel tracking coordinates",
+      "reason": "No passage has sufficient vocabulary overlap to verify this requested topic."
+    }
+  ],
+  "questions": [
+    {
+      "id": "scope",
+      "text": "Is any flagged topic covered under another name in these documents? If so, specify that name.",
+      "default": ""
+    }
+  ],
+  "interview_answers": {},
+  "scope_notes": [],
+  "tools": [],
+  "documents": [
+    {
+      "name": "Hybrid-Work-Guide.md",
+      "format": "MD",
+      "passages": 5
+    },
+    {
+      "name": "Leave-Handbook.md",
+      "format": "MD",
+      "passages": 6
+    },
+    {
+      "name": "Travel-and-Expenses.md",
+      "format": "MD",
+      "passages": 5
+    }
+  ],
+  "ingestion_warnings": []
+}

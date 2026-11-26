@@ -1,0 +1,365 @@
+[
+  {
+    "id": "E01",
+    "category": "answerable",
+    "question": "What does Dockside Logistics document about Dockside delivery?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Dockside-Logistics.md",
+        "passage_id": "d01p001c01",
+        "key_facts": [
+          "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery.",
+          "The carrier needs the details by 14:00 on the prior working day."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E02",
+    "category": "answerable",
+    "question": "What does Dockside Logistics document about Port storage?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Dockside-Logistics.md",
+        "passage_id": "d01p002c01",
+        "key_facts": [
+          "The port holds packages for up to 48 hours after unloading.",
+          "Holding charges apply after the storage window ends."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E03",
+    "category": "answerable",
+    "question": "What does Dockside Logistics document about Pallet labeling?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Dockside-Logistics.md",
+        "passage_id": "d01p004c01",
+        "key_facts": [
+          "Tag pallets with the vessel name, order number, and berth identifier.",
+          "Put a duplicate label inside each weatherproof document pouch."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E04",
+    "category": "answerable",
+    "question": "What does Dockside Logistics document about Weekend handling?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Dockside-Logistics.md",
+        "passage_id": "d01p005c01",
+        "key_facts": [
+          "Weekend dock handling requires written authorization from the terminal supervisor.",
+          "Submit requests before noon on the preceding Thursday."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E05",
+    "category": "answerable",
+    "question": "What does Part Catalogue document about BF-204 Bilge float switch?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Part-Catalogue.csv",
+        "passage_id": "d02p002c01",
+        "key_facts": [
+          "SKU: BF-204",
+          "Pack size: 1",
+          "Compatible assembly: Bilge B20"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E06",
+    "category": "answerable",
+    "question": "What does Part Catalogue document about CP-900 Coupling insert?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Part-Catalogue.csv",
+        "passage_id": "d02p003c01",
+        "key_facts": [
+          "SKU: CP-900",
+          "Pack size: 4",
+          "Compatible assembly: Pump P900"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E07",
+    "category": "answerable",
+    "question": "What does Part Catalogue document about FG-070 Fuel gauge sender?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Part-Catalogue.csv",
+        "passage_id": "d02p005c01",
+        "key_facts": [
+          "SKU: FG-070",
+          "Pack size: 1",
+          "Compatible assembly: Reserve tank T70"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E08",
+    "category": "answerable",
+    "question": "What does Part Catalogue document about GS-286 Gland seal ring?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Part-Catalogue.csv",
+        "passage_id": "d02p006c01",
+        "key_facts": [
+          "SKU: GS-286",
+          "Pack size: 5",
+          "Compatible assembly: Shaft seal S286"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E09",
+    "category": "answerable",
+    "question": "What does Part Catalogue document about IT-114 Impeller kit?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Part-Catalogue.csv",
+        "passage_id": "d02p008c01",
+        "key_facts": [
+          "SKU: IT-114",
+          "Pack size: 1",
+          "Compatible assembly: Sea pump SP114"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E10",
+    "category": "answerable",
+    "question": "What does Part Catalogue document about JV-773 Jacket valve body?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Part-Catalogue.csv",
+        "passage_id": "d02p009c01",
+        "key_facts": [
+          "SKU: JV-773",
+          "Pack size: 1",
+          "Compatible assembly: Engine jacket J77"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E11",
+    "category": "answerable",
+    "question": "What does Supplier Terms document about Supplier returns?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Supplier-Terms.md",
+        "passage_id": "d03p001c01",
+        "key_facts": [
+          "Open an RMA request within 21 calendar days of delivery for unused parts.",
+          "Include the purchase order and an image of the original packaging."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E12",
+    "category": "answerable",
+    "question": "What does Supplier Terms document about Warranty claims?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Supplier-Terms.md",
+        "passage_id": "d03p002c01",
+        "key_facts": [
+          "Warranty claims are accepted for manufacturing defects within 12 months of dispatch.",
+          "Include the serial number and a description of operating conditions."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E13",
+    "category": "answerable",
+    "question": "What does Supplier Terms document about Damaged consignments?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Supplier-Terms.md",
+        "passage_id": "d03p004c01",
+        "key_facts": [
+          "Note obvious damage on the delivery receipt and send photos to the supplier within two working days.",
+          "Keep the outer packaging until the carrier releases it."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E14",
+    "category": "cross_document",
+    "question": "For Dockside Logistics, what is documented about Dockside delivery, and separately, for Part Catalogue, what is documented about AF-310 Air filter cartridge?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Dockside-Logistics.md",
+        "passage_id": "d01p001c01",
+        "key_facts": [
+          "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery.",
+          "The carrier needs the details by 14:00 on the prior working day."
+        ]
+      },
+      {
+        "document": "Part-Catalogue.csv",
+        "passage_id": "d02p001c01",
+        "key_facts": [
+          "SKU: AF-310",
+          "Pack size: 2",
+          "Compatible assembly: Compressor C310"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E15",
+    "category": "cross_document",
+    "question": "For Dockside Logistics, what is documented about Port storage, and separately, for Part Catalogue, what is documented about BF-204 Bilge float switch?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Dockside-Logistics.md",
+        "passage_id": "d01p002c01",
+        "key_facts": [
+          "The port holds packages for up to 48 hours after unloading.",
+          "Holding charges apply after the storage window ends."
+        ]
+      },
+      {
+        "document": "Part-Catalogue.csv",
+        "passage_id": "d02p002c01",
+        "key_facts": [
+          "SKU: BF-204",
+          "Pack size: 1",
+          "Compatible assembly: Bilge B20"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E16",
+    "category": "cross_document",
+    "question": "For Dockside Logistics, what is documented about Pallet labeling, and separately, for Part Catalogue, what is documented about CP-900 Coupling insert?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Dockside-Logistics.md",
+        "passage_id": "d01p004c01",
+        "key_facts": [
+          "Tag pallets with the vessel name, order number, and berth identifier.",
+          "Put a duplicate label inside each weatherproof document pouch."
+        ]
+      },
+      {
+        "document": "Part-Catalogue.csv",
+        "passage_id": "d02p003c01",
+        "key_facts": [
+          "SKU: CP-900",
+          "Pack size: 4",
+          "Compatible assembly: Pump P900"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E17",
+    "category": "cross_document",
+    "question": "For Dockside Logistics, what is documented about Weekend handling, and separately, for Part Catalogue, what is documented about DS-120 Deck scupper plug?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Dockside-Logistics.md",
+        "passage_id": "d01p005c01",
+        "key_facts": [
+          "Weekend dock handling requires written authorization from the terminal supervisor.",
+          "Submit requests before noon on the preceding Thursday."
+        ]
+      },
+      {
+        "document": "Part-Catalogue.csv",
+        "passage_id": "d02p004c01",
+        "key_facts": [
+          "SKU: DS-120",
+          "Pack size: 6",
+          "Compatible assembly: Deck grate D120"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E18",
+    "category": "ambiguous",
+    "question": "What does it say?",
+    "expected_status": "clarify",
+    "expected_grounding": []
+  },
+  {
+    "id": "E19",
+    "category": "ambiguous",
+    "question": "Can you explain more?",
+    "expected_status": "clarify",
+    "expected_grounding": []
+  },
+  {
+    "id": "E20",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on emergency air freight?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  },
+  {
+    "id": "E21",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on personal medical diagnosis?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  },
+  {
+    "id": "E22",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on live vessel tracking coordinates?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  },
+  {
+    "id": "E23",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on income tax filing deadline?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  },
+  {
+    "id": "E24",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on home mortgage interest rates?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  }
+]

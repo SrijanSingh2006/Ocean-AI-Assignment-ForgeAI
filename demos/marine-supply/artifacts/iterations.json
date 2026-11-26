@@ -1,0 +1,93 @@
+[
+  {
+    "iteration": 1,
+    "patch": "group_retrieval",
+    "field": "retrieval",
+    "from": {
+      "top_k": 1,
+      "split_compound": false
+    },
+    "to": {
+      "top_k": 3,
+      "split_compound": true
+    },
+    "why": "Search each part of compound questions and retain evidence across sources.",
+    "addressed_cases": [
+      "E11",
+      "E14",
+      "E15",
+      "E16",
+      "E17"
+    ],
+    "resolved_cases": [
+      "E14",
+      "E15",
+      "E16",
+      "E17"
+    ],
+    "regressed_cases": [],
+    "score_before": 70.8,
+    "score_after": 87.5,
+    "accepted": true,
+    "model_suggestion": {
+      "patch": "E19",
+      "reason": "Prompt defect: Clarify the query for vague or names a document without enough detail."
+    }
+  },
+  {
+    "iteration": 2,
+    "patch": "clarify_vague",
+    "field": "policy",
+    "from": {
+      "clarify_vague": false
+    },
+    "to": {
+      "clarify_vague": true
+    },
+    "why": "Ask for a topic when the query is vague or names a document without enough detail.",
+    "addressed_cases": [
+      "E18",
+      "E19"
+    ],
+    "resolved_cases": [
+      "E18",
+      "E19"
+    ],
+    "regressed_cases": [],
+    "score_before": 87.5,
+    "score_after": 95.8,
+    "accepted": true,
+    "model_suggestion": {
+      "patch": "E19",
+      "reason": "clarify"
+    }
+  },
+  {
+    "iteration": 3,
+    "patch": "heading_boost",
+    "field": "retrieval",
+    "from": {
+      "heading_weight": 0.9,
+      "min_coverage": 0.36
+    },
+    "to": {
+      "heading_weight": 1.6,
+      "min_coverage": 0.24
+    },
+    "why": "Improve section-title matching and recover slightly weaker grounded hits.",
+    "addressed_cases": [
+      "E11"
+    ],
+    "resolved_cases": [
+      "E11"
+    ],
+    "regressed_cases": [],
+    "score_before": 95.8,
+    "score_after": 100.0,
+    "accepted": true,
+    "model_suggestion": {
+      "patch": "group_retrieval",
+      "reason": "one short sentence"
+    }
+  }
+]

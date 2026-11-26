@@ -1,0 +1,73 @@
+{
+  "name": "qwen2.5-0.5b",
+  "mode": "local_model",
+  "tokens": 2006,
+  "budget": 12000,
+  "calls": [
+    {
+      "stage": "intake",
+      "status": "invalid_json",
+      "detail": "Unterminated string starting at: line 20 column 5 (char 1340)",
+      "tokens": 550
+    },
+    {
+      "stage": "definition",
+      "status": "ok",
+      "tokens": 177,
+      "output": {
+        "name": "Hybrid-Work-Guide",
+        "role": "document assistant"
+      }
+    },
+    {
+      "stage": "eval_generation",
+      "status": "ok",
+      "tokens": 154,
+      "output": {
+        "topic": "Remote work",
+        "document": "Hybrid Work Guide",
+        "question": "What does the Hybrid Work Guide document about remote work?"
+      }
+    },
+    {
+      "stage": "eval_generation",
+      "status": "ok",
+      "tokens": 153,
+      "output": {
+        "topic": "Sick leave",
+        "document": "Leave Handbook",
+        "question": "What is the main topic of the document 'Leave Handbook'?"
+      }
+    },
+    {
+      "stage": "evidence",
+      "status": "ok",
+      "tokens": 412,
+      "output": {
+        "ids": [
+          "d02p001c01",
+          "d02p005c01",
+          "d01p001c01"
+        ]
+      }
+    },
+    {
+      "stage": "critic",
+      "status": "ok",
+      "tokens": 343,
+      "output": {
+        "patch": "E19",
+        "reason": "prompt defect"
+      }
+    },
+    {
+      "stage": "critic",
+      "status": "ok",
+      "tokens": 217,
+      "output": {
+        "patch": "clarify_vague",
+        "reason": "The patch 'clarify_vague' addresses the issue of vague queries and names of documents, which is relevant to the provided failures."
+      }
+    }
+  ]
+}

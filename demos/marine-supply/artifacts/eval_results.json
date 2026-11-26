@@ -1,0 +1,2737 @@
+[
+  {
+    "scorecard": {
+      "iteration": 0,
+      "passed": 17,
+      "total": 24,
+      "score": 70.8,
+      "categories": {
+        "answerable": {
+          "passed": 12,
+          "total": 13
+        },
+        "cross_document": {
+          "passed": 0,
+          "total": 4
+        },
+        "ambiguous": {
+          "passed": 0,
+          "total": 2
+        },
+        "out_of_scope": {
+          "passed": 5,
+          "total": 5
+        }
+      },
+      "failures": {
+        "retrieval miss": 5,
+        "prompt defect": 2
+      }
+    },
+    "results": [
+      {
+        "id": "E01",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Dockside delivery?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery. The carrier needs the details by 14:00 on the prior working day.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Dockside delivery",
+              "locator": "text, block 1",
+              "quote": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery. The carrier needs the details by 14:00 on the prior working day."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E02",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Port storage?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "The port holds packages for up to 48 hours after unloading. Holding charges apply after the storage window ends.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Port storage",
+              "locator": "text, block 2",
+              "quote": "The port holds packages for up to 48 hours after unloading. Holding charges apply after the storage window ends."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E03",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Pallet labeling?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Tag pallets with the vessel name, order number, and berth identifier. Put a duplicate label inside each weatherproof document pouch.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p004c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Pallet labeling",
+              "locator": "text, block 4",
+              "quote": "Tag pallets with the vessel name, order number, and berth identifier. Put a duplicate label inside each weatherproof document pouch."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E04",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Weekend handling?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Weekend dock handling requires written authorization from the terminal supervisor. Submit requests before noon on the preceding Thursday.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p005c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Weekend handling",
+              "locator": "text, block 5",
+              "quote": "Weekend dock handling requires written authorization from the terminal supervisor. Submit requests before noon on the preceding Thursday."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E05",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about BF-204 Bilge float switch?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p002c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "BF-204 Bilge float switch",
+              "locator": "row 3",
+              "quote": "SKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E06",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about CP-900 Coupling insert?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p003c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "CP-900 Coupling insert",
+              "locator": "row 4",
+              "quote": "SKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E07",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about FG-070 Fuel gauge sender?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: FG-070 · Item: Fuel gauge sender · Material: Stainless steel · Unit price EUR: 71.20 · Pack size: 1 · Compatible assembly: Reserve tank T70",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p005c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "FG-070 Fuel gauge sender",
+              "locator": "row 6",
+              "quote": "SKU: FG-070 · Item: Fuel gauge sender · Material: Stainless steel · Unit price EUR: 71.20 · Pack size: 1 · Compatible assembly: Reserve tank T70"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E08",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about GS-286 Gland seal ring?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: GS-286 · Item: Gland seal ring · Material: Graphite · Unit price EUR: 28.60 · Pack size: 5 · Compatible assembly: Shaft seal S286",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p006c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "GS-286 Gland seal ring",
+              "locator": "row 7",
+              "quote": "SKU: GS-286 · Item: Gland seal ring · Material: Graphite · Unit price EUR: 28.60 · Pack size: 5 · Compatible assembly: Shaft seal S286"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E09",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about IT-114 Impeller kit?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: IT-114 · Item: Impeller kit · Material: Neoprene · Unit price EUR: 62.00 · Pack size: 1 · Compatible assembly: Sea pump SP114",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p008c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "IT-114 Impeller kit",
+              "locator": "row 9",
+              "quote": "SKU: IT-114 · Item: Impeller kit · Material: Neoprene · Unit price EUR: 62.00 · Pack size: 1 · Compatible assembly: Sea pump SP114"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E10",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about JV-773 Jacket valve body?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: JV-773 · Item: Jacket valve body · Material: Bronze · Unit price EUR: 118.25 · Pack size: 1 · Compatible assembly: Engine jacket J77",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p009c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "JV-773 Jacket valve body",
+              "locator": "row 10",
+              "quote": "SKU: JV-773 · Item: Jacket valve body · Material: Bronze · Unit price EUR: 118.25 · Pack size: 1 · Compatible assembly: Engine jacket J77"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E11",
+        "category": "answerable",
+        "question": "What does Supplier Terms document about Supplier returns?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "retrieval miss",
+        "missing_facts": [
+          {
+            "document": "Supplier-Terms.md",
+            "fact": "Open an RMA request within 21 calendar days of delivery for unused parts."
+          },
+          {
+            "document": "Supplier-Terms.md",
+            "fact": "Include the purchase order and an image of the original packaging."
+          }
+        ],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "An accepted discretionary return incurs a 12 percent restocking charge. There is no restocking charge on factory defects.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p003c01",
+              "document": "Supplier-Terms.md",
+              "heading": "Restocking charges",
+              "locator": "text, block 3",
+              "quote": "An accepted discretionary return incurs a 12 percent restocking charge. There is no restocking charge on factory defects."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E12",
+        "category": "answerable",
+        "question": "What does Supplier Terms document about Warranty claims?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Warranty claims are accepted for manufacturing defects within 12 months of dispatch. Include the serial number and a description of operating conditions.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p002c01",
+              "document": "Supplier-Terms.md",
+              "heading": "Warranty claims",
+              "locator": "text, block 2",
+              "quote": "Warranty claims are accepted for manufacturing defects within 12 months of dispatch. Include the serial number and a description of operating conditions."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E13",
+        "category": "answerable",
+        "question": "What does Supplier Terms document about Damaged consignments?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Note obvious damage on the delivery receipt and send photos to the supplier within two working days. Keep the outer packaging until the carrier releases it.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p004c01",
+              "document": "Supplier-Terms.md",
+              "heading": "Damaged consignments",
+              "locator": "text, block 4",
+              "quote": "Note obvious damage on the delivery receipt and send photos to the supplier within two working days. Keep the outer packaging until the carrier releases it."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E14",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Dockside delivery, and separately, for Part Catalogue, what is documented about AF-310 Air filter cartridge?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "retrieval miss",
+        "missing_facts": [
+          {
+            "document": "Dockside-Logistics.md",
+            "fact": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery."
+          },
+          {
+            "document": "Dockside-Logistics.md",
+            "fact": "The carrier needs the details by 14:00 on the prior working day."
+          }
+        ],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: AF-310 · Item: Air filter cartridge · Material: Cellulose · Unit price EUR: 46.50 · Pack size: 2 · Compatible assembly: Compressor C310",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p001c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "AF-310 Air filter cartridge",
+              "locator": "row 2",
+              "quote": "SKU: AF-310 · Item: Air filter cartridge · Material: Cellulose · Unit price EUR: 46.50 · Pack size: 2 · Compatible assembly: Compressor C310"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E15",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Port storage, and separately, for Part Catalogue, what is documented about BF-204 Bilge float switch?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "retrieval miss",
+        "missing_facts": [
+          {
+            "document": "Dockside-Logistics.md",
+            "fact": "The port holds packages for up to 48 hours after unloading."
+          },
+          {
+            "document": "Dockside-Logistics.md",
+            "fact": "Holding charges apply after the storage window ends."
+          }
+        ],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p002c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "BF-204 Bilge float switch",
+              "locator": "row 3",
+              "quote": "SKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E16",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Pallet labeling, and separately, for Part Catalogue, what is documented about CP-900 Coupling insert?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "retrieval miss",
+        "missing_facts": [
+          {
+            "document": "Dockside-Logistics.md",
+            "fact": "Tag pallets with the vessel name, order number, and berth identifier."
+          },
+          {
+            "document": "Dockside-Logistics.md",
+            "fact": "Put a duplicate label inside each weatherproof document pouch."
+          }
+        ],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p003c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "CP-900 Coupling insert",
+              "locator": "row 4",
+              "quote": "SKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E17",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Weekend handling, and separately, for Part Catalogue, what is documented about DS-120 Deck scupper plug?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "retrieval miss",
+        "missing_facts": [
+          {
+            "document": "Dockside-Logistics.md",
+            "fact": "Weekend dock handling requires written authorization from the terminal supervisor."
+          },
+          {
+            "document": "Dockside-Logistics.md",
+            "fact": "Submit requests before noon on the preceding Thursday."
+          }
+        ],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: DS-120 · Item: Deck scupper plug · Material: EPDM · Unit price EUR: 12.40 · Pack size: 6 · Compatible assembly: Deck grate D120",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p004c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "DS-120 Deck scupper plug",
+              "locator": "row 5",
+              "quote": "SKU: DS-120 · Item: Deck scupper plug · Material: EPDM · Unit price EUR: 12.40 · Pack size: 6 · Compatible assembly: Deck grate D120"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E18",
+        "category": "ambiguous",
+        "question": "What does it say?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "prompt defect",
+        "missing_facts": [],
+        "expected_status": "clarify",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E19",
+        "category": "ambiguous",
+        "question": "Can you explain more?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "prompt defect",
+        "missing_facts": [],
+        "expected_status": "clarify",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E20",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on emergency air freight?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E21",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on personal medical diagnosis?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E22",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on live vessel tracking coordinates?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E23",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on income tax filing deadline?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E24",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on home mortgage interest rates?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      }
+    ]
+  },
+  {
+    "scorecard": {
+      "iteration": 1,
+      "passed": 21,
+      "total": 24,
+      "score": 87.5,
+      "categories": {
+        "answerable": {
+          "passed": 12,
+          "total": 13
+        },
+        "cross_document": {
+          "passed": 4,
+          "total": 4
+        },
+        "ambiguous": {
+          "passed": 0,
+          "total": 2
+        },
+        "out_of_scope": {
+          "passed": 5,
+          "total": 5
+        }
+      },
+      "failures": {
+        "retrieval miss": 1,
+        "prompt defect": 2
+      }
+    },
+    "results": [
+      {
+        "id": "E01",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Dockside delivery?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery. The carrier needs the details by 14:00 on the prior working day.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Dockside delivery",
+              "locator": "text, block 1",
+              "quote": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery. The carrier needs the details by 14:00 on the prior working day."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E02",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Port storage?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "The port holds packages for up to 48 hours after unloading. Holding charges apply after the storage window ends.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Port storage",
+              "locator": "text, block 2",
+              "quote": "The port holds packages for up to 48 hours after unloading. Holding charges apply after the storage window ends."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E03",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Pallet labeling?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Tag pallets with the vessel name, order number, and berth identifier. Put a duplicate label inside each weatherproof document pouch.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p004c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Pallet labeling",
+              "locator": "text, block 4",
+              "quote": "Tag pallets with the vessel name, order number, and berth identifier. Put a duplicate label inside each weatherproof document pouch."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E04",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Weekend handling?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Weekend dock handling requires written authorization from the terminal supervisor. Submit requests before noon on the preceding Thursday.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p005c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Weekend handling",
+              "locator": "text, block 5",
+              "quote": "Weekend dock handling requires written authorization from the terminal supervisor. Submit requests before noon on the preceding Thursday."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E05",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about BF-204 Bilge float switch?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p002c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "BF-204 Bilge float switch",
+              "locator": "row 3",
+              "quote": "SKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E06",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about CP-900 Coupling insert?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p003c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "CP-900 Coupling insert",
+              "locator": "row 4",
+              "quote": "SKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E07",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about FG-070 Fuel gauge sender?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: FG-070 · Item: Fuel gauge sender · Material: Stainless steel · Unit price EUR: 71.20 · Pack size: 1 · Compatible assembly: Reserve tank T70",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p005c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "FG-070 Fuel gauge sender",
+              "locator": "row 6",
+              "quote": "SKU: FG-070 · Item: Fuel gauge sender · Material: Stainless steel · Unit price EUR: 71.20 · Pack size: 1 · Compatible assembly: Reserve tank T70"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E08",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about GS-286 Gland seal ring?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: GS-286 · Item: Gland seal ring · Material: Graphite · Unit price EUR: 28.60 · Pack size: 5 · Compatible assembly: Shaft seal S286",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p006c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "GS-286 Gland seal ring",
+              "locator": "row 7",
+              "quote": "SKU: GS-286 · Item: Gland seal ring · Material: Graphite · Unit price EUR: 28.60 · Pack size: 5 · Compatible assembly: Shaft seal S286"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E09",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about IT-114 Impeller kit?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: IT-114 · Item: Impeller kit · Material: Neoprene · Unit price EUR: 62.00 · Pack size: 1 · Compatible assembly: Sea pump SP114",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p008c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "IT-114 Impeller kit",
+              "locator": "row 9",
+              "quote": "SKU: IT-114 · Item: Impeller kit · Material: Neoprene · Unit price EUR: 62.00 · Pack size: 1 · Compatible assembly: Sea pump SP114"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E10",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about JV-773 Jacket valve body?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: JV-773 · Item: Jacket valve body · Material: Bronze · Unit price EUR: 118.25 · Pack size: 1 · Compatible assembly: Engine jacket J77",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p009c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "JV-773 Jacket valve body",
+              "locator": "row 10",
+              "quote": "SKU: JV-773 · Item: Jacket valve body · Material: Bronze · Unit price EUR: 118.25 · Pack size: 1 · Compatible assembly: Engine jacket J77"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E11",
+        "category": "answerable",
+        "question": "What does Supplier Terms document about Supplier returns?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "retrieval miss",
+        "missing_facts": [
+          {
+            "document": "Supplier-Terms.md",
+            "fact": "Open an RMA request within 21 calendar days of delivery for unused parts."
+          },
+          {
+            "document": "Supplier-Terms.md",
+            "fact": "Include the purchase order and an image of the original packaging."
+          }
+        ],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "An accepted discretionary return incurs a 12 percent restocking charge. There is no restocking charge on factory defects.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p003c01",
+              "document": "Supplier-Terms.md",
+              "heading": "Restocking charges",
+              "locator": "text, block 3",
+              "quote": "An accepted discretionary return incurs a 12 percent restocking charge. There is no restocking charge on factory defects."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E12",
+        "category": "answerable",
+        "question": "What does Supplier Terms document about Warranty claims?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Warranty claims are accepted for manufacturing defects within 12 months of dispatch. Include the serial number and a description of operating conditions.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p002c01",
+              "document": "Supplier-Terms.md",
+              "heading": "Warranty claims",
+              "locator": "text, block 2",
+              "quote": "Warranty claims are accepted for manufacturing defects within 12 months of dispatch. Include the serial number and a description of operating conditions."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E13",
+        "category": "answerable",
+        "question": "What does Supplier Terms document about Damaged consignments?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Note obvious damage on the delivery receipt and send photos to the supplier within two working days. Keep the outer packaging until the carrier releases it.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p004c01",
+              "document": "Supplier-Terms.md",
+              "heading": "Damaged consignments",
+              "locator": "text, block 4",
+              "quote": "Note obvious damage on the delivery receipt and send photos to the supplier within two working days. Keep the outer packaging until the carrier releases it."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E14",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Dockside delivery, and separately, for Part Catalogue, what is documented about AF-310 Air filter cartridge?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery. The carrier needs the details by 14:00 on the prior working day.\n\nSKU: AF-310 · Item: Air filter cartridge · Material: Cellulose · Unit price EUR: 46.50 · Pack size: 2 · Compatible assembly: Compressor C310",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Dockside delivery",
+              "locator": "text, block 1",
+              "quote": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery. The carrier needs the details by 14:00 on the prior working day."
+            },
+            {
+              "passage_id": "d02p001c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "AF-310 Air filter cartridge",
+              "locator": "row 2",
+              "quote": "SKU: AF-310 · Item: Air filter cartridge · Material: Cellulose · Unit price EUR: 46.50 · Pack size: 2 · Compatible assembly: Compressor C310"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E15",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Port storage, and separately, for Part Catalogue, what is documented about BF-204 Bilge float switch?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "The port holds packages for up to 48 hours after unloading. Holding charges apply after the storage window ends.\n\nSKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Port storage",
+              "locator": "text, block 2",
+              "quote": "The port holds packages for up to 48 hours after unloading. Holding charges apply after the storage window ends."
+            },
+            {
+              "passage_id": "d02p002c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "BF-204 Bilge float switch",
+              "locator": "row 3",
+              "quote": "SKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E16",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Pallet labeling, and separately, for Part Catalogue, what is documented about CP-900 Coupling insert?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Tag pallets with the vessel name, order number, and berth identifier. Put a duplicate label inside each weatherproof document pouch.\n\nSKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p004c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Pallet labeling",
+              "locator": "text, block 4",
+              "quote": "Tag pallets with the vessel name, order number, and berth identifier. Put a duplicate label inside each weatherproof document pouch."
+            },
+            {
+              "passage_id": "d02p003c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "CP-900 Coupling insert",
+              "locator": "row 4",
+              "quote": "SKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E17",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Weekend handling, and separately, for Part Catalogue, what is documented about DS-120 Deck scupper plug?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Weekend dock handling requires written authorization from the terminal supervisor. Submit requests before noon on the preceding Thursday.\n\nSKU: DS-120 · Item: Deck scupper plug · Material: EPDM · Unit price EUR: 12.40 · Pack size: 6 · Compatible assembly: Deck grate D120",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p005c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Weekend handling",
+              "locator": "text, block 5",
+              "quote": "Weekend dock handling requires written authorization from the terminal supervisor. Submit requests before noon on the preceding Thursday."
+            },
+            {
+              "passage_id": "d02p004c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "DS-120 Deck scupper plug",
+              "locator": "row 5",
+              "quote": "SKU: DS-120 · Item: Deck scupper plug · Material: EPDM · Unit price EUR: 12.40 · Pack size: 6 · Compatible assembly: Deck grate D120"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E18",
+        "category": "ambiguous",
+        "question": "What does it say?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "prompt defect",
+        "missing_facts": [],
+        "expected_status": "clarify",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E19",
+        "category": "ambiguous",
+        "question": "Can you explain more?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "prompt defect",
+        "missing_facts": [],
+        "expected_status": "clarify",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E20",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on emergency air freight?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E21",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on personal medical diagnosis?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E22",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on live vessel tracking coordinates?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E23",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on income tax filing deadline?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E24",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on home mortgage interest rates?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      }
+    ]
+  },
+  {
+    "scorecard": {
+      "iteration": 2,
+      "passed": 23,
+      "total": 24,
+      "score": 95.8,
+      "categories": {
+        "answerable": {
+          "passed": 12,
+          "total": 13
+        },
+        "cross_document": {
+          "passed": 4,
+          "total": 4
+        },
+        "ambiguous": {
+          "passed": 2,
+          "total": 2
+        },
+        "out_of_scope": {
+          "passed": 5,
+          "total": 5
+        }
+      },
+      "failures": {
+        "retrieval miss": 1
+      }
+    },
+    "results": [
+      {
+        "id": "E01",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Dockside delivery?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery. The carrier needs the details by 14:00 on the prior working day.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Dockside delivery",
+              "locator": "text, block 1",
+              "quote": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery. The carrier needs the details by 14:00 on the prior working day."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E02",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Port storage?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "The port holds packages for up to 48 hours after unloading. Holding charges apply after the storage window ends.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Port storage",
+              "locator": "text, block 2",
+              "quote": "The port holds packages for up to 48 hours after unloading. Holding charges apply after the storage window ends."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E03",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Pallet labeling?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Tag pallets with the vessel name, order number, and berth identifier. Put a duplicate label inside each weatherproof document pouch.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p004c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Pallet labeling",
+              "locator": "text, block 4",
+              "quote": "Tag pallets with the vessel name, order number, and berth identifier. Put a duplicate label inside each weatherproof document pouch."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E04",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Weekend handling?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Weekend dock handling requires written authorization from the terminal supervisor. Submit requests before noon on the preceding Thursday.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p005c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Weekend handling",
+              "locator": "text, block 5",
+              "quote": "Weekend dock handling requires written authorization from the terminal supervisor. Submit requests before noon on the preceding Thursday."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E05",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about BF-204 Bilge float switch?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p002c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "BF-204 Bilge float switch",
+              "locator": "row 3",
+              "quote": "SKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E06",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about CP-900 Coupling insert?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p003c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "CP-900 Coupling insert",
+              "locator": "row 4",
+              "quote": "SKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E07",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about FG-070 Fuel gauge sender?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: FG-070 · Item: Fuel gauge sender · Material: Stainless steel · Unit price EUR: 71.20 · Pack size: 1 · Compatible assembly: Reserve tank T70",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p005c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "FG-070 Fuel gauge sender",
+              "locator": "row 6",
+              "quote": "SKU: FG-070 · Item: Fuel gauge sender · Material: Stainless steel · Unit price EUR: 71.20 · Pack size: 1 · Compatible assembly: Reserve tank T70"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E08",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about GS-286 Gland seal ring?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: GS-286 · Item: Gland seal ring · Material: Graphite · Unit price EUR: 28.60 · Pack size: 5 · Compatible assembly: Shaft seal S286",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p006c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "GS-286 Gland seal ring",
+              "locator": "row 7",
+              "quote": "SKU: GS-286 · Item: Gland seal ring · Material: Graphite · Unit price EUR: 28.60 · Pack size: 5 · Compatible assembly: Shaft seal S286"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E09",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about IT-114 Impeller kit?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: IT-114 · Item: Impeller kit · Material: Neoprene · Unit price EUR: 62.00 · Pack size: 1 · Compatible assembly: Sea pump SP114",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p008c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "IT-114 Impeller kit",
+              "locator": "row 9",
+              "quote": "SKU: IT-114 · Item: Impeller kit · Material: Neoprene · Unit price EUR: 62.00 · Pack size: 1 · Compatible assembly: Sea pump SP114"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E10",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about JV-773 Jacket valve body?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: JV-773 · Item: Jacket valve body · Material: Bronze · Unit price EUR: 118.25 · Pack size: 1 · Compatible assembly: Engine jacket J77",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p009c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "JV-773 Jacket valve body",
+              "locator": "row 10",
+              "quote": "SKU: JV-773 · Item: Jacket valve body · Material: Bronze · Unit price EUR: 118.25 · Pack size: 1 · Compatible assembly: Engine jacket J77"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E11",
+        "category": "answerable",
+        "question": "What does Supplier Terms document about Supplier returns?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "retrieval miss",
+        "missing_facts": [
+          {
+            "document": "Supplier-Terms.md",
+            "fact": "Open an RMA request within 21 calendar days of delivery for unused parts."
+          },
+          {
+            "document": "Supplier-Terms.md",
+            "fact": "Include the purchase order and an image of the original packaging."
+          }
+        ],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "An accepted discretionary return incurs a 12 percent restocking charge. There is no restocking charge on factory defects.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p003c01",
+              "document": "Supplier-Terms.md",
+              "heading": "Restocking charges",
+              "locator": "text, block 3",
+              "quote": "An accepted discretionary return incurs a 12 percent restocking charge. There is no restocking charge on factory defects."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E12",
+        "category": "answerable",
+        "question": "What does Supplier Terms document about Warranty claims?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Warranty claims are accepted for manufacturing defects within 12 months of dispatch. Include the serial number and a description of operating conditions.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p002c01",
+              "document": "Supplier-Terms.md",
+              "heading": "Warranty claims",
+              "locator": "text, block 2",
+              "quote": "Warranty claims are accepted for manufacturing defects within 12 months of dispatch. Include the serial number and a description of operating conditions."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E13",
+        "category": "answerable",
+        "question": "What does Supplier Terms document about Damaged consignments?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Note obvious damage on the delivery receipt and send photos to the supplier within two working days. Keep the outer packaging until the carrier releases it.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p004c01",
+              "document": "Supplier-Terms.md",
+              "heading": "Damaged consignments",
+              "locator": "text, block 4",
+              "quote": "Note obvious damage on the delivery receipt and send photos to the supplier within two working days. Keep the outer packaging until the carrier releases it."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E14",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Dockside delivery, and separately, for Part Catalogue, what is documented about AF-310 Air filter cartridge?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery. The carrier needs the details by 14:00 on the prior working day.\n\nSKU: AF-310 · Item: Air filter cartridge · Material: Cellulose · Unit price EUR: 46.50 · Pack size: 2 · Compatible assembly: Compressor C310",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Dockside delivery",
+              "locator": "text, block 1",
+              "quote": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery. The carrier needs the details by 14:00 on the prior working day."
+            },
+            {
+              "passage_id": "d02p001c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "AF-310 Air filter cartridge",
+              "locator": "row 2",
+              "quote": "SKU: AF-310 · Item: Air filter cartridge · Material: Cellulose · Unit price EUR: 46.50 · Pack size: 2 · Compatible assembly: Compressor C310"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E15",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Port storage, and separately, for Part Catalogue, what is documented about BF-204 Bilge float switch?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "The port holds packages for up to 48 hours after unloading. Holding charges apply after the storage window ends.\n\nSKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Port storage",
+              "locator": "text, block 2",
+              "quote": "The port holds packages for up to 48 hours after unloading. Holding charges apply after the storage window ends."
+            },
+            {
+              "passage_id": "d02p002c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "BF-204 Bilge float switch",
+              "locator": "row 3",
+              "quote": "SKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E16",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Pallet labeling, and separately, for Part Catalogue, what is documented about CP-900 Coupling insert?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Tag pallets with the vessel name, order number, and berth identifier. Put a duplicate label inside each weatherproof document pouch.\n\nSKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p004c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Pallet labeling",
+              "locator": "text, block 4",
+              "quote": "Tag pallets with the vessel name, order number, and berth identifier. Put a duplicate label inside each weatherproof document pouch."
+            },
+            {
+              "passage_id": "d02p003c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "CP-900 Coupling insert",
+              "locator": "row 4",
+              "quote": "SKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E17",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Weekend handling, and separately, for Part Catalogue, what is documented about DS-120 Deck scupper plug?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Weekend dock handling requires written authorization from the terminal supervisor. Submit requests before noon on the preceding Thursday.\n\nSKU: DS-120 · Item: Deck scupper plug · Material: EPDM · Unit price EUR: 12.40 · Pack size: 6 · Compatible assembly: Deck grate D120",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p005c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Weekend handling",
+              "locator": "text, block 5",
+              "quote": "Weekend dock handling requires written authorization from the terminal supervisor. Submit requests before noon on the preceding Thursday."
+            },
+            {
+              "passage_id": "d02p004c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "DS-120 Deck scupper plug",
+              "locator": "row 5",
+              "quote": "SKU: DS-120 · Item: Deck scupper plug · Material: EPDM · Unit price EUR: 12.40 · Pack size: 6 · Compatible assembly: Deck grate D120"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E18",
+        "category": "ambiguous",
+        "question": "What does it say?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "clarify",
+        "response": {
+          "status": "clarify",
+          "answer": "Which topic, item, or document should I look for?",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E19",
+        "category": "ambiguous",
+        "question": "Can you explain more?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "clarify",
+        "response": {
+          "status": "clarify",
+          "answer": "Which topic, item, or document should I look for?",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E20",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on emergency air freight?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E21",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on personal medical diagnosis?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E22",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on live vessel tracking coordinates?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E23",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on income tax filing deadline?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E24",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on home mortgage interest rates?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      }
+    ]
+  },
+  {
+    "scorecard": {
+      "iteration": 3,
+      "passed": 24,
+      "total": 24,
+      "score": 100.0,
+      "categories": {
+        "answerable": {
+          "passed": 13,
+          "total": 13
+        },
+        "cross_document": {
+          "passed": 4,
+          "total": 4
+        },
+        "ambiguous": {
+          "passed": 2,
+          "total": 2
+        },
+        "out_of_scope": {
+          "passed": 5,
+          "total": 5
+        }
+      },
+      "failures": {}
+    },
+    "results": [
+      {
+        "id": "E01",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Dockside delivery?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery. The carrier needs the details by 14:00 on the prior working day.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Dockside delivery",
+              "locator": "text, block 1",
+              "quote": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery. The carrier needs the details by 14:00 on the prior working day."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E02",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Port storage?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "The port holds packages for up to 48 hours after unloading. Holding charges apply after the storage window ends.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Port storage",
+              "locator": "text, block 2",
+              "quote": "The port holds packages for up to 48 hours after unloading. Holding charges apply after the storage window ends."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E03",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Pallet labeling?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Tag pallets with the vessel name, order number, and berth identifier. Put a duplicate label inside each weatherproof document pouch.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p004c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Pallet labeling",
+              "locator": "text, block 4",
+              "quote": "Tag pallets with the vessel name, order number, and berth identifier. Put a duplicate label inside each weatherproof document pouch."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E04",
+        "category": "answerable",
+        "question": "What does Dockside Logistics document about Weekend handling?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Weekend dock handling requires written authorization from the terminal supervisor. Submit requests before noon on the preceding Thursday.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p005c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Weekend handling",
+              "locator": "text, block 5",
+              "quote": "Weekend dock handling requires written authorization from the terminal supervisor. Submit requests before noon on the preceding Thursday."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E05",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about BF-204 Bilge float switch?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p002c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "BF-204 Bilge float switch",
+              "locator": "row 3",
+              "quote": "SKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E06",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about CP-900 Coupling insert?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p003c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "CP-900 Coupling insert",
+              "locator": "row 4",
+              "quote": "SKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E07",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about FG-070 Fuel gauge sender?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: FG-070 · Item: Fuel gauge sender · Material: Stainless steel · Unit price EUR: 71.20 · Pack size: 1 · Compatible assembly: Reserve tank T70",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p005c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "FG-070 Fuel gauge sender",
+              "locator": "row 6",
+              "quote": "SKU: FG-070 · Item: Fuel gauge sender · Material: Stainless steel · Unit price EUR: 71.20 · Pack size: 1 · Compatible assembly: Reserve tank T70"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E08",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about GS-286 Gland seal ring?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: GS-286 · Item: Gland seal ring · Material: Graphite · Unit price EUR: 28.60 · Pack size: 5 · Compatible assembly: Shaft seal S286",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p006c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "GS-286 Gland seal ring",
+              "locator": "row 7",
+              "quote": "SKU: GS-286 · Item: Gland seal ring · Material: Graphite · Unit price EUR: 28.60 · Pack size: 5 · Compatible assembly: Shaft seal S286"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E09",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about IT-114 Impeller kit?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: IT-114 · Item: Impeller kit · Material: Neoprene · Unit price EUR: 62.00 · Pack size: 1 · Compatible assembly: Sea pump SP114",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p008c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "IT-114 Impeller kit",
+              "locator": "row 9",
+              "quote": "SKU: IT-114 · Item: Impeller kit · Material: Neoprene · Unit price EUR: 62.00 · Pack size: 1 · Compatible assembly: Sea pump SP114"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E10",
+        "category": "answerable",
+        "question": "What does Part Catalogue document about JV-773 Jacket valve body?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: JV-773 · Item: Jacket valve body · Material: Bronze · Unit price EUR: 118.25 · Pack size: 1 · Compatible assembly: Engine jacket J77",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p009c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "JV-773 Jacket valve body",
+              "locator": "row 10",
+              "quote": "SKU: JV-773 · Item: Jacket valve body · Material: Bronze · Unit price EUR: 118.25 · Pack size: 1 · Compatible assembly: Engine jacket J77"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E11",
+        "category": "answerable",
+        "question": "What does Supplier Terms document about Supplier returns?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Open an RMA request within 21 calendar days of delivery for unused parts. Include the purchase order and an image of the original packaging.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p001c01",
+              "document": "Supplier-Terms.md",
+              "heading": "Supplier returns",
+              "locator": "text, block 1",
+              "quote": "Open an RMA request within 21 calendar days of delivery for unused parts. Include the purchase order and an image of the original packaging."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E12",
+        "category": "answerable",
+        "question": "What does Supplier Terms document about Warranty claims?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Warranty claims are accepted for manufacturing defects within 12 months of dispatch. Include the serial number and a description of operating conditions.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p002c01",
+              "document": "Supplier-Terms.md",
+              "heading": "Warranty claims",
+              "locator": "text, block 2",
+              "quote": "Warranty claims are accepted for manufacturing defects within 12 months of dispatch. Include the serial number and a description of operating conditions."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E13",
+        "category": "answerable",
+        "question": "What does Supplier Terms document about Damaged consignments?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Note obvious damage on the delivery receipt and send photos to the supplier within two working days. Keep the outer packaging until the carrier releases it.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p004c01",
+              "document": "Supplier-Terms.md",
+              "heading": "Damaged consignments",
+              "locator": "text, block 4",
+              "quote": "Note obvious damage on the delivery receipt and send photos to the supplier within two working days. Keep the outer packaging until the carrier releases it."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E14",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Dockside delivery, and separately, for Part Catalogue, what is documented about AF-310 Air filter cartridge?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery. The carrier needs the details by 14:00 on the prior working day.\n\nSKU: AF-310 · Item: Air filter cartridge · Material: Cellulose · Unit price EUR: 46.50 · Pack size: 2 · Compatible assembly: Compressor C310",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Dockside delivery",
+              "locator": "text, block 1",
+              "quote": "The buyer must provide the terminal gate, berth number, and consignee phone number for dockside delivery. The carrier needs the details by 14:00 on the prior working day."
+            },
+            {
+              "passage_id": "d02p001c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "AF-310 Air filter cartridge",
+              "locator": "row 2",
+              "quote": "SKU: AF-310 · Item: Air filter cartridge · Material: Cellulose · Unit price EUR: 46.50 · Pack size: 2 · Compatible assembly: Compressor C310"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E15",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Port storage, and separately, for Part Catalogue, what is documented about BF-204 Bilge float switch?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "The port holds packages for up to 48 hours after unloading. Holding charges apply after the storage window ends.\n\nSKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Port storage",
+              "locator": "text, block 2",
+              "quote": "The port holds packages for up to 48 hours after unloading. Holding charges apply after the storage window ends."
+            },
+            {
+              "passage_id": "d02p002c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "BF-204 Bilge float switch",
+              "locator": "row 3",
+              "quote": "SKU: BF-204 · Item: Bilge float switch · Material: Nylon · Unit price EUR: 39.90 · Pack size: 1 · Compatible assembly: Bilge B20"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E16",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Pallet labeling, and separately, for Part Catalogue, what is documented about CP-900 Coupling insert?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Tag pallets with the vessel name, order number, and berth identifier. Put a duplicate label inside each weatherproof document pouch.\n\nSKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p004c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Pallet labeling",
+              "locator": "text, block 4",
+              "quote": "Tag pallets with the vessel name, order number, and berth identifier. Put a duplicate label inside each weatherproof document pouch."
+            },
+            {
+              "passage_id": "d02p003c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "CP-900 Coupling insert",
+              "locator": "row 4",
+              "quote": "SKU: CP-900 · Item: Coupling insert · Material: Nitrile · Unit price EUR: 18.75 · Pack size: 4 · Compatible assembly: Pump P900"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E17",
+        "category": "cross_document",
+        "question": "For Dockside Logistics, what is documented about Weekend handling, and separately, for Part Catalogue, what is documented about DS-120 Deck scupper plug?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Weekend dock handling requires written authorization from the terminal supervisor. Submit requests before noon on the preceding Thursday.\n\nSKU: DS-120 · Item: Deck scupper plug · Material: EPDM · Unit price EUR: 12.40 · Pack size: 6 · Compatible assembly: Deck grate D120",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p005c01",
+              "document": "Dockside-Logistics.md",
+              "heading": "Weekend handling",
+              "locator": "text, block 5",
+              "quote": "Weekend dock handling requires written authorization from the terminal supervisor. Submit requests before noon on the preceding Thursday."
+            },
+            {
+              "passage_id": "d02p004c01",
+              "document": "Part-Catalogue.csv",
+              "heading": "DS-120 Deck scupper plug",
+              "locator": "row 5",
+              "quote": "SKU: DS-120 · Item: Deck scupper plug · Material: EPDM · Unit price EUR: 12.40 · Pack size: 6 · Compatible assembly: Deck grate D120"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E18",
+        "category": "ambiguous",
+        "question": "What does it say?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "clarify",
+        "response": {
+          "status": "clarify",
+          "answer": "Which topic, item, or document should I look for?",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E19",
+        "category": "ambiguous",
+        "question": "Can you explain more?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "clarify",
+        "response": {
+          "status": "clarify",
+          "answer": "Which topic, item, or document should I look for?",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E20",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on emergency air freight?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E21",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on personal medical diagnosis?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E22",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on live vessel tracking coordinates?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E23",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on income tax filing deadline?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E24",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on home mortgage interest rates?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      }
+    ]
+  }
+]

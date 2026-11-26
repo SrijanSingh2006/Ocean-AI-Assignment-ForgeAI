@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171428">
+  <meta name="description" content="Build, evaluate, and test grounded agents from your documents.">
+  <title>ForgeAI Studio</title>
+  <link rel="icon" href="/static/forge-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#build" aria-label="ForgeAI home">
+        <span class="brand-symbol" data-icon="layers"></span>
+        <span>Forge<span class="brand-accent">AI</span><small>AGENT STUDIO</small></span>
+      </a>
+      <span class="nav-label">WORKSPACE</span>
+      <nav id="nav" aria-label="Workspace"></nav>
+      <div class="sidebar-bottom">
+        <div class="runtime-card">
+          <span class="runtime-icon" data-icon="cpu"></span>
+          <div><strong id="runtime-title">Checking runtime</strong><small id="runtime-subtitle">Local inference</small></div>
+          <span class="runtime-dot" id="runtime-dot"></span>
+        </div>
+        <a href="/project-download" class="side-link"><span data-icon="download"></span>Download project</a>
+      </div>
+    </aside>
+    <div class="main-shell">
+      <header class="topbar">
+        <div class="breadcrumbs"><button class="icon-button mobile-menu" data-action="menu" aria-label="Toggle workspace menu" data-icon="menu"></button><span class="crumb-root">Workspace</span><span class="crumb-chevron" data-icon="chevron-right"></span><strong id="page-name">Agent factory</strong></div>
+        <span class="local-pill"><span></span> Local workspace</span>
+      </header>
+      <main id="main" tabindex="-1" aria-label="ForgeAI workspace"></main>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>

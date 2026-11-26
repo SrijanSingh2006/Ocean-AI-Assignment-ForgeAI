@@ -1,0 +1,97 @@
+{
+  "scope": "Build an assistant for marine procurement coordinators. Cover catalogue SKU lookup, supplier returns, warranty claims, dockside delivery, and emergency air freight. Calculate order totals when buyers provide values. Refuse personal medical diagnosis and live vessel tracking coordinates. Keep a concise, professional tone.",
+  "audience": "marine procurement coordinators",
+  "tone": "a concise, professional tone",
+  "must_answer": [
+    {
+      "topic": "catalogue SKU lookup",
+      "evidence": [],
+      "basis": "configured tool"
+    },
+    {
+      "topic": "supplier returns",
+      "basis": "document",
+      "evidence": [
+        {
+          "document": "Supplier-Terms.md",
+          "passage": "d03p003c01"
+        },
+        {
+          "document": "Supplier-Terms.md",
+          "passage": "d03p001c01"
+        }
+      ]
+    },
+    {
+      "topic": "warranty claims",
+      "basis": "document",
+      "evidence": [
+        {
+          "document": "Supplier-Terms.md",
+          "passage": "d03p002c01"
+        }
+      ]
+    },
+    {
+      "topic": "dockside delivery",
+      "basis": "document",
+      "evidence": [
+        {
+          "document": "Dockside-Logistics.md",
+          "passage": "d01p001c01"
+        },
+        {
+          "document": "Dockside-Logistics.md",
+          "passage": "d01p003c01"
+        }
+      ]
+    }
+  ],
+  "must_refuse": [
+    "personal medical diagnosis",
+    "live vessel tracking coordinates",
+    "Requests without verifiable source evidence"
+  ],
+  "groundability_gaps": [
+    {
+      "topic": "emergency air freight",
+      "reason": "No passage has sufficient vocabulary overlap to verify this requested topic."
+    }
+  ],
+  "questions": [
+    {
+      "id": "scope",
+      "text": "Is any flagged topic covered under another name in these documents? If so, specify that name.",
+      "default": ""
+    },
+    {
+      "id": "note_1",
+      "text": "What is the purpose of the assistant?",
+      "default": ""
+    }
+  ],
+  "interview_answers": {},
+  "scope_notes": [],
+  "tools": [
+    "csv_lookup",
+    "calculator"
+  ],
+  "documents": [
+    {
+      "name": "Dockside-Logistics.md",
+      "format": "MD",
+      "passages": 5
+    },
+    {
+      "name": "Part-Catalogue.csv",
+      "format": "CSV",
+      "passages": 10
+    },
+    {
+      "name": "Supplier-Terms.md",
+      "format": "MD",
+      "passages": 5
+    }
+  ],
+  "ingestion_warnings": []
+}

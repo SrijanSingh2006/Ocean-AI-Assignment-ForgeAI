@@ -1,0 +1,4 @@
+{
+  "private": true,
+  "scripts": { "dev": "node scripts/site-preview.mjs" }
+}
