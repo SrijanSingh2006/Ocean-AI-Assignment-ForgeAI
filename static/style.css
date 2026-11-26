@@ -320,6 +320,7 @@ pre{padding:15px;overflow:auto;border-radius:9px;background:var(--code-bg);color
 
 .theme-control button:active { transform: scale(.93); }
 .theme-control svg { width: 17px; height: 17px; }
+.theme-control [data-theme-toggle][aria-pressed="true"] svg { fill: currentColor; }
 
 .skip-link {
   position: fixed;

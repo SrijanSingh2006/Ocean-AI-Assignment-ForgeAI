@@ -11,10 +11,18 @@
     // Theme changes also work when browser storage is unavailable.
   }
 
+  function currentTheme() {
+    return preference === "system" ? (darkScheme?.matches ? "dark" : "light") : preference;
+  }
+
   function applyTheme() {
-    const theme = preference === "system" ? (darkScheme?.matches ? "dark" : "light") : preference;
+    const theme = currentTheme();
     document.documentElement.dataset.theme = theme;
     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#151124" : "#f6f4fa");
+    for (const control of document.querySelectorAll("[data-theme-toggle]")) {
+      control.setAttribute("aria-pressed", String(theme === "dark"));
+      control.title = theme === "dark" ? "Switch to light theme" : "Switch to dark theme";
+    }
     for (const control of document.querySelectorAll("[data-theme-choice]")) {
       control.setAttribute("aria-pressed", String(control.dataset.themeChoice === preference));
     }
@@ -24,9 +32,13 @@
   document.addEventListener("DOMContentLoaded", applyTheme, { once: true });
   darkScheme?.addEventListener?.("change", applyTheme);
   document.addEventListener("click", (event) => {
-    const control = event.target.closest("[data-theme-choice]");
-    if (!control || !choices.includes(control.dataset.themeChoice)) return;
-    preference = control.dataset.themeChoice;
+    const control = event.target.closest("button[data-theme-toggle], button[data-theme-choice]");
+    if (!control) return;
+    const next = control.hasAttribute("data-theme-toggle")
+      ? (currentTheme() === "dark" ? "light" : "dark")
+      : control.dataset.themeChoice;
+    if (!choices.includes(next)) return;
+    preference = next;
     try {
       localStorage.setItem(storageKey, preference);
     } catch {

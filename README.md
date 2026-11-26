@@ -12,7 +12,7 @@ python launch.py
 
 The launcher creates a project-local virtual environment, installs the dependencies, starts Studio, and opens it in your browser. Use `python launch.py --with-model` to start Qwen as part of the same command on Linux x86-64. An already-running compatible local model can be reused on any platform.
 
-Choose **Light**, **Dark**, or **Match device theme** from the top bar. The choice is saved in your browser. Studio respects your device's reduced-motion setting.
+Click the **moon icon** in the top bar to switch between light and dark. Click the monitor icon to match your device again. The choice is saved in your browser. Studio respects your device's reduced-motion setting.
 
 Load a sample project or enter your own brief and add documents. Enable **Review requirements** for the interview. Leave it disabled for an unattended run. Report tabs provide the requirements, evaluations, definition, and repair log. **Open chat** loads the generated definition and **Export run** downloads the outputs and source files.
 
