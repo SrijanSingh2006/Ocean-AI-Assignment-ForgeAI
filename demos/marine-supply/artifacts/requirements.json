@@ -14,11 +14,11 @@
       "evidence": [
         {
           "document": "Supplier-Terms.md",
-          "passage": "d03p003c01"
+          "passage": "d05p003c01"
         },
         {
           "document": "Supplier-Terms.md",
-          "passage": "d03p001c01"
+          "passage": "d05p001c01"
         }
       ]
     },
@@ -28,7 +28,7 @@
       "evidence": [
         {
           "document": "Supplier-Terms.md",
-          "passage": "d03p002c01"
+          "passage": "d05p002c01"
         }
       ]
     },
@@ -68,9 +68,15 @@
       "id": "note_1",
       "text": "What is the purpose of the assistant?",
       "default": ""
+    },
+    {
+      "id": "note_2",
+      "text": "What types of marine procurement coordinators does the assistant cover?",
+      "default": ""
     }
   ],
   "interview_answers": {},
+  "review_edits": {},
   "scope_notes": [],
   "tools": [
     "csv_lookup",
@@ -86,6 +92,16 @@
       "name": "Part-Catalogue.csv",
       "format": "CSV",
       "passages": 10
+    },
+    {
+      "name": "Purchase-Basket.csv",
+      "format": "CSV",
+      "passages": 3
+    },
+    {
+      "name": "Supplier-Availability.csv",
+      "format": "CSV",
+      "passages": 3
     },
     {
       "name": "Supplier-Terms.md",

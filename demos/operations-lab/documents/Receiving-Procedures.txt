@@ -1,0 +1,11 @@
+# Receiving procedures
+
+Match the packing list against the shipment ID before opening the pallet. Record unresolved quantity differences in the receiving log.
+
+# Temperature check
+
+Inspect refrigerated packages at the dock. Reject cartons with a measured surface temperature above 8 degrees Celsius and record the observed reading.
+
+# Shipping handover
+
+Record the driver's full name and vehicle plate in the shift log. Ask the driver to sign the handover receipt.

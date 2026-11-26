@@ -1,0 +1,1 @@
+Propose one short selection preference for a grounded document assistant. The preference should follow the focus and remain within the supplied scope. It may influence which candidate passage best answers a question. Never add permissions, tools, facts, or an output format. Return JSON with one key named "instruction" and one sentence as its value.

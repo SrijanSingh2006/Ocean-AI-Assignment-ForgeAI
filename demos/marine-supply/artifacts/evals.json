@@ -18,37 +18,21 @@
   {
     "id": "E02",
     "category": "answerable",
-    "question": "What does Dockside Logistics document about Port storage?",
+    "question": "What does Dockside Logistics document about Collection windows?",
     "expected_status": "answered",
     "expected_grounding": [
       {
         "document": "Dockside-Logistics.md",
-        "passage_id": "d01p002c01",
+        "passage_id": "d01p003c01",
         "key_facts": [
-          "The port holds packages for up to 48 hours after unloading.",
-          "Holding charges apply after the storage window ends."
+          "Standard collections take place Monday to Friday between 07:00 and 16:00.",
+          "The driver must show the delivery reference and photo ID."
         ]
       }
     ]
   },
   {
     "id": "E03",
-    "category": "answerable",
-    "question": "What does Dockside Logistics document about Pallet labeling?",
-    "expected_status": "answered",
-    "expected_grounding": [
-      {
-        "document": "Dockside-Logistics.md",
-        "passage_id": "d01p004c01",
-        "key_facts": [
-          "Tag pallets with the vessel name, order number, and berth identifier.",
-          "Put a duplicate label inside each weatherproof document pouch."
-        ]
-      }
-    ]
-  },
-  {
-    "id": "E04",
     "category": "answerable",
     "question": "What does Dockside Logistics document about Weekend handling?",
     "expected_status": "answered",
@@ -64,7 +48,7 @@
     ]
   },
   {
-    "id": "E05",
+    "id": "E04",
     "category": "answerable",
     "question": "What does Part Catalogue document about BF-204 Bilge float switch?",
     "expected_status": "answered",
@@ -81,41 +65,24 @@
     ]
   },
   {
+    "id": "E05",
+    "category": "answerable",
+    "question": "What does Part Catalogue document about DS-120 Deck scupper plug?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Part-Catalogue.csv",
+        "passage_id": "d02p004c01",
+        "key_facts": [
+          "SKU: DS-120",
+          "Pack size: 6",
+          "Compatible assembly: Deck grate D120"
+        ]
+      }
+    ]
+  },
+  {
     "id": "E06",
-    "category": "answerable",
-    "question": "What does Part Catalogue document about CP-900 Coupling insert?",
-    "expected_status": "answered",
-    "expected_grounding": [
-      {
-        "document": "Part-Catalogue.csv",
-        "passage_id": "d02p003c01",
-        "key_facts": [
-          "SKU: CP-900",
-          "Pack size: 4",
-          "Compatible assembly: Pump P900"
-        ]
-      }
-    ]
-  },
-  {
-    "id": "E07",
-    "category": "answerable",
-    "question": "What does Part Catalogue document about FG-070 Fuel gauge sender?",
-    "expected_status": "answered",
-    "expected_grounding": [
-      {
-        "document": "Part-Catalogue.csv",
-        "passage_id": "d02p005c01",
-        "key_facts": [
-          "SKU: FG-070",
-          "Pack size: 1",
-          "Compatible assembly: Reserve tank T70"
-        ]
-      }
-    ]
-  },
-  {
-    "id": "E08",
     "category": "answerable",
     "question": "What does Part Catalogue document about GS-286 Gland seal ring?",
     "expected_status": "answered",
@@ -132,7 +99,7 @@
     ]
   },
   {
-    "id": "E09",
+    "id": "E07",
     "category": "answerable",
     "question": "What does Part Catalogue document about IT-114 Impeller kit?",
     "expected_status": "answered",
@@ -149,18 +116,52 @@
     ]
   },
   {
-    "id": "E10",
+    "id": "E08",
     "category": "answerable",
-    "question": "What does Part Catalogue document about JV-773 Jacket valve body?",
+    "question": "What does Part Catalogue document about LM-621 Level monitor relay?",
     "expected_status": "answered",
     "expected_grounding": [
       {
         "document": "Part-Catalogue.csv",
-        "passage_id": "d02p009c01",
+        "passage_id": "d02p010c01",
         "key_facts": [
-          "SKU: JV-773",
-          "Pack size: 1",
-          "Compatible assembly: Engine jacket J77"
+          "SKU: LM-621",
+          "Pack size: 2",
+          "Compatible assembly: Ballast rack B6"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E09",
+    "category": "answerable",
+    "question": "What does Purchase Basket document about PB-103 Float switch assembly?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Purchase-Basket.csv",
+        "passage_id": "d03p002c01",
+        "key_facts": [
+          "Order code: PB-103",
+          "Unit price EUR: 39.90",
+          "Ship to: Terminal 2"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E10",
+    "category": "answerable",
+    "question": "What does Supplier Availability document about KM-01 Kestrel Marine?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Supplier-Availability.csv",
+        "passage_id": "d04p001c01",
+        "key_facts": [
+          "Supplier code: KM-01",
+          "Lead time working days: 3",
+          "Minimum order EUR: 150"
         ]
       }
     ]
@@ -168,15 +169,16 @@
   {
     "id": "E11",
     "category": "answerable",
-    "question": "What does Supplier Terms document about Supplier returns?",
+    "question": "What does Supplier Availability document about AT-03 Amber Tidal?",
     "expected_status": "answered",
     "expected_grounding": [
       {
-        "document": "Supplier-Terms.md",
-        "passage_id": "d03p001c01",
+        "document": "Supplier-Availability.csv",
+        "passage_id": "d04p003c01",
         "key_facts": [
-          "Open an RMA request within 21 calendar days of delivery for unused parts.",
-          "Include the purchase order and an image of the original packaging."
+          "Supplier code: AT-03",
+          "Lead time working days: 4",
+          "Minimum order EUR: 200"
         ]
       }
     ]
@@ -189,7 +191,7 @@
     "expected_grounding": [
       {
         "document": "Supplier-Terms.md",
-        "passage_id": "d03p002c01",
+        "passage_id": "d05p002c01",
         "key_facts": [
           "Warranty claims are accepted for manufacturing defects within 12 months of dispatch.",
           "Include the serial number and a description of operating conditions."
@@ -205,7 +207,7 @@
     "expected_grounding": [
       {
         "document": "Supplier-Terms.md",
-        "passage_id": "d03p004c01",
+        "passage_id": "d05p004c01",
         "key_facts": [
           "Note obvious damage on the delivery receipt and send photos to the supplier within two working days.",
           "Keep the outer packaging until the carrier releases it."
@@ -241,15 +243,15 @@
   {
     "id": "E15",
     "category": "cross_document",
-    "question": "For Dockside Logistics, what is documented about Port storage, and separately, for Part Catalogue, what is documented about BF-204 Bilge float switch?",
+    "question": "For Dockside Logistics, what is documented about Collection windows, and separately, for Part Catalogue, what is documented about BF-204 Bilge float switch?",
     "expected_status": "answered",
     "expected_grounding": [
       {
         "document": "Dockside-Logistics.md",
-        "passage_id": "d01p002c01",
+        "passage_id": "d01p003c01",
         "key_facts": [
-          "The port holds packages for up to 48 hours after unloading.",
-          "Holding charges apply after the storage window ends."
+          "Standard collections take place Monday to Friday between 07:00 and 16:00.",
+          "The driver must show the delivery reference and photo ID."
         ]
       },
       {
@@ -266,15 +268,15 @@
   {
     "id": "E16",
     "category": "cross_document",
-    "question": "For Dockside Logistics, what is documented about Pallet labeling, and separately, for Part Catalogue, what is documented about CP-900 Coupling insert?",
+    "question": "For Dockside Logistics, what is documented about Weekend handling, and separately, for Part Catalogue, what is documented about CP-900 Coupling insert?",
     "expected_status": "answered",
     "expected_grounding": [
       {
         "document": "Dockside-Logistics.md",
-        "passage_id": "d01p004c01",
+        "passage_id": "d01p005c01",
         "key_facts": [
-          "Tag pallets with the vessel name, order number, and berth identifier.",
-          "Put a duplicate label inside each weatherproof document pouch."
+          "Weekend dock handling requires written authorization from the terminal supervisor.",
+          "Submit requests before noon on the preceding Thursday."
         ]
       },
       {
@@ -291,24 +293,24 @@
   {
     "id": "E17",
     "category": "cross_document",
-    "question": "For Dockside Logistics, what is documented about Weekend handling, and separately, for Part Catalogue, what is documented about DS-120 Deck scupper plug?",
+    "question": "For Part Catalogue, what is documented about BF-204 Bilge float switch, and separately, for Dockside Logistics, what is documented about Pallet labeling?",
     "expected_status": "answered",
     "expected_grounding": [
       {
-        "document": "Dockside-Logistics.md",
-        "passage_id": "d01p005c01",
+        "document": "Part-Catalogue.csv",
+        "passage_id": "d02p002c01",
         "key_facts": [
-          "Weekend dock handling requires written authorization from the terminal supervisor.",
-          "Submit requests before noon on the preceding Thursday."
+          "SKU: BF-204",
+          "Pack size: 1",
+          "Compatible assembly: Bilge B20"
         ]
       },
       {
-        "document": "Part-Catalogue.csv",
-        "passage_id": "d02p004c01",
+        "document": "Dockside-Logistics.md",
+        "passage_id": "d01p004c01",
         "key_facts": [
-          "SKU: DS-120",
-          "Pack size: 6",
-          "Compatible assembly: Deck grate D120"
+          "Tag pallets with the vessel name, order number, and berth identifier.",
+          "Put a duplicate label inside each weatherproof document pouch."
         ]
       }
     ]

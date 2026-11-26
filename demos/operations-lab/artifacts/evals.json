@@ -1,0 +1,371 @@
+[
+  {
+    "id": "E01",
+    "category": "answerable",
+    "question": "What is the content of the document about the BX-410 Tamper seal box?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Inventory.csv",
+        "passage_id": "d01p001c01",
+        "key_facts": [
+          "SKU: BX-410",
+          "Unit price EUR: 4.80",
+          "Bin code: A-14"
+        ]
+      }
+    ],
+    "generation": "validated model paraphrase"
+  },
+  {
+    "id": "E02",
+    "category": "answerable",
+    "question": "What does Inventory document about LB-275 Thermal label roll?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Inventory.csv",
+        "passage_id": "d01p002c01",
+        "key_facts": [
+          "SKU: LB-275",
+          "Unit price EUR: 12.50",
+          "Bin code: B-07"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E03",
+    "category": "answerable",
+    "question": "What does Inventory document about PK-822 Refrigerated gel pack?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Inventory.csv",
+        "passage_id": "d01p003c01",
+        "key_facts": [
+          "SKU: PK-822",
+          "Unit price EUR: 3.25",
+          "Bin code: C-28"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E04",
+    "category": "answerable",
+    "question": "What does Inventory document about SC-994 Humidity recorder?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Inventory.csv",
+        "passage_id": "d01p004c01",
+        "key_facts": [
+          "SKU: SC-994",
+          "Unit price EUR: 29.95",
+          "Bin code: D-05"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E05",
+    "category": "answerable",
+    "question": "What does Receiving Procedures document about Receiving procedures?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Receiving-Procedures.txt",
+        "passage_id": "d02p001c01",
+        "key_facts": [
+          "Match the packing list against the shipment ID before opening the pallet.",
+          "Record unresolved quantity differences in the receiving log."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E06",
+    "category": "answerable",
+    "question": "What does Receiving Procedures document about Temperature check?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Receiving-Procedures.txt",
+        "passage_id": "d02p002c01",
+        "key_facts": [
+          "Inspect refrigerated packages at the dock.",
+          "Reject cartons with a measured surface temperature above 8 degrees Celsius and record the observed reading."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E07",
+    "category": "answerable",
+    "question": "What does Receiving Procedures document about Shipping handover?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Receiving-Procedures.txt",
+        "passage_id": "d02p003c01",
+        "key_facts": [
+          "Record the driver's full name and vehicle plate in the shift log.",
+          "Ask the driver to sign the handover receipt."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E08",
+    "category": "answerable",
+    "question": "What does Shipment Status document about SH-083 North consolidation?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Shipment-Status.csv",
+        "passage_id": "d03p001c01",
+        "key_facts": [
+          "Shipment ID: SH-083",
+          "Dock: Door 3",
+          "Route: Local"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E09",
+    "category": "answerable",
+    "question": "What does Shipment Status document about SH-117 Coastal staging?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Shipment-Status.csv",
+        "passage_id": "d03p002c01",
+        "key_facts": [
+          "Shipment ID: SH-117",
+          "Dock: Door 5",
+          "Route: Chilled"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E10",
+    "category": "answerable",
+    "question": "What does Shipment Status document about SH-130 West transfer?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Shipment-Status.csv",
+        "passage_id": "d03p003c01",
+        "key_facts": [
+          "Shipment ID: SH-130",
+          "Dock: Door 1",
+          "Route: Local"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E11",
+    "category": "answerable",
+    "question": "In Inventory, which details are given for BX-410 Tamper seal box?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Inventory.csv",
+        "passage_id": "d01p001c01",
+        "key_facts": [
+          "SKU: BX-410",
+          "Unit price EUR: 4.80",
+          "Bin code: A-14"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E12",
+    "category": "answerable",
+    "question": "In Inventory, which details are given for LB-275 Thermal label roll?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Inventory.csv",
+        "passage_id": "d01p002c01",
+        "key_facts": [
+          "SKU: LB-275",
+          "Unit price EUR: 12.50",
+          "Bin code: B-07"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E13",
+    "category": "answerable",
+    "question": "In Inventory, which details are given for PK-822 Refrigerated gel pack?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Inventory.csv",
+        "passage_id": "d01p003c01",
+        "key_facts": [
+          "SKU: PK-822",
+          "Unit price EUR: 3.25",
+          "Bin code: C-28"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E14",
+    "category": "cross_document",
+    "question": "For Inventory, what is documented about BX-410 Tamper seal box, and separately, for Receiving Procedures, what is documented about Receiving procedures?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Inventory.csv",
+        "passage_id": "d01p001c01",
+        "key_facts": [
+          "SKU: BX-410",
+          "Unit price EUR: 4.80",
+          "Bin code: A-14"
+        ]
+      },
+      {
+        "document": "Receiving-Procedures.txt",
+        "passage_id": "d02p001c01",
+        "key_facts": [
+          "Match the packing list against the shipment ID before opening the pallet.",
+          "Record unresolved quantity differences in the receiving log."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E15",
+    "category": "cross_document",
+    "question": "For Inventory, what is documented about LB-275 Thermal label roll, and separately, for Receiving Procedures, what is documented about Temperature check?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Inventory.csv",
+        "passage_id": "d01p002c01",
+        "key_facts": [
+          "SKU: LB-275",
+          "Unit price EUR: 12.50",
+          "Bin code: B-07"
+        ]
+      },
+      {
+        "document": "Receiving-Procedures.txt",
+        "passage_id": "d02p002c01",
+        "key_facts": [
+          "Inspect refrigerated packages at the dock.",
+          "Reject cartons with a measured surface temperature above 8 degrees Celsius and record the observed reading."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E16",
+    "category": "cross_document",
+    "question": "For Inventory, what is documented about PK-822 Refrigerated gel pack, and separately, for Receiving Procedures, what is documented about Shipping handover?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Inventory.csv",
+        "passage_id": "d01p003c01",
+        "key_facts": [
+          "SKU: PK-822",
+          "Unit price EUR: 3.25",
+          "Bin code: C-28"
+        ]
+      },
+      {
+        "document": "Receiving-Procedures.txt",
+        "passage_id": "d02p003c01",
+        "key_facts": [
+          "Record the driver's full name and vehicle plate in the shift log.",
+          "Ask the driver to sign the handover receipt."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E17",
+    "category": "cross_document",
+    "question": "For Inventory, what is documented about SC-994 Humidity recorder, and separately, for Shipment Status, what is documented about SH-083 North consolidation?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Inventory.csv",
+        "passage_id": "d01p004c01",
+        "key_facts": [
+          "SKU: SC-994",
+          "Unit price EUR: 29.95",
+          "Bin code: D-05"
+        ]
+      },
+      {
+        "document": "Shipment-Status.csv",
+        "passage_id": "d03p001c01",
+        "key_facts": [
+          "Shipment ID: SH-083",
+          "Dock: Door 3",
+          "Route: Local"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E18",
+    "category": "ambiguous",
+    "question": "What does it say?",
+    "expected_status": "clarify",
+    "expected_grounding": []
+  },
+  {
+    "id": "E19",
+    "category": "ambiguous",
+    "question": "Can you explain more?",
+    "expected_status": "clarify",
+    "expected_grounding": []
+  },
+  {
+    "id": "E20",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on sample inventory?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  },
+  {
+    "id": "E21",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on payroll records?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  },
+  {
+    "id": "E22",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on income tax filing deadline?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  },
+  {
+    "id": "E23",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on personal medical diagnosis?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  },
+  {
+    "id": "E24",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on home mortgage interest rates?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  }
+]

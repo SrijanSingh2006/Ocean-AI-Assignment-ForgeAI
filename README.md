@@ -35,12 +35,12 @@ On macOS, Windows, or Linux with [Ollama](https://ollama.com/), start Ollama, ru
 ```sh
 python -m forgeai build --brief-file my-brief.txt --docs ./documents --out .runs/review
 python -m forgeai chat --definition .runs/review/definition.json --docs ./documents
-python -m forgeai demo --out .runs/reproduced
+python -m forgeai demo --all-samples --out .runs/reproduced
 ```
 
-For an interactive CLI interview, add `--interview`. Use `--ask "your question"` for single-turn CLI calls. Use `--no-model` for an explicitly deterministic run. `--iterations` accepts 0–3. Set `--token-budget` to control local model calls. The budget reserves a conservative bound before each request and reports actual usage when available.
+For an interactive CLI interview, add `--interview`. Use `--ask "your question"` for single-turn CLI calls. Use `--no-model` for an explicitly deterministic run. `--iterations` accepts 0–3. Set `--token-budget` and `--latency-budget` to control model calls and active build time. The budget reserves a conservative token bound before each request and reports actual usage when available. Time spent waiting for requirements approval is excluded. An in-progress document parser can finish its current operation before the next deadline check. A repair with no score gain ends the loop. Use `--no-tournament` to score just the initial prompt and `--baseline-definition` to compare a hand-written definition.
 
-To evaluate a changed corpus against a prior suite, add `--regression-evals .runs/review/evals.json` to the new build. In the web app, select **Set as regression baseline** in a completed run before loading the changed files.
+To evaluate a changed corpus against a prior suite, add `--regression-evals .runs/review/evals.json` to the new build. In the web app, select **Set as regression baseline** in a completed run before loading the changed files. **Revised People Operations** selects the recorded original suite automatically. The comparison flags newly failing cases separately from existing failures.
 
 ### Input and tool examples
 
@@ -48,6 +48,17 @@ To evaluate a changed corpus against a prior suite, add `--regression-evals .run
 - Supported topics are checked at intake. Include explicit phrases such as “Cover warranty claims and dockside delivery. Refuse customer payment information.” State the audience and requested tone.
 - Catalogue lookups and arithmetic are enabled only when required by the brief. Try `Look up AF-310` or `Calculate 12 * 4.5` in the procurement demo.
 - If the brief requires them, date and current weather are available via `What is today's date?` and `Weather at 18.94, 72.83`. Open-Meteo is the only runtime external tool and receives the typed coordinates on an explicit weather request.
+
+## Sample packs and optional features
+
+Select a pack in Studio, or download **Sample files** from the factory page. The standalone ZIP includes the source documents, brief, and check guide. [Sample guide](demos/SAMPLE_GUIDE.md)
+
+- **Prompt tournament.** Three distinct system prompts are evaluated with the same source-derived suite. The report records scores, full candidate prompts, and the winner. Ties keep the earlier candidate.
+- **Run budgets.** Set maximum model tokens and active seconds in Studio. The report records usage, the final stopping reason, and any optional evaluation skipped at the time limit.
+- **Requirements review.** Approve the structured requirements or edit the scope, audience, tone, and answer/refusal topics. Edited topics are re-grounded before generation.
+- **Hand-written comparison.** The People Operations pack includes a separately authored baseline agent. Both agents use the same documents, questions, and judge. The report lists case-level wins and losses.
+- **Regression.** Re-run the old suite against updated sources. The revised People Operations pack changes two policy facts and includes a recorded regression report.
+- **Web and hosting.** The factory and chat runner are available locally and through the owner-private hosted Studio while its Cloud workspace is running.
 
 ## Assignment evidence
 
@@ -68,6 +79,7 @@ Each demo contains `brief.txt`, its original `documents/`, and these evidence fi
 - `initial_definition.json` and `definition.json`
 - `evals.json` and `eval_results.json` with state, evidence, grading, and per-case outcomes for every attempt
 - `iterations.json`, `scorecards.json`, `model_trace.json`, and `report.md`
+- `tournament.json` and, where configured, `manual_comparison.json` or `regression.json`
 - `run.json`, the aggregate used by the Studio
 
 ## Verification and limits

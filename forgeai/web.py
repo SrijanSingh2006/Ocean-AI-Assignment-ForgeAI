@@ -31,10 +31,17 @@ DEMOS = {
     "marine-supply": {"name": "Marine Procurement", "kind": "Catalog assistant", "icon": "box",
                        "description": "Spare parts, supplier terms, and dockside logistics.",
                        "example": "Look up AF-310"},
+    "operations-lab": {"name": "Warehouse Tools", "kind": "Four-tool sample", "icon": "wrench",
+                       "description": "Inventory, shipment CSVs, receiving, date, arithmetic, and weather.",
+                       "example": "Look up BX-410"},
+    "people-ops-revised": {"name": "Revised People Operations", "kind": "Regression sample", "icon": "history",
+                          "description": "Revised leave allowance and expense submission deadlines.",
+                          "example": "What does the Leave Handbook say about annual leave?", "regression": "people-ops"},
 }
 ARTIFACTS = (
     "report.md", "requirements.json", "definition.json", "initial_definition.json", "evals.json",
     "eval_results.json", "iterations.json", "scorecards.json", "model_trace.json", "regression.json", "run.json",
+    "tournament.json", "manual_comparison.json",
 )
 QUEUE = ThreadPoolExecutor(max_workers=1, thread_name_prefix="forge")
 LOCK = threading.RLock()
@@ -43,6 +50,7 @@ JOBS = {}
 
 class Approval(BaseModel):
     answers: dict[str, str] = Field(default_factory=dict)
+    edits: dict[str, str] = Field(default_factory=dict)
 
 
 class Message(BaseModel):
@@ -84,7 +92,7 @@ def update(run_id, **fields):
         write_json(RUNS / run_id / "status.json", job["meta"])
 
 
-def manage_run(run_id, brief, iterations, with_model, checkpoint, baseline):
+def manage_run(run_id, brief, iterations, with_model, checkpoint, previous, manual, tournament, token_budget, latency_budget):
     artifacts, documents = run_paths(run_id)
     update(run_id, status="running", stage="intake", detail="Reading sources")
 
@@ -96,12 +104,14 @@ def manage_run(run_id, brief, iterations, with_model, checkpoint, baseline):
         job = JOBS[run_id]
         if not job["event"].wait(timeout=600):
             raise ValueError("Requirements review expired after ten minutes. Start a new run to continue.")
-        return job["answers"]
+        return job["review_submission"]
 
     try:
         result = run_factory(
-            brief, documents, artifacts, model=LocalModel(with_model), max_iterations=iterations,
-            interview=approval if checkpoint else None, progress=progress, regression_cases=baseline,
+            brief, documents, artifacts, model=LocalModel(with_model, token_budget), max_iterations=iterations,
+            interview=approval if checkpoint else None, progress=progress, tournament=tournament,
+            latency_budget=latency_budget, regression_cases=previous.get("evals"),
+            prior_results=previous.get("results"), manual_baseline=manual,
         )
         update(run_id, status="complete", stage="report", detail="All artifacts are ready",
                name=result["definition"]["name"], score=result["scorecard"]["score"], finished=now(), review=None)
@@ -156,6 +166,23 @@ def project_download():
                              headers={"Content-Disposition": 'attachment; filename="ForgeAI.zip"'})
 
 
+@app.get("/sample-documents", include_in_schema=False)
+def sample_documents():
+    memory = io.BytesIO()
+    with zipfile.ZipFile(memory, "w", zipfile.ZIP_DEFLATED) as archive:
+        guide = ROOT / "demos" / "SAMPLE_GUIDE.md"
+        archive.write(guide, "ForgeAI-samples/README.md")
+        for key in DEMOS:
+            root = demo_root(key)
+            archive.write(root / "brief.txt", f"ForgeAI-samples/{key}/brief.txt")
+            for item in (root / "documents").iterdir():
+                if item.is_file() and item.suffix.lower() in SUPPORTED:
+                    archive.write(item, f"ForgeAI-samples/{key}/documents/{item.name}")
+    memory.seek(0)
+    return StreamingResponse(memory, media_type="application/zip",
+                             headers={"Content-Disposition": 'attachment; filename="ForgeAI-sample-documents.zip"'})
+
+
 @app.get("/api/workspace")
 def workspace():
     demos = []
@@ -188,6 +215,9 @@ async def launch(
     checkpoint: bool = Form(False),
     demo: str = Form(""),
     regression: str = Form(""),
+    tournament: bool = Form(True),
+    token_budget: int = Form(12_000, ge=0, le=60_000),
+    latency_budget: int = Form(120, ge=1, le=600),
     files: list[UploadFile] | None = File(None),
 ):
     brief = brief.strip()
@@ -200,7 +230,9 @@ async def launch(
     files = files or []
     if not files and not demo:
         raise HTTPException(422, "Add at least one document or choose a demo")
-    previous = read_json(completed(regression)[0] / "evals.json") if regression else None
+    previous = read_json(completed(regression)[0] / "run.json") if regression else {}
+    manual_path = demo_root(demo) / "manual-baseline.json" if demo else None
+    manual = read_json(manual_path) if manual_path and manual_path.is_file() else None
     original = sorted((demo_root(demo) / "documents").iterdir()) if demo else []
     if len(files) + len(original) > MAX_FILES:
         raise HTTPException(422, f"Use at most {MAX_FILES} files")
@@ -229,10 +261,11 @@ async def launch(
     meta = {"id": run_id, "status": "queued", "stage": "intake", "detail": "Waiting for the factory",
             "name": DEMOS[demo]["name"] if demo else "Custom agent", "created": now(), "demo": False}
     with LOCK:
-        JOBS[run_id] = {"meta": meta, "event": threading.Event(), "answers": {}}
+        JOBS[run_id] = {"meta": meta, "event": threading.Event(), "review_submission": {}}
         write_json(root / "status.json", meta)
         initial = dict(meta)
-    QUEUE.submit(manage_run, run_id, brief, iterations, model, checkpoint, previous)
+    QUEUE.submit(manage_run, run_id, brief, iterations, model, checkpoint, previous,
+                 manual, tournament, token_budget, latency_budget)
     return initial
 
 
@@ -251,7 +284,7 @@ def approve(run_id: str, approval: Approval):
         job = JOBS.get(run_id)
         if not job or job["meta"]["status"] != "approval" or job["event"].is_set():
             raise HTTPException(409, "This run is not awaiting review")
-        job["answers"] = approval.answers
+        job["review_submission"] = approval.model_dump()
         job["event"].set()
     return {"approved": True}
 

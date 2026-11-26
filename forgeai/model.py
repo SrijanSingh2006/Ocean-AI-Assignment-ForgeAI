@@ -2,6 +2,7 @@
 
 import json
 import os
+import time
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -9,6 +10,10 @@ from urllib.request import Request, urlopen
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_URL = "http://127.0.0.1:8089/v1"
 DEFAULT_MODEL = "qwen2.5-0.5b"
+
+
+class LatencyBudgetExceeded(TimeoutError):
+    """The factory cannot start another operation within its run budget."""
 
 
 class LocalModel:
@@ -20,6 +25,14 @@ class LocalModel:
         self.calls = []
         self.tokens = 0
         self.unavailable = False
+        self.deadline = None
+
+    def remaining_time(self):
+        return 40 if self.deadline is None else max(0, self.deadline - time.monotonic())
+
+    def check_time(self):
+        if self.remaining_time() <= 0:
+            raise LatencyBudgetExceeded("The active runtime limit was reached.")
 
     def probe(self):
         if not self.enabled:
@@ -31,6 +44,7 @@ class LocalModel:
             return False
 
     def ask(self, stage, payload, max_tokens=240, system=None):
+        self.check_time()
         if not self.enabled or self.unavailable:
             return {}
         input_text = json.dumps(payload, ensure_ascii=False)
@@ -53,7 +67,7 @@ class LocalModel:
             headers={"Content-Type": "application/json"},
         )
         try:
-            with urlopen(request, timeout=40) as response:
+            with urlopen(request, timeout=min(40, self.remaining_time() + 0.001)) as response:
                 result = json.load(response)
             used = int(result.get("usage", {}).get("total_tokens", 0))
             self.tokens += used or token_bound
@@ -64,6 +78,11 @@ class LocalModel:
             self.calls.append({"stage": stage, "status": "ok", "tokens": used, "output": parsed})
             return parsed
         except (OSError, HTTPError, URLError) as exc:
+            if isinstance(exc, TimeoutError) or isinstance(getattr(exc, "reason", None), TimeoutError):
+                self.tokens += token_bound
+                self.calls.append({"stage": stage, "status": "timeout", "tokens": token_bound})
+                self.check_time()
+                return {}
             self.unavailable = True
             self.calls.append({"stage": stage, "status": "unavailable", "detail": str(exc), "tokens": 0})
         except (ValueError, KeyError, IndexError, TypeError) as exc:

@@ -1,0 +1,87 @@
+{
+  "name": "qwen2.5-0.5b",
+  "mode": "local_model",
+  "tokens": 1734,
+  "budget": 12000,
+  "calls": [
+    {
+      "stage": "intake",
+      "status": "ok",
+      "tokens": 361,
+      "output": {
+        "audience": "agent requester",
+        "tone": "professional",
+        "questions": [
+          "What is the current date?",
+          "What is the current weather?",
+          "Please provide the sample inventory, receiving procedures, and shipment status."
+        ]
+      }
+    },
+    {
+      "stage": "definition",
+      "status": "ok",
+      "tokens": 173,
+      "output": {
+        "name": "Warehouse Shift Lead",
+        "role": "Document Assistant"
+      }
+    },
+    {
+      "stage": "eval_generation",
+      "status": "ok",
+      "tokens": 175,
+      "output": {
+        "topic": "BX-410 Tamper seal box",
+        "document": "Inventory",
+        "question": "What is the content of the document about the BX-410 Tamper seal box?"
+      }
+    },
+    {
+      "stage": "eval_generation",
+      "status": "ok",
+      "tokens": 151,
+      "output": {
+        "topic": "Temperature check",
+        "document": "Receiving Procedures",
+        "question": "What does Receiving Procedures document about temperature check?"
+      }
+    },
+    {
+      "stage": "prompt_tournament",
+      "status": "ok",
+      "tokens": 152,
+      "output": {
+        "instruction": "instruction",
+        "sentence": "Prefer passages that directly contain the specific requested fact."
+      }
+    },
+    {
+      "stage": "prompt_tournament",
+      "status": "ok",
+      "tokens": 162,
+      "output": {
+        "instruction": "instruction",
+        "sentence": "Prefer passages that cover all parts of the question and retain units and exceptions."
+      }
+    },
+    {
+      "stage": "critic",
+      "status": "ok",
+      "tokens": 343,
+      "output": {
+        "patch": "E19",
+        "reason": "prompt defect"
+      }
+    },
+    {
+      "stage": "critic",
+      "status": "ok",
+      "tokens": 217,
+      "output": {
+        "patch": "clarify_vague",
+        "reason": "The patch 'clarify_vague' addresses the issue of vague queries and names of documents, which is relevant to the provided failures."
+      }
+    }
+  ]
+}

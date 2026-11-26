@@ -1,0 +1,4 @@
+Shipment ID,Destination,Status,Dock,Route
+SH-083,North consolidation,Ready for pickup,Door 3,Local
+SH-117,Coastal staging,Awaiting temperature check,Door 5,Chilled
+SH-130,West transfer,Loaded,Door 1,Local

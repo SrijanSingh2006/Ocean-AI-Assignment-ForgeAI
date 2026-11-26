@@ -47,11 +47,11 @@
       "evidence": [
         {
           "document": "Travel-and-Expenses.md",
-          "passage": "d03p001c01"
+          "passage": "d05p001c01"
         },
         {
           "document": "Travel-and-Expenses.md",
-          "passage": "d03p005c01"
+          "passage": "d05p005c01"
         }
       ]
     }
@@ -72,9 +72,15 @@
       "id": "scope",
       "text": "Is any flagged topic covered under another name in these documents? If so, specify that name.",
       "default": ""
+    },
+    {
+      "id": "note_1",
+      "text": "What are the annual leave policies?",
+      "default": ""
     }
   ],
   "interview_answers": {},
+  "review_edits": {},
   "scope_notes": [],
   "tools": [],
   "documents": [
@@ -87,6 +93,16 @@
       "name": "Leave-Handbook.md",
       "format": "MD",
       "passages": 6
+    },
+    {
+      "name": "Onboarding-Checklist.docx",
+      "format": "DOCX",
+      "passages": 2
+    },
+    {
+      "name": "Training-Benefit.pdf",
+      "format": "PDF",
+      "passages": 1
     },
     {
       "name": "Travel-and-Expenses.md",

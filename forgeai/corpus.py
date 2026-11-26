@@ -135,7 +135,7 @@ class Corpus:
         self.by_id = {p["id"]: p for p in passages}
 
     @classmethod
-    def load(cls, folder, size=135, overlap=24):
+    def load(cls, folder, size=135, overlap=24, check_time=None):
         if not 0 <= overlap < size <= 1000:
             raise ValueError("Chunking must satisfy 0 <= overlap < size <= 1000")
         root = Path(folder)
@@ -146,6 +146,8 @@ class Corpus:
         if len(paths) > MAX_FILES:
             raise ValueError(f"Use at most {MAX_FILES} supported documents per run")
         for file_number, path in enumerate(paths, 1):
+            if check_time:
+                check_time()
             provenance = path.relative_to(root).as_posix()
             try:
                 blocks = list(read_blocks(path))
@@ -154,6 +156,8 @@ class Corpus:
                 continue
             first = len(passages)
             for block_number, (heading, body, locator, cells) in enumerate(blocks, 1):
+                if check_time:
+                    check_time()
                 if not terms(body) or len(body) < 5:
                     continue
                 segments = [body] if cells else windows(body, size, overlap)

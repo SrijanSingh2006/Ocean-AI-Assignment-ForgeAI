@@ -1,0 +1,722 @@
+{
+  "scorecard": {
+    "iteration": 0,
+    "passed": 21,
+    "total": 24,
+    "score": 87.5,
+    "categories": {
+      "answerable": {
+        "passed": 11,
+        "total": 13
+      },
+      "cross_document": {
+        "passed": 3,
+        "total": 4
+      },
+      "ambiguous": {
+        "passed": 2,
+        "total": 2
+      },
+      "out_of_scope": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    "failures": {
+      "retrieval miss": 3
+    }
+  },
+  "results": [
+    {
+      "id": "E01",
+      "category": "answerable",
+      "question": "What does the Hybrid Work Guide document about remote work?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Employees in eligible shore roles may work remotely up to two days each week. The team lead approves the days in the shared team calendar.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p001c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Remote work",
+            "locator": "text, block 1",
+            "quote": "Employees in eligible shore roles may work remotely up to two days each week. The team lead approves the days in the shared team calendar."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E02",
+      "category": "answerable",
+      "question": "What does Hybrid Work Guide document about Core availability?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Remote staff must be reachable between 10:00 and 15:00 local office time. Use the team chat status to indicate a planned absence during those hours.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p002c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Core availability",
+            "locator": "text, block 2",
+            "quote": "Remote staff must be reachable between 10:00 and 15:00 local office time. Use the team chat status to indicate a planned absence during those hours."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E03",
+      "category": "answerable",
+      "question": "What does Hybrid Work Guide document about Home office equipment?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "The service desk issues a headset and laptop stand on request. A manager must preauthorize purchases made outside the equipment catalogue.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p003c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Home office equipment",
+            "locator": "text, block 3",
+            "quote": "The service desk issues a headset and laptop stand on request. A manager must preauthorize purchases made outside the equipment catalogue."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E04",
+      "category": "answerable",
+      "question": "What does Hybrid Work Guide document about Remote access?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Company files may be accessed only from managed laptops using the approved VPN. Report suspected device loss by phone to the service desk immediately.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p005c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Remote access",
+            "locator": "text, block 5",
+            "quote": "Company files may be accessed only from managed laptops using the approved VPN. Report suspected device loss by phone to the service desk immediately."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E05",
+      "category": "answerable",
+      "question": "What does Leave Handbook document about Annual leave?",
+      "passed": false,
+      "checks": {
+        "grounded": true,
+        "correct": false,
+        "refused_when_expected": null
+      },
+      "failure": "retrieval miss",
+      "missing_facts": [
+        {
+          "document": "Leave-Handbook.md",
+          "fact": "Permanent shore employees receive 22 paid annual leave days per calendar year."
+        }
+      ],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Permanent shore employees receive 25 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p001c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Annual leave",
+            "locator": "text, block 1",
+            "quote": "Permanent shore employees receive 25 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E06",
+      "category": "answerable",
+      "question": "What does Leave Handbook document about Sick leave?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Notify your line manager before 09:30 local time on the first day of sickness. A medical certificate is required after three consecutive working days.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p003c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Sick leave",
+            "locator": "text, block 3",
+            "quote": "Notify your line manager before 09:30 local time on the first day of sickness. A medical certificate is required after three consecutive working days."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E07",
+      "category": "answerable",
+      "question": "What does Leave Handbook document about Parental leave?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Applications for planned parental leave should reach People Operations at least eight weeks before the expected start. Managers must confirm the handover plan separately.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p004c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Parental leave",
+            "locator": "text, block 4",
+            "quote": "Applications for planned parental leave should reach People Operations at least eight weeks before the expected start. Managers must confirm the handover plan separately."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E08",
+      "category": "answerable",
+      "question": "What does Leave Handbook document about Compassionate leave?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Employees can request up to three paid working days after the death of an immediate family member. People Operations reviews requests for extra days.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p006c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Compassionate leave",
+            "locator": "text, block 6",
+            "quote": "Employees can request up to three paid working days after the death of an immediate family member. People Operations reviews requests for extra days."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E09",
+      "category": "answerable",
+      "question": "What does Onboarding Checklist document about Onboarding access?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "New shore employees submit one onboarding access form through PeopleHub. The team coordinator verifies each request within two working days.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d03p001c01",
+            "document": "Onboarding-Checklist.docx",
+            "heading": "Onboarding access",
+            "locator": "block 2",
+            "quote": "New shore employees submit one onboarding access form through PeopleHub. The team coordinator verifies each request within two working days."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E10",
+      "category": "answerable",
+      "question": "What does Training Benefit document about Training Benefit (training allowance annually accredited)?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Training allowance Shore employees may request up to EUR 350 annually for accredited courses. Submit the request in PeopleHub before paying the course provider.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d04p001c01",
+            "document": "Training-Benefit.pdf",
+            "heading": "Training Benefit",
+            "locator": "page 1",
+            "quote": "Training allowance Shore employees may request up to EUR 350 annually for accredited courses. Submit the request in PeopleHub before paying the course provider."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E11",
+      "category": "answerable",
+      "question": "What does Travel And Expenses document about Travel reimbursements?",
+      "passed": false,
+      "checks": {
+        "grounded": true,
+        "correct": false,
+        "refused_when_expected": null
+      },
+      "failure": "retrieval miss",
+      "missing_facts": [
+        {
+          "document": "Travel-and-Expenses.md",
+          "fact": "Submit travel reimbursements in the expense portal within 30 calendar days of returning."
+        }
+      ],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Submit travel reimbursements in the expense portal within 45 calendar days of returning. Attach itemized receipts for every claimed expense.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d05p001c01",
+            "document": "Travel-and-Expenses.md",
+            "heading": "Travel reimbursements",
+            "locator": "text, block 1",
+            "quote": "Submit travel reimbursements in the expense portal within 45 calendar days of returning. Attach itemized receipts for every claimed expense."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E12",
+      "category": "answerable",
+      "question": "What does Travel And Expenses document about Rail booking?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Book standard class rail unless a documented accessibility need requires a different fare. Use the corporate booking channel for rail journeys.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d05p003c01",
+            "document": "Travel-and-Expenses.md",
+            "heading": "Rail booking",
+            "locator": "text, block 3",
+            "quote": "Book standard class rail unless a documented accessibility need requires a different fare. Use the corporate booking channel for rail journeys."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E13",
+      "category": "answerable",
+      "question": "What does Travel And Expenses document about Mileage claims?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Approved private vehicle trips are reimbursed at EUR 0.42 per kilometre. Record the route and distance in the expense portal.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d05p004c01",
+            "document": "Travel-and-Expenses.md",
+            "heading": "Mileage claims",
+            "locator": "text, block 4",
+            "quote": "Approved private vehicle trips are reimbursed at EUR 0.42 per kilometre. Record the route and distance in the expense portal."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E14",
+      "category": "cross_document",
+      "question": "For Hybrid Work Guide, what is documented about Remote work, and separately, for Leave Handbook, what is documented about Annual leave?",
+      "passed": false,
+      "checks": {
+        "grounded": true,
+        "correct": false,
+        "refused_when_expected": null
+      },
+      "failure": "retrieval miss",
+      "missing_facts": [
+        {
+          "document": "Leave-Handbook.md",
+          "fact": "Permanent shore employees receive 22 paid annual leave days per calendar year."
+        }
+      ],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Employees in eligible shore roles may work remotely up to two days each week. The team lead approves the days in the shared team calendar.\n\nPermanent shore employees receive 25 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p001c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Remote work",
+            "locator": "text, block 1",
+            "quote": "Employees in eligible shore roles may work remotely up to two days each week. The team lead approves the days in the shared team calendar."
+          },
+          {
+            "passage_id": "d02p001c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Annual leave",
+            "locator": "text, block 1",
+            "quote": "Permanent shore employees receive 25 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E15",
+      "category": "cross_document",
+      "question": "For Hybrid Work Guide, what is documented about Core availability, and separately, for Leave Handbook, what is documented about Leave notice?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Remote staff must be reachable between 10:00 and 15:00 local office time. Use the team chat status to indicate a planned absence during those hours.\n\nSubmit ordinary leave requests in the PeopleHub portal at least ten working days before departure. A line manager must approve the request before booking travel.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p002c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Core availability",
+            "locator": "text, block 2",
+            "quote": "Remote staff must be reachable between 10:00 and 15:00 local office time. Use the team chat status to indicate a planned absence during those hours."
+          },
+          {
+            "passage_id": "d02p002c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Leave notice",
+            "locator": "text, block 2",
+            "quote": "Submit ordinary leave requests in the PeopleHub portal at least ten working days before departure. A line manager must approve the request before booking travel."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E16",
+      "category": "cross_document",
+      "question": "For Hybrid Work Guide, what is documented about Home office equipment, and separately, for Leave Handbook, what is documented about Sick leave?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "The service desk issues a headset and laptop stand on request. A manager must preauthorize purchases made outside the equipment catalogue.\n\nNotify your line manager before 09:30 local time on the first day of sickness. A medical certificate is required after three consecutive working days.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p003c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Home office equipment",
+            "locator": "text, block 3",
+            "quote": "The service desk issues a headset and laptop stand on request. A manager must preauthorize purchases made outside the equipment catalogue."
+          },
+          {
+            "passage_id": "d02p003c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Sick leave",
+            "locator": "text, block 3",
+            "quote": "Notify your line manager before 09:30 local time on the first day of sickness. A medical certificate is required after three consecutive working days."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E17",
+      "category": "cross_document",
+      "question": "For Hybrid Work Guide, what is documented about Remote access, and separately, for Leave Handbook, what is documented about Parental leave?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Company files may be accessed only from managed laptops using the approved VPN. Report suspected device loss by phone to the service desk immediately.\n\nApplications for planned parental leave should reach People Operations at least eight weeks before the expected start. Managers must confirm the handover plan separately.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p005c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Remote access",
+            "locator": "text, block 5",
+            "quote": "Company files may be accessed only from managed laptops using the approved VPN. Report suspected device loss by phone to the service desk immediately."
+          },
+          {
+            "passage_id": "d02p004c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Parental leave",
+            "locator": "text, block 4",
+            "quote": "Applications for planned parental leave should reach People Operations at least eight weeks before the expected start. Managers must confirm the handover plan separately."
+          }
+        ]
+      }
+    },
+    {
+      "id": "E18",
+      "category": "ambiguous",
+      "question": "What does it say?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "clarify",
+      "response": {
+        "status": "clarify",
+        "answer": "Which topic, item, or document should I look for?",
+        "tool": null,
+        "citations": []
+      }
+    },
+    {
+      "id": "E19",
+      "category": "ambiguous",
+      "question": "Can you explain more?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "clarify",
+      "response": {
+        "status": "clarify",
+        "answer": "Which topic, item, or document should I look for?",
+        "tool": null,
+        "citations": []
+      }
+    },
+    {
+      "id": "E20",
+      "category": "out_of_scope",
+      "question": "What is the documented guidance on live vessel tracking coordinates?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": true
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "refused",
+      "response": {
+        "status": "refused",
+        "answer": "The supplied sources do not establish an answer to that question.",
+        "tool": null,
+        "citations": []
+      }
+    },
+    {
+      "id": "E21",
+      "category": "out_of_scope",
+      "question": "What is the documented guidance on individual salary records?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": true
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "refused",
+      "response": {
+        "status": "refused",
+        "answer": "The supplied sources do not establish an answer to that question.",
+        "tool": null,
+        "citations": []
+      }
+    },
+    {
+      "id": "E22",
+      "category": "out_of_scope",
+      "question": "What is the documented guidance on medical diagnosis?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": true
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "refused",
+      "response": {
+        "status": "refused",
+        "answer": "The supplied sources do not establish an answer to that question.",
+        "tool": null,
+        "citations": []
+      }
+    },
+    {
+      "id": "E23",
+      "category": "out_of_scope",
+      "question": "What is the documented guidance on income tax filing deadline?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": true
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "refused",
+      "response": {
+        "status": "refused",
+        "answer": "The supplied sources do not establish an answer to that question.",
+        "tool": null,
+        "citations": []
+      }
+    },
+    {
+      "id": "E24",
+      "category": "out_of_scope",
+      "question": "What is the documented guidance on personal medical diagnosis?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": true
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "refused",
+      "response": {
+        "status": "refused",
+        "answer": "The supplied sources do not establish an answer to that question.",
+        "tool": null,
+        "citations": []
+      }
+    }
+  ],
+  "changes": {
+    "gained": [],
+    "lost": [
+      "E05",
+      "E11",
+      "E14"
+    ],
+    "unchanged": [
+      "E01",
+      "E02",
+      "E03",
+      "E04",
+      "E06",
+      "E07",
+      "E08",
+      "E09",
+      "E10",
+      "E12",
+      "E13",
+      "E15",
+      "E16",
+      "E17",
+      "E18",
+      "E19",
+      "E20",
+      "E21",
+      "E22",
+      "E23",
+      "E24"
+    ]
+  },
+  "prior_results_available": true
+}

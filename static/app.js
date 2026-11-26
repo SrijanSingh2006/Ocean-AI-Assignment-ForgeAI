@@ -46,8 +46,8 @@ const stages = [
 const state = {
   workspace: { demos: [], tools: {}, max_files: 30, max_file_bytes: 10485760 },
   runs: [], brief: "", files: [], demo: "", iterations: 3, model: true, checkpoint: false,
-  regression: "", pending: false, active: null, tab: "overview", chatId: "", chats: {}, chatPending: {},
-  reviewAnswers: {}, location: "build", runScreen: "", poll: null,
+  tournament: true, token_budget: 12000, latency_budget: 120, regression: "", pending: false, active: null, tab: "overview", chatId: "", chats: {}, chatPending: {},
+  reviewAnswers: {}, reviewEdits: {}, location: "build", runScreen: "", poll: null,
 };
 const titleFor = (kind) => ({
   answerable: "Answerable", cross_document: "Cross-document", out_of_scope: "Out of scope",
@@ -154,12 +154,26 @@ function buildScreen() {
             <select id="iterations">${[0, 1, 2, 3].map((count) => `<option value="${count}" ${state.iterations === count ? "selected" : ""}>${count === 0 ? "Baseline only" : `Up to ${count} ${count === 1 ? "iteration" : "iterations"}`}</option>`).join("")}</select>
             <label class="switch-row"><input id="model" type="checkbox" ${state.model ? "checked" : ""}><span>Use local model<small>Assist with drafting and evaluation.</small></span></label>
             <label class="switch-row"><input id="checkpoint" type="checkbox" ${state.checkpoint ? "checked" : ""}><span>Review requirements<small>Pause for your input before generation.</small></span></label>
+            <label class="switch-row"><input id="tournament" type="checkbox" ${state.tournament ? "checked" : ""}><span>Prompt tournament<small>Compare three prompts on the same evaluation suite.</small></span></label>
+            <details class="settings-details">
+              <summary>Build budgets</summary>
+              <div class="budget-fields">
+                <div><label for="token_budget">Model tokens</label>
+                  <input id="token_budget" form="build-form" type="number" required min="0" max="60000" step="1" value="${esc(state.token_budget)}"></div>
+                <div><label for="latency_budget">Active seconds</label>
+                  <input id="latency_budget" form="build-form" type="number" required min="1" max="600" step="1" value="${esc(state.latency_budget)}"></div>
+              </div>
+              <p class="muted">Review time is excluded. A repair with no score gain ends the loop.</p>
+            </details>
             ${state.regression ? `<div class="info">Regression suite selected. <button type="button" class="btn ghost small" data-action="clear-regression">Remove</button></div>` : ""}
           </div>
         </div>
         <div class="card rail-card">${section("flask", "Sample projects", "Load a brief and its sample sources.")}
           <div class="demo-list">${demoCards()}</div>
-          <a href="#history" class="btn ghost small" style="margin-top:7px">View completed demos</a>
+          <div class="actions" style="margin-top:7px">
+            <a href="#history" class="btn ghost small">View completed demos</a>
+            <a href="/sample-documents" class="btn ghost small">${icon("download")} Sample files</a>
+          </div>
         </div>
       </aside>
     </div>
@@ -214,6 +228,23 @@ function requirementsContent(req) {
     ${req.ingestion_warnings.map((text) => `<div class="info warn">${esc(text)}</div>`).join("")}`;
 }
 
+function reviewEditor(req) {
+  const fields = [
+    ["scope", "Scope", req.scope, 4], ["audience", "Audience", req.audience, 0], ["tone", "Tone", req.tone, 0],
+    ["must_answer", "Topics to answer", req.must_answer.filter((item) => item.basis !== "document collection")
+      .concat(req.groundability_gaps).map((item) => item.topic).join("\n"), 4],
+    ["must_refuse", "Topics to refuse", req.must_refuse.slice(0, -1).join("\n"), 3],
+  ];
+  return `<details class="review-editor"><summary>Edit structured requirements</summary>
+    <p class="muted">Use one topic per line. Edited topics are checked against the sources again before generation.</p>
+    ${fields.map(([key, label, initial, rows]) => {
+      const value = esc(state.reviewEdits[key] ?? initial);
+      const input = rows ? `<textarea id="edit-${key}" maxlength="4000" rows="${rows}">${value}</textarea>`
+        : `<input id="edit-${key}" type="text" maxlength="120" value="${value}">`;
+      return `<div class="field"><label for="edit-${key}">${label}</label>${input}</div>`;
+    }).join("")}</details>`;
+}
+
 function resultContent(run) {
   const result = run.result;
   const path = `/api/runs/${esc(run.id)}`;
@@ -223,6 +254,23 @@ function resultContent(run) {
     return `<section class="card sheet">${section("target", "Generated evaluation suite", "Expand a case to see its grounding, decision, and expected outcome.")}
       <div class="actions" style="margin-bottom:8px">${download("evals.json", "Evaluation cases")} ${download("eval_results.json", "All evaluations")}</div>
       ${result.results.map(checkRow).join("")}</section>`;
+  }
+  if (state.tab === "comparisons") {
+    const tournament = result.tournament;
+    const manual = result.manual_baseline;
+    return `${tournament ? `<section class="card sheet">${section("target", "Prompt tournament",
+      `Winner · ${tournament.winner}. Ties keep the earlier candidate.`)}
+      ${tournament.candidates.map((entry) => `<details class="result-row"><summary><strong>${esc(entry.name)}</strong>
+        ${badge(`${entry.scorecard.passed}/${entry.scorecard.total} · ${entry.scorecard.score}%`, entry.name === tournament.winner ? "good" : "")}</summary>
+        <pre>${esc(entry.definition.system_prompt)}</pre></details>`).join("")}
+      ${tournament.complete ? "" : '<div class="info warn">The active latency limit interrupted the tournament.</div>'}
+      ${download("tournament.json", "Candidate evaluations")}</section>` : ""}
+      ${manual ? `<section class="card sheet">${section("users", "Factory vs hand-written baseline",
+        `Factory ${result.scorecard.passed}/${result.scorecard.total} · Hand-written ${manual.scorecard.passed}/${manual.scorecard.total}`)}
+        <div class="info"><strong>Cases only the factory passed</strong> · ${esc(manual.changes.gained.join(", ") || "None")}</div>
+        <div class="info"><strong>Cases only the hand-written agent passed</strong> · ${esc(manual.changes.lost.join(", ") || "None")}</div>
+        <p class="muted">${manual.changes.unchanged.length} cases had the same outcome.</p>
+        ${download("manual_comparison.json", "Baseline comparison")}</section>` : ""}`;
   }
   if (state.tab === "definition") {
     return `<section class="card sheet">${section("layers", "Agent definition", result.definition.description)}
@@ -236,7 +284,8 @@ function resultContent(run) {
   if (state.tab === "log") {
     return `<section class="card sheet">${section("wrench", "Targeted changes", result.stop_reason)}
       ${result.iterations.map((item) => `<div class="info"><strong>Iteration ${item.iteration} · ${esc(item.patch.replaceAll("_", " "))}</strong> ${badge(item.accepted ? "Accepted" : "Reverted", item.accepted ? "good" : "warn")}
-        <p>${esc(item.why)} ${item.score_before}% to ${item.score_after}%.</p>
+        <p>${esc(item.why)} ${item.score_after === null ? `Scoring stopped at the latency limit after the ${item.score_before}% baseline.`
+          : `${item.score_before}% to ${item.score_after}%.`}</p>
         <p>Addressed ${esc(item.addressed_cases.join(", ") || "none")} · Resolved ${esc(item.resolved_cases.join(", ") || "none")} · Regressed ${esc(item.regressed_cases.join(", ") || "none")}</p></div>`).join("") || '<p class="muted">No repairs were applied.</p>'}
       <div class="actions">${download("iterations.json", "Change log")} ${download("model_trace.json", "Model trace")}</div></section>
       <section class="card sheet">${section("cpu", "Model activity", `${result.model.name} · ${result.model.tokens} tokens · ${result.elapsed_seconds}s`)}
@@ -245,6 +294,9 @@ function resultContent(run) {
   const failures = result.results.filter((item) => !item.passed);
   return `<section class="card sheet">${section("chart", "Score by iteration", result.stop_reason)}
       ${scoreRows(result.scorecards)}
+      ${result.budget ? `<div class="info"><strong>Build budget</strong> · ${result.budget.active_seconds}/${result.budget.latency_limit} active seconds ·
+        ${result.budget.tokens_used.toLocaleString()}/${result.budget.token_limit.toLocaleString()} model tokens</div>` : ""}
+      ${(result.budget_notes || []).map((note) => `<div class="info warn">${esc(note)}</div>`).join("")}
     </section>
     <section class="card sheet">${section("target", "Remaining failures")}
       ${failures.length ? failures.map(checkRow).join("") : '<p class="muted">All cases in this generated suite passed. Performance on new questions can differ.</p>'}
@@ -254,6 +306,8 @@ function resultContent(run) {
       <button class="btn small" data-action="regression">${icon("history")} Set as regression baseline</button></div>
     </section>
     ${result.regression ? `<section class="card sheet">${section("history", "Regression results", `${result.regression.scorecard.passed}/${result.regression.scorecard.total} cases from the prior run passed.`)}
+      ${result.regression.prior_results_available ? `<div class="info">Newly failing · ${esc(result.regression.changes.lost.join(", ") || "None")}
+        <br>Newly passing · ${esc(result.regression.changes.gained.join(", ") || "None")}</div>` : ""}
       ${result.regression.results.filter((row) => !row.passed).map(checkRow).join("")}${download("regression.json", "Regression results")}</section>` : ""}`;
 }
 
@@ -264,6 +318,7 @@ function runScreen(run) {
   if (run.status === "complete") {
     const result = run.result;
     const tabs = [["overview", "Overview"], ["evaluations", "Evaluations"], ["definition", "Definition"], ["requirements", "Requirements"], ["log", "Run log"]];
+    if (result.tournament || result.manual_baseline) tabs.splice(2, 0, ["comparisons", "Comparisons"]);
     return `<div class="screen"><div class="page-heading"><div><h1>${esc(run.name)}</h1><p>Factory report · ${run.demo ? "Recorded demonstration" : "Workspace build"}</p></div>
         <div class="actions"><a class="btn" href="#chat/${esc(run.id)}">${icon("message")} Open chat</a>
           <a class="btn primary" href="/api/runs/${esc(run.id)}/download">${icon("download")} Export run</a></div></div>
@@ -280,7 +335,7 @@ function runScreen(run) {
       <p aria-live="polite">${esc(run.detail)}</p></div>${badge(titleFor(run.status), run.status === "failed" ? "bad" : "warn")}</div>
     ${pipeline(run)}
     ${run.status === "approval" && review ? `
-      <form class="card sheet" id="review-form">${section("clipboard", "Scope and source coverage")}${requirementsContent(review)}
+      <form class="card sheet" id="review-form">${section("clipboard", "Scope and source coverage")}${requirementsContent(review)}${reviewEditor(review)}
       ${review.questions.map((q) => `<div class="field"><label for="review-${esc(q.id)}">${esc(q.text)}</label>
         <input type="text" id="review-${esc(q.id)}" name="${esc(q.id)}" maxlength="400" value="${esc(state.reviewAnswers[q.id] ?? "")}" placeholder="${esc(q.default || "Optional")}"></div>`).join("")}
       <button type="submit" class="btn primary">${icon("check")} Approve and continue</button></form>` :
@@ -363,6 +418,7 @@ function route() {
     if (state.runScreen !== id) {
       state.tab = "overview";
       state.reviewAnswers = {};
+      state.reviewEdits = {};
     }
     state.runScreen = id;
     inspectRun(id);
@@ -408,7 +464,7 @@ async function build() {
     return;
   }
   const form = new FormData();
-  for (const key of ["brief", "iterations", "model", "checkpoint", "demo", "regression"]) form.append(key, state[key]);
+  for (const key of ["brief", "iterations", "model", "checkpoint", "demo", "regression", "tournament", "token_budget", "latency_budget"]) form.append(key, state[key]);
   for (const file of state.files) form.append("files", file);
   state.pending = true;
   render();
@@ -457,6 +513,8 @@ document.addEventListener("input", (event) => {
     state.brief = value;
     $("brief-count").textContent = `${value.length.toLocaleString()} / 4,000`;
   } else if (id.startsWith("review-")) state.reviewAnswers[event.target.name] = value;
+  else if (id.startsWith("edit-")) state.reviewEdits[id.slice(5)] = value;
+  else if (["token_budget", "latency_budget"].includes(id)) state[id] = value;
 });
 document.addEventListener("change", (event) => {
   const { id, checked, value } = event.target;
@@ -464,7 +522,7 @@ document.addEventListener("change", (event) => {
     addFiles(event.target.files);
     event.target.value = "";
   } else if (id === "iterations") state.iterations = Number(value);
-  else if (id === "model" || id === "checkpoint") state[id] = checked;
+  else if (["model", "checkpoint", "tournament"].includes(id)) state[id] = checked;
 });
 document.addEventListener("click", async (event) => {
   const button = event.target.closest("[data-action]");
@@ -482,6 +540,7 @@ document.addEventListener("click", async (event) => {
     const item = state.workspace.demos.find((demo) => demo.id === value);
     if (!item) return;
     state.demo = item.id;
+    if (item.regression) state.regression = item.regression;
     state.brief = item.brief;
     state.files = state.files.filter((file) => !item.files.includes(file.name));
     render();
@@ -526,9 +585,10 @@ document.addEventListener("submit", async (event) => {
     const id = state.runScreen;
     try {
       await api(`/api/runs/${encodeURIComponent(id)}/approve`, {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answers: state.reviewAnswers }),
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answers: state.reviewAnswers, edits: state.reviewEdits }),
       });
       state.reviewAnswers = {};
+      state.reviewEdits = {};
       inspectRun(id);
     } catch (error) {
       button.disabled = false;

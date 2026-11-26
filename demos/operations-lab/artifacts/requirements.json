@@ -1,0 +1,99 @@
+{
+  "scope": "Build an assistant for a warehouse shift lead. Cover sample inventory, receiving procedures, and shipment status. Look up inventory SKUs in CSV. Calculate order totals from figures provided by the requester. Provide the current date and current weather when coordinates are supplied. Refuse payroll records. Keep a concise professional tone.",
+  "audience": "a warehouse shift lead",
+  "tone": "a concise professional tone",
+  "must_answer": [
+    {
+      "topic": "receiving procedures",
+      "basis": "document",
+      "evidence": [
+        {
+          "document": "Receiving-Procedures.txt",
+          "passage": "d02p001c01"
+        },
+        {
+          "document": "Receiving-Procedures.txt",
+          "passage": "d02p002c01"
+        }
+      ]
+    },
+    {
+      "topic": "shipment status",
+      "basis": "document",
+      "evidence": [
+        {
+          "document": "Shipment-Status.csv",
+          "passage": "d03p003c01"
+        },
+        {
+          "document": "Shipment-Status.csv",
+          "passage": "d03p001c01"
+        }
+      ]
+    },
+    {
+      "topic": "inventory SKUs in CSV",
+      "evidence": [],
+      "basis": "configured tool"
+    },
+    {
+      "topic": "current date",
+      "evidence": [],
+      "basis": "configured tool"
+    },
+    {
+      "topic": "current weather",
+      "evidence": [],
+      "basis": "configured tool"
+    }
+  ],
+  "must_refuse": [
+    "payroll records",
+    "Requests without verifiable source evidence"
+  ],
+  "groundability_gaps": [
+    {
+      "topic": "sample inventory",
+      "reason": "No passage has sufficient vocabulary overlap to verify this requested topic."
+    }
+  ],
+  "questions": [
+    {
+      "id": "scope",
+      "text": "Is any flagged topic covered under another name in these documents? If so, specify that name.",
+      "default": ""
+    },
+    {
+      "id": "note_1",
+      "text": "What is the current date?",
+      "default": ""
+    }
+  ],
+  "interview_answers": {},
+  "review_edits": {},
+  "scope_notes": [],
+  "tools": [
+    "csv_lookup",
+    "calculator",
+    "current_date",
+    "weather"
+  ],
+  "documents": [
+    {
+      "name": "Inventory.csv",
+      "format": "CSV",
+      "passages": 4
+    },
+    {
+      "name": "Receiving-Procedures.txt",
+      "format": "TXT",
+      "passages": 3
+    },
+    {
+      "name": "Shipment-Status.csv",
+      "format": "CSV",
+      "passages": 3
+    }
+  ],
+  "ingestion_warnings": []
+}

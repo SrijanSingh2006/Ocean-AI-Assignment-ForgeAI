@@ -15,10 +15,10 @@ from fastapi.testclient import TestClient
 from pypdf import PdfWriter
 from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
 
-from forgeai import web
+from forgeai import factory, web
 from forgeai.corpus import Corpus, Index
 from forgeai.factory import Agent, evaluate_cases, judge, run_factory
-from forgeai.model import LocalModel
+from forgeai.model import LatencyBudgetExceeded, LocalModel
 from forgeai.registry import calculate, dispatch, select_tools
 
 
@@ -140,6 +140,44 @@ class FactoryTests(unittest.TestCase):
         self.assertEqual(result["model"]["tokens"], 0)
         self.assertTrue(all(c["status"] == "budget_skipped" for c in result["model"]["calls"]))
 
+    def test_tournament_and_early_stop_keep_the_best_complete_result(self):
+        scored = factory.score_agent
+        baseline = None
+
+        def scores(definition, corpus, cases, model, iteration):
+            nonlocal baseline
+            if iteration:
+                return copy.deepcopy(baseline)
+            baseline = scored(definition, corpus, cases, model, iteration)
+            return baseline
+
+        with patch.object(factory, "score_agent", side_effect=scores):
+            result = run_factory(BRIEF, self.docs, self.root / "plateau", model=LocalModel(False))
+        candidates = result["tournament"]["candidates"]
+        self.assertEqual(len({entry["definition"]["system_prompt"] for entry in candidates}), 3)
+        self.assertEqual(result["tournament"]["winner"], "Grounded default")
+        self.assertEqual(len(result["iterations"]), 1)
+        self.assertFalse(result["iterations"][0]["accepted"])
+        self.assertIn("no net improvement", result["stop_reason"])
+        self.assertEqual(result["scorecard"], result["scorecards"][0])
+
+    def test_latency_abort_during_repair_preserves_complete_baseline(self):
+        scored = factory.score_agent
+
+        def run_until_repair(definition, corpus, cases, model, iteration):
+            if iteration:
+                raise LatencyBudgetExceeded("Test deadline")
+            return scored(definition, corpus, cases, model, iteration)
+
+        with patch.object(factory, "score_agent", side_effect=run_until_repair):
+            result = run_factory(BRIEF, self.docs, self.root / "deadline",
+                                 model=LocalModel(False), latency_budget=10, tournament=False)
+        self.assertEqual(len(result["scorecards"]), 1)
+        self.assertEqual(result["iterations"][0]["status"], "latency_limit")
+        self.assertIsNone(result["iterations"][0]["score_after"])
+        self.assertEqual(result["budget"]["latency_limit"], 10)
+        self.assertNotIn("tournament", result)
+
     def test_web_end_to_end(self):
         files = [("files", ("Exhibition-Preparation.md", LABELS, "text/markdown")),
                  ("files", ("Courier-Reception.md", COURIER, "text/markdown"))]
@@ -156,9 +194,14 @@ class FactoryTests(unittest.TestCase):
             checkpoint = wait_for(client, run_id, {"approval", "failed"})
             self.assertEqual(checkpoint["status"], "approval")
             self.assertLessEqual(len(checkpoint["review"]["questions"]), 5)
-            self.assertEqual(client.post(f"/api/runs/{run_id}/approve", json={"answers": {}}).status_code, 200)
+            edits = {"audience": "Museum stewards", "must_answer": "exhibit acclimation\ncourier arrival\ncommercial rent"}
+            self.assertEqual(client.post(f"/api/runs/{run_id}/approve", json={"edits": edits}).status_code, 200)
             complete = wait_for(client, run_id, {"complete", "failed"})
             self.assertEqual(complete["status"], "complete", complete.get("detail"))
+            requirements = complete["result"]["requirements"]
+            self.assertEqual(requirements["audience"], "Museum stewards")
+            self.assertEqual([gap["topic"] for gap in requirements["groundability_gaps"]], ["commercial rent"])
+            self.assertEqual(client.get(f"/api/runs/{run_id}/artifact/tournament.json").status_code, 200)
             self.assertEqual(client.get("/api/runs").json()[0]["id"], run_id)
             reply = client.post("/api/chat", json={"run_id": run_id, "question": "Exhibit acclimation?"}).json()
             self.assertEqual(reply["status"], "answered")
@@ -170,6 +213,11 @@ class FactoryTests(unittest.TestCase):
             with zipfile.ZipFile(io.BytesIO(package.content)) as archive:
                 self.assertIn("documents/Courier-Reception.md", archive.namelist())
                 self.assertIn("artifacts/definition.json", archive.namelist())
+                self.assertIsNone(archive.testzip())
+            samples = client.get("/sample-documents")
+            with zipfile.ZipFile(io.BytesIO(samples.content)) as archive:
+                self.assertEqual(sum(name.endswith(".csv") for name in archive.namelist()), 5)
+                self.assertIn("ForgeAI-samples/README.md", archive.namelist())
                 self.assertIsNone(archive.testzip())
             whole = client.get("/project-download")
             with zipfile.ZipFile(io.BytesIO(whole.content)) as archive:

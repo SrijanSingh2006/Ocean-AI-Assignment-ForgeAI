@@ -1,0 +1,2038 @@
+[
+  {
+    "scorecard": {
+      "iteration": 0,
+      "passed": 18,
+      "total": 24,
+      "score": 75.0,
+      "categories": {
+        "answerable": {
+          "passed": 13,
+          "total": 13
+        },
+        "cross_document": {
+          "passed": 0,
+          "total": 4
+        },
+        "ambiguous": {
+          "passed": 0,
+          "total": 2
+        },
+        "out_of_scope": {
+          "passed": 5,
+          "total": 5
+        }
+      },
+      "failures": {
+        "retrieval miss": 4,
+        "prompt defect": 2
+      }
+    },
+    "results": [
+      {
+        "id": "E01",
+        "category": "answerable",
+        "question": "What is the content of the document about the BX-410 Tamper seal box?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Inventory.csv",
+              "heading": "BX-410 Tamper seal box",
+              "locator": "row 2",
+              "quote": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E02",
+        "category": "answerable",
+        "question": "What does Inventory document about LB-275 Thermal label roll?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Inventory.csv",
+              "heading": "LB-275 Thermal label roll",
+              "locator": "row 3",
+              "quote": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E03",
+        "category": "answerable",
+        "question": "What does Inventory document about PK-822 Refrigerated gel pack?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p003c01",
+              "document": "Inventory.csv",
+              "heading": "PK-822 Refrigerated gel pack",
+              "locator": "row 4",
+              "quote": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E04",
+        "category": "answerable",
+        "question": "What does Inventory document about SC-994 Humidity recorder?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: SC-994 · Item: Humidity recorder · Temperature zone: Ambient · Quantity on hand: 8 · Unit price EUR: 29.95 · Bin code: D-05",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p004c01",
+              "document": "Inventory.csv",
+              "heading": "SC-994 Humidity recorder",
+              "locator": "row 5",
+              "quote": "SKU: SC-994 · Item: Humidity recorder · Temperature zone: Ambient · Quantity on hand: 8 · Unit price EUR: 29.95 · Bin code: D-05"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E05",
+        "category": "answerable",
+        "question": "What does Receiving Procedures document about Receiving procedures?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Match the packing list against the shipment ID before opening the pallet. Record unresolved quantity differences in the receiving log.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p001c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Receiving procedures",
+              "locator": "text, block 1",
+              "quote": "Match the packing list against the shipment ID before opening the pallet. Record unresolved quantity differences in the receiving log."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E06",
+        "category": "answerable",
+        "question": "What does Receiving Procedures document about Temperature check?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Inspect refrigerated packages at the dock. Reject cartons with a measured surface temperature above 8 degrees Celsius and record the observed reading.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p002c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Temperature check",
+              "locator": "text, block 2",
+              "quote": "Inspect refrigerated packages at the dock. Reject cartons with a measured surface temperature above 8 degrees Celsius and record the observed reading."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E07",
+        "category": "answerable",
+        "question": "What does Receiving Procedures document about Shipping handover?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Record the driver's full name and vehicle plate in the shift log. Ask the driver to sign the handover receipt.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p003c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Shipping handover",
+              "locator": "text, block 3",
+              "quote": "Record the driver's full name and vehicle plate in the shift log. Ask the driver to sign the handover receipt."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E08",
+        "category": "answerable",
+        "question": "What does Shipment Status document about SH-083 North consolidation?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Shipment ID: SH-083 · Destination: North consolidation · Status: Ready for pickup · Dock: Door 3 · Route: Local",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p001c01",
+              "document": "Shipment-Status.csv",
+              "heading": "SH-083 North consolidation",
+              "locator": "row 2",
+              "quote": "Shipment ID: SH-083 · Destination: North consolidation · Status: Ready for pickup · Dock: Door 3 · Route: Local"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E09",
+        "category": "answerable",
+        "question": "What does Shipment Status document about SH-117 Coastal staging?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Shipment ID: SH-117 · Destination: Coastal staging · Status: Awaiting temperature check · Dock: Door 5 · Route: Chilled",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p002c01",
+              "document": "Shipment-Status.csv",
+              "heading": "SH-117 Coastal staging",
+              "locator": "row 3",
+              "quote": "Shipment ID: SH-117 · Destination: Coastal staging · Status: Awaiting temperature check · Dock: Door 5 · Route: Chilled"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E10",
+        "category": "answerable",
+        "question": "What does Shipment Status document about SH-130 West transfer?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Shipment ID: SH-130 · Destination: West transfer · Status: Loaded · Dock: Door 1 · Route: Local",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p003c01",
+              "document": "Shipment-Status.csv",
+              "heading": "SH-130 West transfer",
+              "locator": "row 4",
+              "quote": "Shipment ID: SH-130 · Destination: West transfer · Status: Loaded · Dock: Door 1 · Route: Local"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E11",
+        "category": "answerable",
+        "question": "In Inventory, which details are given for BX-410 Tamper seal box?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Inventory.csv",
+              "heading": "BX-410 Tamper seal box",
+              "locator": "row 2",
+              "quote": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E12",
+        "category": "answerable",
+        "question": "In Inventory, which details are given for LB-275 Thermal label roll?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Inventory.csv",
+              "heading": "LB-275 Thermal label roll",
+              "locator": "row 3",
+              "quote": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E13",
+        "category": "answerable",
+        "question": "In Inventory, which details are given for PK-822 Refrigerated gel pack?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p003c01",
+              "document": "Inventory.csv",
+              "heading": "PK-822 Refrigerated gel pack",
+              "locator": "row 4",
+              "quote": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E14",
+        "category": "cross_document",
+        "question": "For Inventory, what is documented about BX-410 Tamper seal box, and separately, for Receiving Procedures, what is documented about Receiving procedures?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "retrieval miss",
+        "missing_facts": [
+          {
+            "document": "Receiving-Procedures.txt",
+            "fact": "Match the packing list against the shipment ID before opening the pallet."
+          },
+          {
+            "document": "Receiving-Procedures.txt",
+            "fact": "Record unresolved quantity differences in the receiving log."
+          }
+        ],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Inventory.csv",
+              "heading": "BX-410 Tamper seal box",
+              "locator": "row 2",
+              "quote": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E15",
+        "category": "cross_document",
+        "question": "For Inventory, what is documented about LB-275 Thermal label roll, and separately, for Receiving Procedures, what is documented about Temperature check?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "retrieval miss",
+        "missing_facts": [
+          {
+            "document": "Receiving-Procedures.txt",
+            "fact": "Inspect refrigerated packages at the dock."
+          },
+          {
+            "document": "Receiving-Procedures.txt",
+            "fact": "Reject cartons with a measured surface temperature above 8 degrees Celsius and record the observed reading."
+          }
+        ],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Inventory.csv",
+              "heading": "LB-275 Thermal label roll",
+              "locator": "row 3",
+              "quote": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E16",
+        "category": "cross_document",
+        "question": "For Inventory, what is documented about PK-822 Refrigerated gel pack, and separately, for Receiving Procedures, what is documented about Shipping handover?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "retrieval miss",
+        "missing_facts": [
+          {
+            "document": "Receiving-Procedures.txt",
+            "fact": "Record the driver's full name and vehicle plate in the shift log."
+          },
+          {
+            "document": "Receiving-Procedures.txt",
+            "fact": "Ask the driver to sign the handover receipt."
+          }
+        ],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p003c01",
+              "document": "Inventory.csv",
+              "heading": "PK-822 Refrigerated gel pack",
+              "locator": "row 4",
+              "quote": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E17",
+        "category": "cross_document",
+        "question": "For Inventory, what is documented about SC-994 Humidity recorder, and separately, for Shipment Status, what is documented about SH-083 North consolidation?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "retrieval miss",
+        "missing_facts": [
+          {
+            "document": "Inventory.csv",
+            "fact": "SKU: SC-994"
+          },
+          {
+            "document": "Inventory.csv",
+            "fact": "Unit price EUR: 29.95"
+          },
+          {
+            "document": "Inventory.csv",
+            "fact": "Bin code: D-05"
+          }
+        ],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Shipment ID: SH-083 · Destination: North consolidation · Status: Ready for pickup · Dock: Door 3 · Route: Local",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p001c01",
+              "document": "Shipment-Status.csv",
+              "heading": "SH-083 North consolidation",
+              "locator": "row 2",
+              "quote": "Shipment ID: SH-083 · Destination: North consolidation · Status: Ready for pickup · Dock: Door 3 · Route: Local"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E18",
+        "category": "ambiguous",
+        "question": "What does it say?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "prompt defect",
+        "missing_facts": [],
+        "expected_status": "clarify",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E19",
+        "category": "ambiguous",
+        "question": "Can you explain more?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "prompt defect",
+        "missing_facts": [],
+        "expected_status": "clarify",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E20",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on sample inventory?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E21",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on payroll records?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E22",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on income tax filing deadline?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E23",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on personal medical diagnosis?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E24",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on home mortgage interest rates?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      }
+    ]
+  },
+  {
+    "scorecard": {
+      "iteration": 1,
+      "passed": 22,
+      "total": 24,
+      "score": 91.7,
+      "categories": {
+        "answerable": {
+          "passed": 13,
+          "total": 13
+        },
+        "cross_document": {
+          "passed": 4,
+          "total": 4
+        },
+        "ambiguous": {
+          "passed": 0,
+          "total": 2
+        },
+        "out_of_scope": {
+          "passed": 5,
+          "total": 5
+        }
+      },
+      "failures": {
+        "prompt defect": 2
+      }
+    },
+    "results": [
+      {
+        "id": "E01",
+        "category": "answerable",
+        "question": "What is the content of the document about the BX-410 Tamper seal box?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Inventory.csv",
+              "heading": "BX-410 Tamper seal box",
+              "locator": "row 2",
+              "quote": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E02",
+        "category": "answerable",
+        "question": "What does Inventory document about LB-275 Thermal label roll?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Inventory.csv",
+              "heading": "LB-275 Thermal label roll",
+              "locator": "row 3",
+              "quote": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E03",
+        "category": "answerable",
+        "question": "What does Inventory document about PK-822 Refrigerated gel pack?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p003c01",
+              "document": "Inventory.csv",
+              "heading": "PK-822 Refrigerated gel pack",
+              "locator": "row 4",
+              "quote": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E04",
+        "category": "answerable",
+        "question": "What does Inventory document about SC-994 Humidity recorder?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: SC-994 · Item: Humidity recorder · Temperature zone: Ambient · Quantity on hand: 8 · Unit price EUR: 29.95 · Bin code: D-05",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p004c01",
+              "document": "Inventory.csv",
+              "heading": "SC-994 Humidity recorder",
+              "locator": "row 5",
+              "quote": "SKU: SC-994 · Item: Humidity recorder · Temperature zone: Ambient · Quantity on hand: 8 · Unit price EUR: 29.95 · Bin code: D-05"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E05",
+        "category": "answerable",
+        "question": "What does Receiving Procedures document about Receiving procedures?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Match the packing list against the shipment ID before opening the pallet. Record unresolved quantity differences in the receiving log.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p001c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Receiving procedures",
+              "locator": "text, block 1",
+              "quote": "Match the packing list against the shipment ID before opening the pallet. Record unresolved quantity differences in the receiving log."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E06",
+        "category": "answerable",
+        "question": "What does Receiving Procedures document about Temperature check?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Inspect refrigerated packages at the dock. Reject cartons with a measured surface temperature above 8 degrees Celsius and record the observed reading.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p002c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Temperature check",
+              "locator": "text, block 2",
+              "quote": "Inspect refrigerated packages at the dock. Reject cartons with a measured surface temperature above 8 degrees Celsius and record the observed reading."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E07",
+        "category": "answerable",
+        "question": "What does Receiving Procedures document about Shipping handover?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Record the driver's full name and vehicle plate in the shift log. Ask the driver to sign the handover receipt.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p003c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Shipping handover",
+              "locator": "text, block 3",
+              "quote": "Record the driver's full name and vehicle plate in the shift log. Ask the driver to sign the handover receipt."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E08",
+        "category": "answerable",
+        "question": "What does Shipment Status document about SH-083 North consolidation?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Shipment ID: SH-083 · Destination: North consolidation · Status: Ready for pickup · Dock: Door 3 · Route: Local",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p001c01",
+              "document": "Shipment-Status.csv",
+              "heading": "SH-083 North consolidation",
+              "locator": "row 2",
+              "quote": "Shipment ID: SH-083 · Destination: North consolidation · Status: Ready for pickup · Dock: Door 3 · Route: Local"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E09",
+        "category": "answerable",
+        "question": "What does Shipment Status document about SH-117 Coastal staging?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Shipment ID: SH-117 · Destination: Coastal staging · Status: Awaiting temperature check · Dock: Door 5 · Route: Chilled",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p002c01",
+              "document": "Shipment-Status.csv",
+              "heading": "SH-117 Coastal staging",
+              "locator": "row 3",
+              "quote": "Shipment ID: SH-117 · Destination: Coastal staging · Status: Awaiting temperature check · Dock: Door 5 · Route: Chilled"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E10",
+        "category": "answerable",
+        "question": "What does Shipment Status document about SH-130 West transfer?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Shipment ID: SH-130 · Destination: West transfer · Status: Loaded · Dock: Door 1 · Route: Local",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p003c01",
+              "document": "Shipment-Status.csv",
+              "heading": "SH-130 West transfer",
+              "locator": "row 4",
+              "quote": "Shipment ID: SH-130 · Destination: West transfer · Status: Loaded · Dock: Door 1 · Route: Local"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E11",
+        "category": "answerable",
+        "question": "In Inventory, which details are given for BX-410 Tamper seal box?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Inventory.csv",
+              "heading": "BX-410 Tamper seal box",
+              "locator": "row 2",
+              "quote": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E12",
+        "category": "answerable",
+        "question": "In Inventory, which details are given for LB-275 Thermal label roll?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Inventory.csv",
+              "heading": "LB-275 Thermal label roll",
+              "locator": "row 3",
+              "quote": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E13",
+        "category": "answerable",
+        "question": "In Inventory, which details are given for PK-822 Refrigerated gel pack?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p003c01",
+              "document": "Inventory.csv",
+              "heading": "PK-822 Refrigerated gel pack",
+              "locator": "row 4",
+              "quote": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E14",
+        "category": "cross_document",
+        "question": "For Inventory, what is documented about BX-410 Tamper seal box, and separately, for Receiving Procedures, what is documented about Receiving procedures?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14\n\nMatch the packing list against the shipment ID before opening the pallet. Record unresolved quantity differences in the receiving log.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Inventory.csv",
+              "heading": "BX-410 Tamper seal box",
+              "locator": "row 2",
+              "quote": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14"
+            },
+            {
+              "passage_id": "d02p001c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Receiving procedures",
+              "locator": "text, block 1",
+              "quote": "Match the packing list against the shipment ID before opening the pallet. Record unresolved quantity differences in the receiving log."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E15",
+        "category": "cross_document",
+        "question": "For Inventory, what is documented about LB-275 Thermal label roll, and separately, for Receiving Procedures, what is documented about Temperature check?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07\n\nInspect refrigerated packages at the dock. Reject cartons with a measured surface temperature above 8 degrees Celsius and record the observed reading.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Inventory.csv",
+              "heading": "LB-275 Thermal label roll",
+              "locator": "row 3",
+              "quote": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07"
+            },
+            {
+              "passage_id": "d02p002c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Temperature check",
+              "locator": "text, block 2",
+              "quote": "Inspect refrigerated packages at the dock. Reject cartons with a measured surface temperature above 8 degrees Celsius and record the observed reading."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E16",
+        "category": "cross_document",
+        "question": "For Inventory, what is documented about PK-822 Refrigerated gel pack, and separately, for Receiving Procedures, what is documented about Shipping handover?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28\n\nRecord the driver's full name and vehicle plate in the shift log. Ask the driver to sign the handover receipt.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p003c01",
+              "document": "Inventory.csv",
+              "heading": "PK-822 Refrigerated gel pack",
+              "locator": "row 4",
+              "quote": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28"
+            },
+            {
+              "passage_id": "d02p003c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Shipping handover",
+              "locator": "text, block 3",
+              "quote": "Record the driver's full name and vehicle plate in the shift log. Ask the driver to sign the handover receipt."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E17",
+        "category": "cross_document",
+        "question": "For Inventory, what is documented about SC-994 Humidity recorder, and separately, for Shipment Status, what is documented about SH-083 North consolidation?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: SC-994 · Item: Humidity recorder · Temperature zone: Ambient · Quantity on hand: 8 · Unit price EUR: 29.95 · Bin code: D-05\n\nShipment ID: SH-083 · Destination: North consolidation · Status: Ready for pickup · Dock: Door 3 · Route: Local",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p004c01",
+              "document": "Inventory.csv",
+              "heading": "SC-994 Humidity recorder",
+              "locator": "row 5",
+              "quote": "SKU: SC-994 · Item: Humidity recorder · Temperature zone: Ambient · Quantity on hand: 8 · Unit price EUR: 29.95 · Bin code: D-05"
+            },
+            {
+              "passage_id": "d03p001c01",
+              "document": "Shipment-Status.csv",
+              "heading": "SH-083 North consolidation",
+              "locator": "row 2",
+              "quote": "Shipment ID: SH-083 · Destination: North consolidation · Status: Ready for pickup · Dock: Door 3 · Route: Local"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E18",
+        "category": "ambiguous",
+        "question": "What does it say?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "prompt defect",
+        "missing_facts": [],
+        "expected_status": "clarify",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E19",
+        "category": "ambiguous",
+        "question": "Can you explain more?",
+        "passed": false,
+        "checks": {
+          "grounded": true,
+          "correct": false,
+          "refused_when_expected": null
+        },
+        "failure": "prompt defect",
+        "missing_facts": [],
+        "expected_status": "clarify",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E20",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on sample inventory?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E21",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on payroll records?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E22",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on income tax filing deadline?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E23",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on personal medical diagnosis?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E24",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on home mortgage interest rates?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      }
+    ]
+  },
+  {
+    "scorecard": {
+      "iteration": 2,
+      "passed": 24,
+      "total": 24,
+      "score": 100.0,
+      "categories": {
+        "answerable": {
+          "passed": 13,
+          "total": 13
+        },
+        "cross_document": {
+          "passed": 4,
+          "total": 4
+        },
+        "ambiguous": {
+          "passed": 2,
+          "total": 2
+        },
+        "out_of_scope": {
+          "passed": 5,
+          "total": 5
+        }
+      },
+      "failures": {}
+    },
+    "results": [
+      {
+        "id": "E01",
+        "category": "answerable",
+        "question": "What is the content of the document about the BX-410 Tamper seal box?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Inventory.csv",
+              "heading": "BX-410 Tamper seal box",
+              "locator": "row 2",
+              "quote": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E02",
+        "category": "answerable",
+        "question": "What does Inventory document about LB-275 Thermal label roll?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Inventory.csv",
+              "heading": "LB-275 Thermal label roll",
+              "locator": "row 3",
+              "quote": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E03",
+        "category": "answerable",
+        "question": "What does Inventory document about PK-822 Refrigerated gel pack?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p003c01",
+              "document": "Inventory.csv",
+              "heading": "PK-822 Refrigerated gel pack",
+              "locator": "row 4",
+              "quote": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E04",
+        "category": "answerable",
+        "question": "What does Inventory document about SC-994 Humidity recorder?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: SC-994 · Item: Humidity recorder · Temperature zone: Ambient · Quantity on hand: 8 · Unit price EUR: 29.95 · Bin code: D-05",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p004c01",
+              "document": "Inventory.csv",
+              "heading": "SC-994 Humidity recorder",
+              "locator": "row 5",
+              "quote": "SKU: SC-994 · Item: Humidity recorder · Temperature zone: Ambient · Quantity on hand: 8 · Unit price EUR: 29.95 · Bin code: D-05"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E05",
+        "category": "answerable",
+        "question": "What does Receiving Procedures document about Receiving procedures?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Match the packing list against the shipment ID before opening the pallet. Record unresolved quantity differences in the receiving log.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p001c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Receiving procedures",
+              "locator": "text, block 1",
+              "quote": "Match the packing list against the shipment ID before opening the pallet. Record unresolved quantity differences in the receiving log."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E06",
+        "category": "answerable",
+        "question": "What does Receiving Procedures document about Temperature check?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Inspect refrigerated packages at the dock. Reject cartons with a measured surface temperature above 8 degrees Celsius and record the observed reading.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p002c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Temperature check",
+              "locator": "text, block 2",
+              "quote": "Inspect refrigerated packages at the dock. Reject cartons with a measured surface temperature above 8 degrees Celsius and record the observed reading."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E07",
+        "category": "answerable",
+        "question": "What does Receiving Procedures document about Shipping handover?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Record the driver's full name and vehicle plate in the shift log. Ask the driver to sign the handover receipt.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d02p003c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Shipping handover",
+              "locator": "text, block 3",
+              "quote": "Record the driver's full name and vehicle plate in the shift log. Ask the driver to sign the handover receipt."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E08",
+        "category": "answerable",
+        "question": "What does Shipment Status document about SH-083 North consolidation?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Shipment ID: SH-083 · Destination: North consolidation · Status: Ready for pickup · Dock: Door 3 · Route: Local",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p001c01",
+              "document": "Shipment-Status.csv",
+              "heading": "SH-083 North consolidation",
+              "locator": "row 2",
+              "quote": "Shipment ID: SH-083 · Destination: North consolidation · Status: Ready for pickup · Dock: Door 3 · Route: Local"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E09",
+        "category": "answerable",
+        "question": "What does Shipment Status document about SH-117 Coastal staging?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Shipment ID: SH-117 · Destination: Coastal staging · Status: Awaiting temperature check · Dock: Door 5 · Route: Chilled",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p002c01",
+              "document": "Shipment-Status.csv",
+              "heading": "SH-117 Coastal staging",
+              "locator": "row 3",
+              "quote": "Shipment ID: SH-117 · Destination: Coastal staging · Status: Awaiting temperature check · Dock: Door 5 · Route: Chilled"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E10",
+        "category": "answerable",
+        "question": "What does Shipment Status document about SH-130 West transfer?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "Shipment ID: SH-130 · Destination: West transfer · Status: Loaded · Dock: Door 1 · Route: Local",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d03p003c01",
+              "document": "Shipment-Status.csv",
+              "heading": "SH-130 West transfer",
+              "locator": "row 4",
+              "quote": "Shipment ID: SH-130 · Destination: West transfer · Status: Loaded · Dock: Door 1 · Route: Local"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E11",
+        "category": "answerable",
+        "question": "In Inventory, which details are given for BX-410 Tamper seal box?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Inventory.csv",
+              "heading": "BX-410 Tamper seal box",
+              "locator": "row 2",
+              "quote": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E12",
+        "category": "answerable",
+        "question": "In Inventory, which details are given for LB-275 Thermal label roll?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Inventory.csv",
+              "heading": "LB-275 Thermal label roll",
+              "locator": "row 3",
+              "quote": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E13",
+        "category": "answerable",
+        "question": "In Inventory, which details are given for PK-822 Refrigerated gel pack?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p003c01",
+              "document": "Inventory.csv",
+              "heading": "PK-822 Refrigerated gel pack",
+              "locator": "row 4",
+              "quote": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E14",
+        "category": "cross_document",
+        "question": "For Inventory, what is documented about BX-410 Tamper seal box, and separately, for Receiving Procedures, what is documented about Receiving procedures?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14\n\nMatch the packing list against the shipment ID before opening the pallet. Record unresolved quantity differences in the receiving log.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p001c01",
+              "document": "Inventory.csv",
+              "heading": "BX-410 Tamper seal box",
+              "locator": "row 2",
+              "quote": "SKU: BX-410 · Item: Tamper seal box · Temperature zone: Ambient · Quantity on hand: 36 · Unit price EUR: 4.80 · Bin code: A-14"
+            },
+            {
+              "passage_id": "d02p001c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Receiving procedures",
+              "locator": "text, block 1",
+              "quote": "Match the packing list against the shipment ID before opening the pallet. Record unresolved quantity differences in the receiving log."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E15",
+        "category": "cross_document",
+        "question": "For Inventory, what is documented about LB-275 Thermal label roll, and separately, for Receiving Procedures, what is documented about Temperature check?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07\n\nInspect refrigerated packages at the dock. Reject cartons with a measured surface temperature above 8 degrees Celsius and record the observed reading.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p002c01",
+              "document": "Inventory.csv",
+              "heading": "LB-275 Thermal label roll",
+              "locator": "row 3",
+              "quote": "SKU: LB-275 · Item: Thermal label roll · Temperature zone: Ambient · Quantity on hand: 18 · Unit price EUR: 12.50 · Bin code: B-07"
+            },
+            {
+              "passage_id": "d02p002c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Temperature check",
+              "locator": "text, block 2",
+              "quote": "Inspect refrigerated packages at the dock. Reject cartons with a measured surface temperature above 8 degrees Celsius and record the observed reading."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E16",
+        "category": "cross_document",
+        "question": "For Inventory, what is documented about PK-822 Refrigerated gel pack, and separately, for Receiving Procedures, what is documented about Shipping handover?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28\n\nRecord the driver's full name and vehicle plate in the shift log. Ask the driver to sign the handover receipt.",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p003c01",
+              "document": "Inventory.csv",
+              "heading": "PK-822 Refrigerated gel pack",
+              "locator": "row 4",
+              "quote": "SKU: PK-822 · Item: Refrigerated gel pack · Temperature zone: Chilled · Quantity on hand: 72 · Unit price EUR: 3.25 · Bin code: C-28"
+            },
+            {
+              "passage_id": "d02p003c01",
+              "document": "Receiving-Procedures.txt",
+              "heading": "Shipping handover",
+              "locator": "text, block 3",
+              "quote": "Record the driver's full name and vehicle plate in the shift log. Ask the driver to sign the handover receipt."
+            }
+          ]
+        }
+      },
+      {
+        "id": "E17",
+        "category": "cross_document",
+        "question": "For Inventory, what is documented about SC-994 Humidity recorder, and separately, for Shipment Status, what is documented about SH-083 North consolidation?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "answered",
+        "response": {
+          "status": "answered",
+          "answer": "SKU: SC-994 · Item: Humidity recorder · Temperature zone: Ambient · Quantity on hand: 8 · Unit price EUR: 29.95 · Bin code: D-05\n\nShipment ID: SH-083 · Destination: North consolidation · Status: Ready for pickup · Dock: Door 3 · Route: Local",
+          "tool": null,
+          "citations": [
+            {
+              "passage_id": "d01p004c01",
+              "document": "Inventory.csv",
+              "heading": "SC-994 Humidity recorder",
+              "locator": "row 5",
+              "quote": "SKU: SC-994 · Item: Humidity recorder · Temperature zone: Ambient · Quantity on hand: 8 · Unit price EUR: 29.95 · Bin code: D-05"
+            },
+            {
+              "passage_id": "d03p001c01",
+              "document": "Shipment-Status.csv",
+              "heading": "SH-083 North consolidation",
+              "locator": "row 2",
+              "quote": "Shipment ID: SH-083 · Destination: North consolidation · Status: Ready for pickup · Dock: Door 3 · Route: Local"
+            }
+          ]
+        }
+      },
+      {
+        "id": "E18",
+        "category": "ambiguous",
+        "question": "What does it say?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "clarify",
+        "response": {
+          "status": "clarify",
+          "answer": "Which topic, item, or document should I look for?",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E19",
+        "category": "ambiguous",
+        "question": "Can you explain more?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": null
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "clarify",
+        "response": {
+          "status": "clarify",
+          "answer": "Which topic, item, or document should I look for?",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E20",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on sample inventory?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E21",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on payroll records?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E22",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on income tax filing deadline?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E23",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on personal medical diagnosis?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      },
+      {
+        "id": "E24",
+        "category": "out_of_scope",
+        "question": "What is the documented guidance on home mortgage interest rates?",
+        "passed": true,
+        "checks": {
+          "grounded": true,
+          "correct": true,
+          "refused_when_expected": true
+        },
+        "failure": null,
+        "missing_facts": [],
+        "expected_status": "refused",
+        "response": {
+          "status": "refused",
+          "answer": "The supplied sources do not establish an answer to that question.",
+          "tool": null,
+          "citations": []
+        }
+      }
+    ]
+  }
+]

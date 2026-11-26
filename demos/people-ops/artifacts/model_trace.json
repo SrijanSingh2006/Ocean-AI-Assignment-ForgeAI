@@ -1,22 +1,32 @@
 {
   "name": "qwen2.5-0.5b",
   "mode": "local_model",
-  "tokens": 2006,
+  "tokens": 4571,
   "budget": 12000,
   "calls": [
     {
       "stage": "intake",
-      "status": "invalid_json",
-      "detail": "Unterminated string starting at: line 20 column 5 (char 1340)",
-      "tokens": 550
+      "status": "ok",
+      "tokens": 410,
+      "output": {
+        "audience": "shore-based operations staff",
+        "tone": "professional",
+        "questions": [
+          "What are the annual leave policies?",
+          "What are the sick leave policies?",
+          "What are the remote work policies?",
+          "What are the travel reimbursements policies?",
+          "What are the live vessel tracking coordinates policies?"
+        ]
+      }
     },
     {
       "stage": "definition",
       "status": "ok",
-      "tokens": 177,
+      "tokens": 198,
       "output": {
         "name": "Hybrid-Work-Guide",
-        "role": "document assistant"
+        "role": "shore-based operations staff"
       }
     },
     {
@@ -32,21 +42,90 @@
     {
       "stage": "eval_generation",
       "status": "ok",
-      "tokens": 153,
+      "tokens": 152,
       "output": {
-        "topic": "Sick leave",
+        "topic": "Parental leave",
         "document": "Leave Handbook",
-        "question": "What is the main topic of the document 'Leave Handbook'?"
+        "question": "What is the main topic of the Leave Handbook document?"
       }
     },
     {
       "stage": "evidence",
       "status": "ok",
-      "tokens": 412,
+      "tokens": 414,
       "output": {
         "ids": [
           "d02p001c01",
           "d02p005c01",
+          "d01p001c01"
+        ]
+      }
+    },
+    {
+      "stage": "evidence",
+      "status": "ok",
+      "tokens": 322,
+      "output": {
+        "ids": [
+          "d01p005c01"
+        ]
+      }
+    },
+    {
+      "stage": "prompt_tournament",
+      "status": "ok",
+      "tokens": 145,
+      "output": {
+        "instruction": "instruction",
+        "sentence": "The passage should directly contain the specific fact requested."
+      }
+    },
+    {
+      "stage": "evidence",
+      "status": "ok",
+      "tokens": 400,
+      "output": {
+        "ids": [
+          "d02p001c01"
+        ]
+      }
+    },
+    {
+      "stage": "evidence",
+      "status": "ok",
+      "tokens": 348,
+      "output": {
+        "ids": [
+          "d01p005c01",
+          "d01p001c01"
+        ]
+      }
+    },
+    {
+      "stage": "prompt_tournament",
+      "status": "ok",
+      "tokens": 168,
+      "output": {
+        "instruction": "Select passages that cover all parts of the question and retain units and exceptions."
+      }
+    },
+    {
+      "stage": "evidence",
+      "status": "ok",
+      "tokens": 405,
+      "output": {
+        "ids": [
+          "d02p001c01"
+        ]
+      }
+    },
+    {
+      "stage": "evidence",
+      "status": "ok",
+      "tokens": 353,
+      "output": {
+        "ids": [
+          "d01p005c01",
           "d01p001c01"
         ]
       }
@@ -67,6 +146,28 @@
       "output": {
         "patch": "clarify_vague",
         "reason": "The patch 'clarify_vague' addresses the issue of vague queries and names of documents, which is relevant to the provided failures."
+      }
+    },
+    {
+      "stage": "evidence",
+      "status": "ok",
+      "tokens": 274,
+      "output": {
+        "ids": [
+          "d02p001c01",
+          "d01p001c01"
+        ]
+      }
+    },
+    {
+      "stage": "evidence",
+      "status": "ok",
+      "tokens": 268,
+      "output": {
+        "ids": [
+          "d02p004c01",
+          "d01p005c01"
+        ]
       }
     }
   ]

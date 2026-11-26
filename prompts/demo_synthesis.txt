@@ -2,3 +2,9 @@ The demo corpora are fictional fixtures authored for this assignment. Synthesis 
 1. Write three short Markdown documents for a fictional shore office. Give each 5–6 distinct, titled policy sections with one or two precise rules, numbers, and dates. Cover leave, remote work, and expense reimbursement. Deliberately omit live vessel tracking.
 2. Write a ten-row marine spares catalogue CSV with invented SKUs, materials, euro prices, pack sizes, and assembly names. Add two fictional supplier/logistics Markdown documents with 5 distinct sections each. Cover RMA, warranty, and dockside delivery. Deliberately omit emergency air freight and live vessel tracking.
 3. Use no actual employee records, supplier policies, or company identifiers. Make the briefs request different tools and include unsupported asks so the guard can be observed.
+
+Stretch evidence and sample packs:
+- Extend the shore set with a short text-layer training PDF and DOCX onboarding checklist. Keep the original leave, work, and travel rules distinct.
+- Add an invented supplier availability table and a purchase basket aligned with the part catalogue. Make table identifiers unique in each table.
+- Build a separate warehouse tools pack with inventory and shipment CSVs and receiving procedures. The brief explicitly requests lookup, arithmetic, date, and weather. Omit the forbidden payroll data.
+- Create a revised copy of the shore documents with a changed paid leave allowance and travel expense filing window. Preserve filenames and unchanged sections so the old evaluation suite can identify the affected cases.

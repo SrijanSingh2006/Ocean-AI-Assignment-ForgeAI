@@ -51,22 +51,6 @@
   {
     "id": "E04",
     "category": "answerable",
-    "question": "What does Hybrid Work Guide document about Desk booking?",
-    "expected_status": "answered",
-    "expected_grounding": [
-      {
-        "document": "Hybrid-Work-Guide.md",
-        "passage_id": "d01p004c01",
-        "key_facts": [
-          "Reserve a desk in the office booking app by 17:00 on the previous working day.",
-          "Cancel unneeded bookings before 09:00 on the day."
-        ]
-      }
-    ]
-  },
-  {
-    "id": "E05",
-    "category": "answerable",
     "question": "What does Hybrid Work Guide document about Remote access?",
     "expected_status": "answered",
     "expected_grounding": [
@@ -81,23 +65,23 @@
     ]
   },
   {
-    "id": "E06",
+    "id": "E05",
     "category": "answerable",
-    "question": "What does Leave Handbook document about Leave notice?",
+    "question": "What does Leave Handbook document about Annual leave?",
     "expected_status": "answered",
     "expected_grounding": [
       {
         "document": "Leave-Handbook.md",
-        "passage_id": "d02p002c01",
+        "passage_id": "d02p001c01",
         "key_facts": [
-          "Submit ordinary leave requests in the PeopleHub portal at least ten working days before departure.",
-          "A line manager must approve the request before booking travel."
+          "Permanent shore employees receive 22 paid annual leave days per calendar year.",
+          "Carryover is capped at five days and expires on 31 March of the next year."
         ]
       }
     ]
   },
   {
-    "id": "E07",
+    "id": "E06",
     "category": "answerable",
     "question": "What does Leave Handbook document about Sick leave?",
     "expected_status": "answered",
@@ -113,7 +97,7 @@
     ]
   },
   {
-    "id": "E08",
+    "id": "E07",
     "category": "answerable",
     "question": "What does Leave Handbook document about Parental leave?",
     "expected_status": "answered",
@@ -129,17 +113,33 @@
     ]
   },
   {
-    "id": "E09",
+    "id": "E08",
     "category": "answerable",
-    "question": "What does Leave Handbook document about Public holidays?",
+    "question": "What does Leave Handbook document about Compassionate leave?",
     "expected_status": "answered",
     "expected_grounding": [
       {
         "document": "Leave-Handbook.md",
-        "passage_id": "d02p005c01",
+        "passage_id": "d02p006c01",
         "key_facts": [
-          "The local office calendar determines public holidays for shore employees.",
-          "If a holiday falls during approved annual leave, the holiday does not reduce the annual leave balance."
+          "Employees can request up to three paid working days after the death of an immediate family member.",
+          "People Operations reviews requests for extra days."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E09",
+    "category": "answerable",
+    "question": "What does Onboarding Checklist document about Onboarding access?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Onboarding-Checklist.docx",
+        "passage_id": "d03p001c01",
+        "key_facts": [
+          "New shore employees submit one onboarding access form through PeopleHub.",
+          "The team coordinator verifies each request within two working days."
         ]
       }
     ]
@@ -147,15 +147,15 @@
   {
     "id": "E10",
     "category": "answerable",
-    "question": "What does Travel And Expenses document about Travel reimbursements?",
+    "question": "What does Training Benefit document about Training Benefit (training allowance annually accredited)?",
     "expected_status": "answered",
     "expected_grounding": [
       {
-        "document": "Travel-and-Expenses.md",
-        "passage_id": "d03p001c01",
+        "document": "Training-Benefit.pdf",
+        "passage_id": "d04p001c01",
         "key_facts": [
-          "Submit travel reimbursements in the expense portal within 30 calendar days of returning.",
-          "Attach itemized receipts for every claimed expense."
+          "Training allowance Shore employees may request up to EUR 350 annually for accredited courses.",
+          "Submit the request in PeopleHub before paying the course provider."
         ]
       }
     ]
@@ -163,15 +163,15 @@
   {
     "id": "E11",
     "category": "answerable",
-    "question": "What does Travel And Expenses document about Hotel limits?",
+    "question": "What does Travel And Expenses document about Travel reimbursements?",
     "expected_status": "answered",
     "expected_grounding": [
       {
         "document": "Travel-and-Expenses.md",
-        "passage_id": "d03p002c01",
+        "passage_id": "d05p001c01",
         "key_facts": [
-          "The standard overnight hotel cap is EUR 145 per night before local taxes.",
-          "A regional director may approve a higher amount before travel."
+          "Submit travel reimbursements in the expense portal within 30 calendar days of returning.",
+          "Attach itemized receipts for every claimed expense."
         ]
       }
     ]
@@ -184,7 +184,7 @@
     "expected_grounding": [
       {
         "document": "Travel-and-Expenses.md",
-        "passage_id": "d03p003c01",
+        "passage_id": "d05p003c01",
         "key_facts": [
           "Book standard class rail unless a documented accessibility need requires a different fare.",
           "Use the corporate booking channel for rail journeys."
@@ -200,7 +200,7 @@
     "expected_grounding": [
       {
         "document": "Travel-and-Expenses.md",
-        "passage_id": "d03p004c01",
+        "passage_id": "d05p004c01",
         "key_facts": [
           "Approved private vehicle trips are reimbursed at EUR 0.42 per kilometre.",
           "Record the route and distance in the expense portal."
@@ -283,15 +283,15 @@
   {
     "id": "E17",
     "category": "cross_document",
-    "question": "For Hybrid Work Guide, what is documented about Desk booking, and separately, for Leave Handbook, what is documented about Parental leave?",
+    "question": "For Hybrid Work Guide, what is documented about Remote access, and separately, for Leave Handbook, what is documented about Parental leave?",
     "expected_status": "answered",
     "expected_grounding": [
       {
         "document": "Hybrid-Work-Guide.md",
-        "passage_id": "d01p004c01",
+        "passage_id": "d01p005c01",
         "key_facts": [
-          "Reserve a desk in the office booking app by 17:00 on the previous working day.",
-          "Cancel unneeded bookings before 09:00 on the day."
+          "Company files may be accessed only from managed laptops using the approved VPN.",
+          "Report suspected device loss by phone to the service desk immediately."
         ]
       },
       {

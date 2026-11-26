@@ -44,6 +44,9 @@ def main():
     build.add_argument("--out", type=Path, required=True)
     build.add_argument("--iterations", type=int, default=3)
     build.add_argument("--token-budget", type=int, default=12_000)
+    build.add_argument("--latency-budget", type=int, default=120, help="Seconds of active build time")
+    build.add_argument("--no-tournament", action="store_true")
+    build.add_argument("--baseline-definition", type=Path, help="Hand-written agent to compare")
     build.add_argument("--interview", action="store_true")
     build.add_argument("--no-model", action="store_true")
     build.add_argument("--regression-evals", type=Path)
@@ -57,6 +60,7 @@ def main():
     demo = commands.add_parser("demo", help="Reproduce both committed demonstrations")
     demo.add_argument("--out", type=Path, default=Path(".runs/demos"))
     demo.add_argument("--no-model", action="store_true")
+    demo.add_argument("--all-samples", action="store_true", help="Include warehouse tools and policy regression")
 
     server = commands.add_parser("serve", help="Start the web workspace")
     server.add_argument("--host", default="127.0.0.1")
@@ -71,21 +75,36 @@ def main():
         model = LocalModel(enabled=not args.no_model, token_budget=getattr(args, "token_budget", 12_000))
         if args.command == "build":
             value = args.brief_file.read_text(encoding="utf-8") if args.brief_file else args.brief
+            prior_run = args.regression_evals.with_name("run.json") if args.regression_evals else None
             result = run_factory(
                 value, args.docs, args.out, model=model, max_iterations=args.iterations,
                 interview=interview if args.interview else None,
                 progress=lambda stage, text: print(f"[{stage}] {text}", file=sys.stderr, flush=True),
                 regression_cases=read_json(args.regression_evals) if args.regression_evals else None,
+                prior_results=read_json(prior_run).get("results") if prior_run and prior_run.is_file() else None,
+                manual_baseline=read_json(args.baseline_definition) if args.baseline_definition else None,
+                tournament=not args.no_tournament, latency_budget=args.latency_budget,
             )
             print(f'{result["definition"]["name"]}: {result["scorecard"]["passed"]}/{result["scorecard"]["total"]} · {args.out}')
         elif args.command == "demo":
-            for name in ("people-ops", "marine-supply"):
+            names = ["people-ops", "marine-supply"]
+            if args.all_samples:
+                names.extend(["operations-lab", "people-ops-revised"])
+            prior = None
+            for name in names:
                 root = ROOT / "demos" / name
+                baseline = root / "manual-baseline.json"
+                regression = prior if name == "people-ops-revised" else None
                 result = run_factory(
                     (root / "brief.txt").read_text(), root / "documents", args.out / name,
                     model=LocalModel(enabled=not args.no_model),
                     progress=lambda stage, text: print(f"[{stage}] {text}", flush=True),
+                    manual_baseline=read_json(baseline) if baseline.is_file() else None,
+                    regression_cases=regression["evals"] if regression else None,
+                    prior_results=regression["results"] if regression else None,
                 )
+                if name == "people-ops":
+                    prior = result
                 print(f'{name}: {result["scorecard"]["score"]}% · {result["model"]["mode"]}', flush=True)
         elif args.command == "chat":
             definition = read_json(args.definition)

@@ -8,7 +8,7 @@ from collections import Counter
 from pathlib import Path
 
 from .corpus import Corpus, Index, clean, least_duplicate, terms
-from .model import LocalModel
+from .model import LatencyBudgetExceeded, LocalModel
 from .registry import REGISTRY, dispatch, select_tools
 
 REFUSAL = "The supplied sources do not establish an answer to that question."
@@ -74,8 +74,9 @@ def blocked(query, topics):
     return False
 
 
-def ingest_requirements(brief, corpus, model, answers=None):
-    answers = answers or {}
+def ingest_requirements(brief, corpus, model, answers=None, edits=None):
+    answers, edits = answers or {}, edits or {}
+    brief = edits.get("scope", brief)
     index = Index(corpus)
     inventory = []
     for doc in corpus.documents[:8]:
@@ -83,17 +84,22 @@ def ingest_requirements(brief, corpus, model, answers=None):
         inventory.append({"document": doc["name"], "headings": unique_strings(sample)[:5]})
     proposal = model.ask("intake", {"brief": brief[:1600], "inventory": inventory}, max_tokens=260)
     requested, refused = topic_clauses(brief + ("\n" + answers["scope"] if answers.get("scope") else ""))
+    if "must_answer" in edits:
+        requested = unique_strings(clean(topic) for topic in edits["must_answer"].splitlines())
+    if "must_refuse" in edits:
+        refused = unique_strings(clean(topic) for topic in edits["must_refuse"].splitlines())
     audience_match = re.search(r"\b(?:audience\s*:\s*|(?:assistant|agent)\s+for\s+)([^,.;\n]+)", brief, re.I)
     tone_match = re.search(r"\b(?:tone\s*:\s*|(?:keep|use|be)\s+)((?:a |an )?(?:concise|professional|friendly|plain|neutral|formal|empathetic)[^.;\n]*)", brief, re.I)
     proposed_audience = string(proposal.get("audience"), 110)
     proposed_tone = string(proposal.get("tone"), 90)
     default_audience = audience_match[1] if audience_match else (proposed_audience or "People using the supplied documents")
     default_tone = tone_match[1] if tone_match else (proposed_tone or "Clear, concise, and professional")
-    audience = string(answers.get("audience"), 120, default_audience)
-    tone = string(answers.get("tone"), 120, default_tone)
-    tools = select_tools(brief + " " + answers.get("scope", ""), corpus)
+    audience = string(edits.get("audience", answers.get("audience")), 120, default_audience)
+    tone = string(edits.get("tone", answers.get("tone")), 120, default_tone)
+    tools = select_tools(brief + " " + answers.get("scope", "") + ". " + ". ".join(requested), corpus)
     supported, gaps = [], []
     for topic in requested:
+        model.check_time()
         if blocked(topic, refused):
             continue
         if select_tools(topic, corpus):
@@ -123,7 +129,7 @@ def ingest_requirements(brief, corpus, model, answers=None):
         "scope": string(brief, 4000), "audience": audience, "tone": tone,
         "must_answer": supported or [{"topic": "Questions supported by the supplied document collection", "basis": "document collection", "evidence": []}],
         "must_refuse": refused + ["Requests without verifiable source evidence"],
-        "groundability_gaps": gaps, "questions": questions[:5], "interview_answers": answers,
+        "groundability_gaps": gaps, "questions": questions[:5], "interview_answers": answers, "review_edits": edits,
         "scope_notes": scope_notes, "tools": tools, "documents": corpus.documents,
         "ingestion_warnings": corpus.warnings,
     }
@@ -420,8 +426,43 @@ def summarize(rows, iteration):
 
 def score_agent(definition, corpus, cases, model, iteration):
     agent = Agent(definition, corpus, model, permit_network=False)
-    rows = [judge(case, agent.answer(case["question"]), corpus) for case in cases]
+    rows = []
+    for case in cases:
+        if model:
+            model.check_time()
+        rows.append(judge(case, agent.answer(case["question"]), corpus))
     return {"scorecard": summarize(rows, iteration), "results": rows}
+
+
+def candidate_prompts(definition, model):
+    yield "Grounded default", definition
+    directions = [
+        ("Exact evidence", "Prefer passages that directly contain the specific requested fact."),
+        ("Task coverage", "Prefer passages that cover all parts of the question and retain units and exceptions."),
+    ]
+    used = set()
+    all_fallbacks = {rule.casefold() for _, rule in directions}
+    for name, fallback in directions:
+        draft = model.ask("prompt_tournament", {
+            "focus": name, "scope": definition["scope"][:6], "starting_instruction": fallback,
+        }, max_tokens=95)
+        hint = string(draft.get("instruction"), 200)
+        normalized = hint.casefold()
+        if len(terms(hint)) < 4 or normalized in used or (normalized in all_fallbacks and normalized != fallback.casefold()):
+            hint = fallback
+        used.add(hint.casefold())
+        candidate = copy.deepcopy(definition)
+        candidate["system_prompt"] += f"\nEvidence selection preference: {hint}"
+        yield name, candidate
+
+
+def comparison_rows(factory_rows, reference_rows):
+    previous = {row["id"]: row["passed"] for row in reference_rows}
+    return {
+        "gained": [row["id"] for row in factory_rows if row["passed"] and previous.get(row["id"]) is False],
+        "lost": [row["id"] for row in factory_rows if not row["passed"] and previous.get(row["id"]) is True],
+        "unchanged": [row["id"] for row in factory_rows if previous.get(row["id"]) == row["passed"]],
+    }
 
 
 def suggest_patches(failures, model):
@@ -490,112 +531,212 @@ def report_markdown(result):
     ]
     if not any(c["category"] == "cross_document" for c in cases):
         lines.append("Cross-document cases could not be generated because the source collection lacks distinct document anchors.")
-    if result.get("regression"):
-        regression = result["regression"]
+    budget = result["budget"]
+    lines += ["", "## Run budget", "",
+              f'Active time {budget["active_seconds"]:.2f}/{budget["latency_limit"]} seconds. '
+              f'Model tokens {budget["tokens_used"]}/{budget["token_limit"]}. '
+              f'Requirements review took {budget["review_seconds"]:.2f} seconds outside the active budget.']
+    lines.extend(f"- {note}" for note in result["budget_notes"])
+    if tournament := result.get("tournament"):
+        lines += ["", "## Prompt tournament", "",
+                  f'Winner **{tournament["winner"]}**. Every scored candidate used the same generated suite. '
+                  'Ties keep the earlier candidate.', "",
+                  "| Candidate | Passed | Score |", "| --- | ---: | ---: |"]
+        for candidate in tournament["candidates"]:
+            card = candidate["scorecard"]
+            lines.append(f'| {candidate["name"]} | {card["passed"]}/{card["total"]} | {card["score"]}% |')
+        if not tournament["complete"]:
+            lines.append("\nThe latency limit interrupted the tournament.")
+    if manual := result.get("manual_baseline"):
+        card, differences = manual["scorecard"], manual["changes"]
+        lines += ["", "## Factory vs hand-written baseline", "",
+                  f'The hand-written agent passed **{card["passed"]}/{card["total"]}** on the same inputs and judge.',
+                  f'- Cases only the factory passed · {", ".join(differences["gained"]) or "None"}',
+                  f'- Cases only the hand-written agent passed · {", ".join(differences["lost"]) or "None"}',
+                  f'- Cases with the same outcome · {len(differences["unchanged"])}']
+    if regression := result.get("regression"):
         lines += ["", "## Regression against prior suite", "",
                   f'{regression["scorecard"]["passed"]}/{regression["scorecard"]["total"]} prior cases passed.']
+        if regression["prior_results_available"]:
+            lines.append(f'- Newly failing · {", ".join(regression["changes"]["lost"]) or "None"}')
+            lines.append(f'- Newly passing · {", ".join(regression["changes"]["gained"]) or "None"}')
         for row in regression["results"]:
             if not row["passed"]:
                 lines.append(f'- **{row["id"]} · {row["failure"]}**. {row["question"]}')
+                for item in row["missing_facts"]:
+                    lines.append(f'  - Prior fact now missing from {item["document"]}: {item["fact"]}')
     return "\n".join(lines) + "\n"
 
 
 def run_factory(brief, folder, output, *, model=None, max_iterations=3, interview=None,
-                progress=None, regression_cases=None):
+                progress=None, regression_cases=None, prior_results=None, manual_baseline=None,
+                tournament=True, latency_budget=120):
     if not brief.strip() or len(brief) > 4000:
         raise ValueError("Enter a brief between 1 and 4,000 characters")
     if model is not None and model.token_budget < 0:
         raise ValueError("The model token budget cannot be negative")
     if not 0 <= max_iterations <= 3:
         raise ValueError("The repair budget is between zero and three iterations")
+    if not 1 <= latency_budget <= 600:
+        raise ValueError("The active latency budget must be between 1 and 600 seconds")
     start = time.monotonic()
     model = model or LocalModel()
+    model.deadline = start + latency_budget
+    review_seconds = 0
     progress = progress or (lambda _stage, _detail: None)
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
-    progress("intake", "Reading and indexing the supplied documents")
-    corpus = Corpus.load(folder)
-    requirements = ingest_requirements(brief, corpus, model)
-    if interview:
-        proposed_answers = interview(requirements)
-        if proposed_answers:
+    try:
+        progress("intake", "Reading and indexing the supplied documents")
+        corpus = Corpus.load(folder, check_time=model.check_time)
+        requirements = ingest_requirements(brief, corpus, model)
+        if interview:
+            review_start = time.monotonic()
+            proposal = interview(requirements) or {}
+            review_seconds = time.monotonic() - review_start
+            model.deadline += review_seconds
             valid_keys = {item["id"] for item in requirements["questions"]}
-            answers = {key: string(value, 400) for key, value in proposed_answers.items() if key in valid_keys and string(value, 400)}
-            if answers:
-                requirements = ingest_requirements(brief, corpus, model, answers)
-    write_json(output / "requirements.json", requirements)
-    progress("definition", "Designing the grounded agent and choosing tools")
-    definition = generate_definition(requirements, model)
+            submitted = proposal.get("answers", proposal)
+            answers = {key: string(value, 400) for key, value in submitted.items() if key in valid_keys and string(value, 400)}
+            raw_edits = proposal.get("edits", {})
+            edits = {key: raw_edits[key].strip()[:4000] for key in ("scope", "audience", "tone", "must_answer", "must_refuse")
+                     if key in raw_edits and isinstance(raw_edits[key], str)}
+            edits = {key: value for key, value in edits.items() if value or key in {"must_answer", "must_refuse"}}
+            if answers or edits:
+                requirements = ingest_requirements(brief, corpus, model, answers, edits)
+        write_json(output / "requirements.json", requirements)
+        progress("definition", "Designing the grounded agent and choosing tools")
+        definition = generate_definition(requirements, model)
+        progress("evals", "Generating a fresh evidence-anchored evaluation suite")
+        cases = evaluate_cases(requirements, corpus, model)
+        write_json(output / "evals.json", cases)
+        progress("scoring", f"Scoring {len(cases)} generated cases against the baseline")
+        baseline = score_agent(definition, corpus, cases, model, 0)
+    except LatencyBudgetExceeded as exc:
+        write_json(output / "model_trace.json", model.summary())
+        raise ValueError("The latency budget expired before the first complete scorecard. Increase the budget and retry.") from exc
+
+    candidates = []
+    winner = "Grounded default"
+    interrupted = False
+    if tournament:
+        variants = candidate_prompts(definition, model)
+        first_name, original = next(variants)
+        candidates.append({"name": first_name, "definition": original, **baseline})
+        try:
+            for name, candidate in variants:
+                progress("scoring", f"Prompt tournament · {name}")
+                entry = {"name": name, "definition": candidate, **score_agent(candidate, corpus, cases, model, 0)}
+                candidates.append(entry)
+                if entry["scorecard"]["passed"] > baseline["scorecard"]["passed"]:
+                    winner, definition, baseline = name, candidate, entry
+        except LatencyBudgetExceeded:
+            interrupted = True
     write_json(output / "initial_definition.json", definition)
-    progress("evals", "Generating a fresh evidence-anchored evaluation suite")
-    cases = evaluate_cases(requirements, corpus, model)
-    write_json(output / "evals.json", cases)
-    progress("scoring", f"Scoring {len(cases)} generated cases against the baseline")
-    baseline = score_agent(definition, corpus, cases, model, 0)
     best = baseline
-    attempts = [baseline]
+    attempts = [{"scorecard": baseline["scorecard"], "results": baseline["results"]}]
     changes = []
-    tried = set()
-    stop = "The repair iteration budget was exhausted."
-    if max_iterations == 0:
-        stop = "No repair iterations were requested."
+    stop = "The repair iteration budget was exhausted." if max_iterations else "No repair iterations were requested."
+    stop_for_time = "The active latency budget was reached. Retained the best complete scorecard."
+    if interrupted:
+        stop = stop_for_time
     for iteration in range(1, max_iterations + 1):
+        if interrupted or model.remaining_time() <= 0:
+            stop = stop_for_time
+            break
         if best["scorecard"]["passed"] == len(cases):
             stop = "All generated cases passed."
             break
+        iteration_start, iteration_tokens = time.monotonic(), model.tokens
         failures = [row for row in best["results"] if not row["passed"]]
-        options, suggestion = suggest_patches(failures, model)
-        # Only label a model proposal as accepted when it matches the independent failure diagnosis.
+        try:
+            options, suggestion = suggest_patches(failures, model)
+        except LatencyBudgetExceeded:
+            stop = stop_for_time
+            break
         possible = [
-            patch for patch in options if patch not in tried
-            and any(definition[PATCHES[patch][0]].get(k) != v for k, v in PATCHES[patch][1].items())
+            patch for patch in options
+            if any(definition[PATCHES[patch][0]].get(k) != v for k, v in PATCHES[patch][1].items())
         ]
         if not possible:
             stop = "No applicable targeted repair remains for the observed failures."
             break
         suggested = suggestion.get("patch")
         patch = suggested if isinstance(suggested, str) and suggested in possible[:2] else possible[0]
-        tried.add(patch)
         section, updates, rationale = PATCHES[patch]
         candidate = copy.deepcopy(definition)
         before = {key: candidate[section].get(key) for key in updates}
         candidate[section].update(updates)
         categories = [category for category, available in PATCH_ORDER.items() if patch in available]
         progress("repair", f"Iteration {iteration}/{max_iterations} · {rationale}")
-        attempt = score_agent(candidate, corpus, cases, model, iteration)
-        attempts.append(attempt)
-        accepted = attempt["scorecard"]["passed"] > best["scorecard"]["passed"]
-        after_by_id = {row["id"]: row for row in attempt["results"]}
-        changes.append({
+        entry = {
             "iteration": iteration, "patch": patch, "field": section, "from": before, "to": updates,
             "why": rationale, "addressed_cases": [r["id"] for r in failures if r["failure"] in categories],
-            "resolved_cases": [r["id"] for r in failures if after_by_id[r["id"]]["passed"]],
-            "regressed_cases": [r["id"] for r in best["results"] if r["passed"] and not after_by_id[r["id"]]["passed"]],
-            "score_before": best["scorecard"]["score"], "score_after": attempt["scorecard"]["score"],
-            "accepted": accepted, "model_suggestion": suggestion,
+            "score_before": best["scorecard"]["score"], "model_suggestion": suggestion,
+        }
+        try:
+            attempt = score_agent(candidate, corpus, cases, model, iteration)
+        except LatencyBudgetExceeded:
+            changes.append({**entry, "status": "latency_limit", "accepted": False, "score_after": None,
+                            "resolved_cases": [], "regressed_cases": []})
+            stop = stop_for_time
+            break
+        attempts.append(attempt)
+        accepted = attempt["scorecard"]["passed"] > best["scorecard"]["passed"]
+        changed = comparison_rows(attempt["results"], best["results"])
+        changes.append({
+            **entry, "status": "scored", "resolved_cases": changed["gained"], "regressed_cases": changed["lost"],
+            "score_after": attempt["scorecard"]["score"], "accepted": accepted,
+            "elapsed_seconds": round(time.monotonic() - iteration_start, 3), "tokens": model.tokens - iteration_tokens,
         })
-        if accepted:
-            definition, best = candidate, attempt
-    if best["scorecard"]["passed"] == len(cases):
+        if not accepted:
+            stop = "Stopped after a repair produced no net improvement."
+            break
+        definition, best = candidate, attempt
+    if best["scorecard"]["passed"] == len(cases) and stop != stop_for_time:
         stop = "All generated cases passed."
     result = {
         "requirements": requirements, "definition": definition, "evals": cases,
         "iterations": changes, "scorecards": [a["scorecard"] for a in attempts],
         "scorecard": best["scorecard"], "results": best["results"], "stop_reason": stop,
+        "budget_notes": [],
     }
+    if tournament:
+        result["tournament"] = {"winner": winner, "candidates": candidates, "complete": len(candidates) == 3}
+        write_json(output / "tournament.json", result["tournament"])
     if regression_cases:
         progress("scoring", f"Rechecking {len(regression_cases)} cases from the prior run")
-        result["regression"] = score_agent(definition, corpus, regression_cases, model, 0)
+        try:
+            regression = score_agent(definition, corpus, regression_cases, model, 0)
+            regression["changes"] = comparison_rows(regression["results"], prior_results or [])
+            regression["prior_results_available"] = prior_results is not None
+            result["regression"] = regression
+            write_json(output / "regression.json", regression)
+        except LatencyBudgetExceeded:
+            result["budget_notes"].append("The active latency limit prevented a complete regression scorecard.")
+    if manual_baseline:
+        progress("scoring", "Comparing the final agent with the hand-written baseline")
+        try:
+            baseline_corpus = Corpus.load(folder, manual_baseline["retrieval"]["chunk_words"], manual_baseline["retrieval"]["overlap_words"],
+                                          check_time=model.check_time)
+            manual = score_agent(manual_baseline, baseline_corpus, cases, model, 0)
+            manual["changes"] = comparison_rows(best["results"], manual["results"])
+            manual["definition"] = manual_baseline
+            result["manual_baseline"] = manual
+            write_json(output / "manual_comparison.json", manual)
+        except LatencyBudgetExceeded:
+            result["budget_notes"].append("The active latency limit prevented a complete hand-written baseline comparison.")
     result["model"] = model.summary()
     result["elapsed_seconds"] = round(time.monotonic() - start, 2)
+    result["budget"] = {"active_seconds": round(time.monotonic() - start - review_seconds, 2),
+                        "latency_limit": latency_budget, "review_seconds": round(review_seconds, 2),
+                        "token_limit": model.token_budget, "tokens_used": model.tokens}
     progress("report", "Writing the definition, scorecards, change log, and quality report")
     write_json(output / "definition.json", definition)
     write_json(output / "iterations.json", changes)
     write_json(output / "scorecards.json", {"final": best["scorecard"], "all": result["scorecards"], "stop_reason": stop})
     write_json(output / "eval_results.json", attempts)
     write_json(output / "model_trace.json", result["model"])
-    if regression_cases:
-        write_json(output / "regression.json", result["regression"])
     (output / "report.md").write_text(report_markdown(result), encoding="utf-8")
     write_json(output / "run.json", result)
     return result
