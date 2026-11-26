@@ -4,16 +4,17 @@ ForgeAI turns a one-paragraph brief and an unfamiliar document folder into a gro
 
 ## Run the web app
 
-From this folder, with Python 3.10 or newer:
+From the extracted project folder, with Python 3.10 or newer:
 
 ```sh
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -e .
-python -m forgeai serve
+python launch.py
 ```
 
-On Windows PowerShell, activate with `.venv\Scripts\Activate.ps1`. Open **http://127.0.0.1:8000**. Load a sample project or enter your own brief and add documents. Enable **Review requirements** for the interview. Leave it disabled for an unattended run. Report tabs provide the requirements, evaluations, definition, and repair log. **Open chat** loads the generated definition and **Export run** downloads the outputs and source files.
+The launcher creates a project-local virtual environment, installs the dependencies, starts Studio, and opens it in your browser. Use `python launch.py --with-model` to start Qwen as part of the same command on Linux x86-64. An already-running compatible local model can be reused on any platform.
+
+Load a sample project or enter your own brief and add documents. Enable **Review requirements** for the interview. Leave it disabled for an unattended run. Report tabs provide the requirements, evaluations, definition, and repair log. **Open chat** loads the generated definition and **Export run** downloads the outputs and source files.
+
+For manual startup, install with `python -m pip install -e .` and run `python -m forgeai serve`. The default app address is `http://127.0.0.1:8000`.
 
 ### Enable the local model
 
