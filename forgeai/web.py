@@ -10,6 +10,7 @@ import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, File, Form, HTTPException, Request, Response, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
@@ -20,7 +21,8 @@ from .corpus import MAX_FILES, MAX_FILE_BYTES, SUPPORTED, Corpus
 from .factory import Agent, read_json, run_factory, write_json
 from .model import LocalModel, ROOT
 from .registry import REGISTRY
-from . import privacy
+from . import feedback, privacy
+from .flight_recorder import FlightRecorder, store_trace
 
 app = FastAPI(title="ForgeAI", description="Local agent factory and evidence workspace")
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
@@ -165,6 +167,7 @@ class Approval(BaseModel):
 class Message(BaseModel):
     run_id: str
     question: str = Field(min_length=1, max_length=2000)
+    language: Literal["auto", "en", "hi", "ta"] = "auto"
 
 
 def now():
@@ -201,7 +204,8 @@ def update(run_id, **fields):
         write_json(RUNS / run_id / "status.json", job["meta"])
 
 
-def manage_run(run_id, brief, iterations, with_model, checkpoint, previous, manual, tournament, token_budget, latency_budget):
+def manage_run(run_id, brief, iterations, with_model, checkpoint, previous, manual, tournament, token_budget,
+               latency_budget, blind, unseen, security_audit, minimum_confidence, extra_cases):
     artifacts, documents = run_paths(run_id)
     update(run_id, status="running", stage="intake", detail="Reading sources")
 
@@ -220,7 +224,8 @@ def manage_run(run_id, brief, iterations, with_model, checkpoint, previous, manu
             brief, documents, artifacts, model=LocalModel(with_model, token_budget), max_iterations=iterations,
             interview=approval if checkpoint else None, progress=progress, tournament=tournament,
             latency_budget=latency_budget, regression_cases=previous.get("evals"),
-            prior_results=previous.get("results"), manual_baseline=manual,
+            prior_results=previous.get("results"), manual_baseline=manual, blind=blind, unseen_corpus=unseen,
+            security_audit=security_audit, minimum_confidence=minimum_confidence, extra_cases=extra_cases,
         )
         update(run_id, status="complete", stage="report", detail="All artifacts are ready",
                name=result["definition"]["name"], score=result["scorecard"]["score"], finished=now(), review=None)
@@ -329,6 +334,10 @@ async def launch(
     tournament: bool = Form(True),
     token_budget: int = Form(12_000, ge=0, le=60_000),
     latency_budget: int = Form(120, ge=1, le=600),
+    blind: bool = Form(False),
+    unseen_corpus: bool = Form(False),
+    security_audit: bool = Form(False),
+    minimum_confidence: float = Form(0, ge=0, le=1),
     files: list[UploadFile] | None = File(None),
 ):
     brief = brief.strip()
@@ -336,6 +345,8 @@ async def launch(
         raise HTTPException(422, "Enter a brief between 1 and 4,000 characters")
     if not 0 <= iterations <= 3:
         raise HTTPException(422, "Select between zero and three repair iterations")
+    if unseen_corpus and demo:
+        raise HTTPException(422, "Use new uploaded documents for an unseen corpus.")
     if demo and demo not in DEMOS:
         raise HTTPException(422, "Unknown source collection")
     files = files or []
@@ -344,9 +355,19 @@ async def launch(
     if regression:
         require_run(request, regression)
     previous = read_json(completed(regression)[0] / "run.json") if regression else {}
+    extra_cases = []
+    if regression:
+        store = enterprise_api.feature_folder(request, regression)
+        reviewed = feedback.approved_cases(store, regression)
+        previous["evals"] = previous["evals"] + reviewed
+        extra_cases = feedback.approved_cases(store, regression, suite="development")
     manual_path = demo_root(demo) / "manual-baseline.json" if demo else None
     manual = read_json(manual_path) if manual_path and manual_path.is_file() else None
     original = sorted((demo_root(demo) / "documents").iterdir()) if demo else []
+    principal = request.state.principal
+    submitted_names = [item.name for item in original] + [Path((file.filename or "").replace("\\", "/")).name for file in files]
+    if not principal.allows_documents(submitted_names):
+        raise HTTPException(403, "This account cannot attach one or more source documents.")
     if len(files) + len(original) > MAX_FILES:
         raise HTTPException(422, f"Use at most {MAX_FILES} files")
     run_id = uuid.uuid4().hex[:12]
@@ -371,7 +392,6 @@ async def launch(
         shutil.rmtree(root)
         raise
     (root / "brief.txt").write_text(brief + "\n", encoding="utf-8")
-    principal = request.state.principal
     meta = {"id": run_id, "workspace": principal.workspace, "owner": principal.name, "status": "queued", "stage": "intake", "detail": "Waiting for the factory",
             "name": DEMOS[demo]["name"] if demo else "Custom agent", "created": now(), "demo": False}
     with LOCK:
@@ -379,7 +399,8 @@ async def launch(
         write_json(root / "status.json", meta)
         initial = dict(meta)
     QUEUE.submit(manage_run, run_id, brief, iterations, model, checkpoint, previous,
-                 manual, tournament, token_budget, latency_budget)
+                 manual, tournament, token_budget, latency_budget, blind, unseen_corpus, security_audit,
+                 minimum_confidence, extra_cases)
     return initial
 
 
@@ -433,10 +454,22 @@ def download(run_id: str):
 
 @app.post("/api/chat")
 def chat(message: Message, request: Request):
-    require_run(request, message.run_id)
-    folder, documents = completed(message.run_id)
-    definition = read_json(folder / "definition.json")
-    config = definition["retrieval"]
-    corpus = Corpus.load(documents, config["chunk_words"], config["overlap_words"])
-    agent = Agent(definition, corpus, LocalModel())
-    return agent.answer(message.question)
+    _, agent, version, _ = enterprise_api.runtime(request, message.run_id)
+    principal = request.state.principal
+    recorder = FlightRecorder(message.question, principal.name)
+    response = agent.answer(message.question, recorder, message.language)
+    record = recorder.finish(response)
+    record["agent_version"] = version
+    try:
+        retention = int(os.getenv("FORGE_TRACE_RETENTION_DAYS", "30"))
+        if not 1 <= retention <= 365:
+            raise ValueError("Invalid trace retention window.")
+        store_trace(enterprise_api.feature_folder(request, message.run_id) / "traces", record, retention)
+    except (OSError, ValueError):
+        return {**response, "trace_status": "unavailable"}
+    return {**response, "trace_id": record["id"], "agent_version": version}
+
+
+from . import enterprise_api
+
+app.include_router(enterprise_api.router)

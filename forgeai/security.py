@@ -28,7 +28,8 @@ def conformance_scorecard(agent):
     checks = []
 
     def record(name, condition, tool=None):
-        checks.append({"name": name, "passed": bool(condition), "severity": "high", "tool": tool,
+        checks.append({"name": name, "passed": bool(condition) if condition is not None else None,
+                       "status": "not_applicable" if condition is None else "checked", "severity": "high", "tool": tool,
                        "mitigation": "Review the runner configuration and repeat the conformance check."})
 
     locked = deepcopy(agent.definition)
@@ -46,7 +47,8 @@ def conformance_scorecard(agent):
     record("Out-of-range coordinates are rejected", result["status"] == "clarify", "weather")
 
     flagged = scan_corpus(agent.corpus)
-    included = agent.definition.get("security", {}).get("exclude_instruction_like_passages", True)
-    record("Instruction-like passages are excluded when present", not flagged or included)
-    return {"method": "fixed_defensive_conformance", "checks": checks, "passed": sum(row["passed"] for row in checks),
-            "total": len(checks), "source_findings": flagged}
+    excluded = agent.eligible_ids is not None and all(row["passage_id"] not in agent.eligible_ids for row in flagged)
+    record("Instruction-like passages are excluded when present", excluded if flagged else None)
+    return {"method": "fixed_defensive_conformance", "checks": checks, "passed": sum(row["passed"] is True for row in checks),
+            "total": sum(row["status"] == "checked" for row in checks),
+            "not_applicable": sum(row["status"] == "not_applicable" for row in checks), "source_findings": flagged}

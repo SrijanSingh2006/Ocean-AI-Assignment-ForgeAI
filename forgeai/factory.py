@@ -203,7 +203,7 @@ class Agent:
         self.model = model
         self.permit_network = permit_network
         self.conflicts = numeric_conflicts(corpus)
-        self.resolutions = resolutions or {}
+        self.resolutions = resolutions if resolutions is not None else definition.get("conflict_resolutions", {})
         self.translator = translator
         self.embeddings = embeddings
         self.source_languages = sorted({p.get("language", "en").split("-")[0] for p in corpus.passages})
@@ -694,7 +694,9 @@ def report_markdown(result):
 
 def run_factory(brief, folder, output, *, model=None, max_iterations=3, interview=None,
                 progress=None, regression_cases=None, prior_results=None, manual_baseline=None,
-                tournament=True, latency_budget=120, blind=False, unseen_corpus=False, security_audit=False):
+                tournament=True, latency_budget=120, blind=False, unseen_corpus=False, security_audit=False, minimum_confidence=0, extra_cases=()):
+    if not 0 <= minimum_confidence <= 1:
+        raise ValueError("Minimum evidence score must be between 0 and 1.")
     if not brief.strip() or len(brief) > 4000:
         raise ValueError("Enter a brief between 1 and 4,000 characters")
     if model is not None and model.token_budget < 0:
@@ -731,6 +733,8 @@ def run_factory(brief, folder, output, *, model=None, max_iterations=3, intervie
         write_json(output / "requirements.json", requirements)
         progress("definition", "Designing the grounded agent and choosing tools")
         definition = generate_definition(requirements, model)
+        if minimum_confidence:
+            definition["evidence_policy"] = {"minimum_score": minimum_confidence}
         progress("evals", "Generating a fresh evidence-anchored evaluation suite")
         holdout = []
         if blind or unseen_corpus:
@@ -738,6 +742,7 @@ def run_factory(brief, folder, output, *, model=None, max_iterations=3, intervie
             cases, holdout = stratified_holdout(pool)
         else:
             cases = evaluate_cases(requirements, corpus, model)
+        cases = cases + list(extra_cases)
         write_json(output / "evals.json", cases)
         progress("scoring", f"Scoring {len(cases)} generated cases against the baseline")
         baseline = score_agent(definition, corpus, cases, model, 0)

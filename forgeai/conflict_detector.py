@@ -7,7 +7,7 @@ import re
 from .corpus import clean, terms
 
 MEASURE = re.compile(
-    r"\b(\d+(?:\.\d+)?)\s*(calendar days?|working days?|business days?|days?|hours?|weeks?|months?|percent|%)\b",
+    r"\b(\d+(?:\.\d+)?)\s*(calendar days?|working days?|business days?|days?|hours?|weeks?|months?|percent|%)(?!\w)",
     re.I,
 )
 SUBJECT = re.compile(r"^(.{2,90}?)\s+(?:is|are|equals?|lasts?|takes?|requires?)\s+(?:up to\s+)?$", re.I)
@@ -54,16 +54,20 @@ def numeric_conflicts(corpus):
 
 
 def resolve_conflicts(passages, corpus, conflicts, selections):
-    by_passage = {claim["passage_id"]: conflict for conflict in conflicts for claim in conflict["claims"]}
+    by_passage = defaultdict(list)
+    for conflict in conflicts:
+        for claim in conflict["claims"]:
+            by_passage[claim["passage_id"]].append(conflict)
     resolved = []
     for passage in passages:
-        conflict = by_passage.get(passage["id"])
-        if not conflict:
-            resolved.append(passage)
-            continue
-        picked = selections.get(conflict["id"])
-        ids = {claim["passage_id"] for claim in conflict["claims"]}
-        if picked not in ids:
-            return [], conflict
-        resolved.append(corpus.by_id[picked])
+        replacements = set()
+        for conflict in by_passage.get(passage["id"], []):
+            picked = selections.get(conflict["id"])
+            ids = {claim["passage_id"] for claim in conflict["claims"]}
+            if picked not in ids:
+                return [], conflict
+            replacements.add(picked)
+        if len(replacements) > 1:
+            return [], by_passage[passage["id"]][0]
+        resolved.append(corpus.by_id[next(iter(replacements))] if replacements else passage)
     return resolved, None
