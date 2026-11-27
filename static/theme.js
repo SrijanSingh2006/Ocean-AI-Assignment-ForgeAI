@@ -18,7 +18,7 @@
   function applyTheme() {
     const theme = currentTheme();
     document.documentElement.dataset.theme = theme;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#151124" : "#f6f4fa");
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#111112" : "#f7f5f5");
     for (const control of document.querySelectorAll("[data-theme-toggle]")) {
       control.setAttribute("aria-pressed", String(theme === "dark"));
       control.title = theme === "dark" ? "Switch to light theme" : "Switch to dark theme";

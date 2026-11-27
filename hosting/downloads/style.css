@@ -1,60 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;700;800&display=swap');
-:root {
-  color-scheme: light;
-  font-family: 'DM Sans',system-ui,sans-serif;
-  line-height: 1.55;
-  --page: #f6f4fa;
-  --ink: #242039;
-  --muted: #645c76;
-  --panel: #ffffff;
-  --line: #e6dff0;
-  --surface: #f8f5fc;
-  --wash: #f0eaff;
-  --accent: #5d3ac8;
-  --focus: #7951df;
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --page: #151124;
-  --ink: #f4effc;
-  --muted: #beb5d1;
-  --panel: #1e1931;
-  --line: #3c3253;
-  --surface: #29213e;
-  --wash: #352651;
-  --accent: #c8b0ff;
-  --focus: #bd9eff;
-}
+:root { font-family: 'DM Sans',system-ui,sans-serif; line-height: 1.55; }
 
 *{box-sizing:border-box}
 body{margin:0;color:var(--ink);background:var(--page)}
 .header{display:flex;justify-content:space-between;align-items:center;gap:10px;max-width:1140px;margin:auto;padding:23px 24px;font-family:Manrope,sans-serif;font-size:1.15rem}
 .brandmark{display:flex;align-items:center;gap:10px;text-decoration:none;white-space:nowrap}
-.brandmark span{color:var(--accent)}
+.brandmark span{color:var(--primary)}
 main{max-width:1140px;margin:auto;padding:0 24px 48px}
-.hero{min-height:330px;display:flex;align-items:center;isolation:isolate;position:relative;overflow:hidden;border-radius:22px;background:#1b1431;color:#fff}
-.hero::before{content:"";position:absolute;inset:0 0 0 32%;z-index:-1;background:linear-gradient(90deg,#1b1431,transparent 62%),url('forge-hero.webp') center/cover}
+.hero{min-height:330px;display:flex;align-items:center;isolation:isolate;position:relative;overflow:hidden;border-radius:22px;background:linear-gradient(115deg,var(--hero-base) 48%,var(--hero-edge));color:#fff}
+.hero::before{content:"";position:absolute;inset:0 0 0 32%;z-index:-1;background:url('/forge-hero.webp') center/cover;mask-image:linear-gradient(90deg,transparent,#000 43%);filter:var(--hero-art-filter)}
 .hero-copy{padding:42px clamp(27px,5.3vw,74px);max-width:690px;animation:enter .45s ease both}
 @keyframes enter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
 h1,h2,strong{font-family:Manrope,'DM Sans',sans-serif}
 h1,h2,p{margin:0}
 h1{font-size:clamp(2.4rem,6vw,4.05rem);line-height:1.07;letter-spacing:-.066em}
-.hero p{font-size:1.05rem;color:#e0d9ed;max-width:420px;margin-top:14px}
+.hero p{font-size:1.05rem;color:var(--hero-text);max-width:420px;margin-top:14px}
 .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
 a{color:inherit}
 .actions a{padding:11px 14px;font-weight:700;border-radius:9px;text-decoration:none;transition:background .18s,transform .18s}
 .actions a:hover{transform:translateY(-2px)}
-.primary{background:#643dcc;color:white}
-.primary:hover{background:#5631ba}
-.secondary{border:1px solid #685886;background:#2c2244}
-.secondary:hover{background:#463561}
+.primary{background:var(--action);color:white}
+.primary:hover{background:var(--action-hover)}
+.secondary{border:1px solid var(--sidebar-line);background:var(--sidebar-panel)}
+.secondary:hover{background:var(--sidebar-active)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
 .card{border:1px solid var(--line);border-radius:15px;background:var(--panel);padding:22px 24px}
 h2{font-size:1.13rem;letter-spacing:-.02em}
 .card p{color:var(--muted);font-size:.94rem;margin:8px 0}
 pre{background:var(--surface);color:var(--ink);padding:10px 12px;border-radius:8px;margin:10px 0}
 .demo{display:flex;justify-content:space-between;gap:8px;margin:8px 0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;text-decoration:none;font-size:.88rem}
-.demo span{color:var(--accent);white-space:nowrap}
+.demo span{color:var(--primary);white-space:nowrap}
 .demo:hover{background:var(--wash);border-color:var(--focus)}
 a:focus-visible,button:focus-visible{outline:2px solid var(--focus);outline-offset:4px}
 .theme-control {
@@ -81,7 +56,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--focus);outline-offs
 .theme-control button[data-theme-toggle] { display: grid; min-width: 36px; place-items: center; }
 .theme-control [data-theme-toggle][aria-pressed="true"] svg { fill: currentColor; }
 .theme-control [aria-pressed="true"] {
-  color: var(--accent);
+  color: var(--primary);
   background: var(--panel);
   border-color: var(--line);
 }
