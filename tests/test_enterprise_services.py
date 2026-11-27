@@ -168,3 +168,49 @@ class ReleaseTests(ServiceTests):
         (docs / "policy.md").write_text("Tampered text")
         with self.assertRaisesRegex(ValueError, "integrity"):
             release_paths(self.store, "agent", version["id"])
+
+
+class DeploymentTests(ServiceTests):
+    def test_deployment_contains_a_self_contained_runnable_agent(self):
+        import json
+        import os
+        import subprocess
+        import sys
+        import zipfile
+
+        from forgeai.deployment import build_deployment
+        from forgeai.factory import write_json
+
+        artifacts = self.root / "artifacts"
+        artifacts.mkdir()
+        write_json(artifacts / "definition.json", self.definition)
+        write_json(artifacts / "evals.json", [{"id": "E1"}])
+        (artifacts / "report.md").write_text("Run completed.")
+        (artifacts / ".env").write_text("AN_EXAMPLE_SECRET=outside-package")
+        (self.root / "documents" / ".env").write_text("ANOTHER_SECRET=outside-package")
+        with self.assertRaises(PermissionError):
+            build_deployment(artifacts, self.root / "documents", allowed_documents=[])
+        package = build_deployment(artifacts, self.root / "documents", allowed_documents=["policy.md"])
+        target = self.root / "clean-deployment"
+        with zipfile.ZipFile(package) as archive:
+            self.assertTrue({"runner.py", "Dockerfile", "compose.yaml", ".env.example",
+                             "requirements.txt", "reports/evals.json", "reports/report.md",
+                             "documents/policy.md", "definition.json", "manifest.json", "tools.json"}
+                            <= set(archive.namelist()))
+            self.assertNotIn(".env", archive.namelist())
+            self.assertNotIn("documents/.env", archive.namelist())
+            self.assertEqual(json.loads(archive.read("reports/evidence-manifest.json"))["security"]["status"],
+                             "unavailable")
+            archive.extractall(target)
+        environment = {**os.environ, "PYTHONPATH": "", "FORGE_DEPLOY_MODEL": "0", "FORGE_DEPLOY_NETWORK": "0"}
+        completed = subprocess.run([sys.executable, "runner.py", "--ask", self.question],
+                                   cwd=target, env=environment, capture_output=True, text=True, check=True, timeout=20)
+        response = json.loads(completed.stdout)
+        self.assertEqual(response["status"], "answered")
+        self.assertIn("two days", response["answer"])
+        self.assertEqual(response["citations"][0]["document"], "policy.md")
+        (target / "documents" / "policy.md").write_text("Changed")
+        broken = subprocess.run([sys.executable, "runner.py", "--ask", self.question],
+                                cwd=target, env=environment, capture_output=True, text=True, timeout=20)
+        self.assertNotEqual(broken.returncode, 0)
+        self.assertIn("fingerprints do not match", broken.stderr)
