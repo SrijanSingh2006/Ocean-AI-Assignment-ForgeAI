@@ -31,7 +31,7 @@ Install Tesseract and Poppler for OCR tests. Add the optional languages extra an
 | Recorded build | 18/24 baseline, 22/24 after the first repair, 24/24 final, and 8/8 on the held-out cases |
 | Recorded browser errors | No uncaught page errors. The final video uses individually verified Hindi and Tamil clips |
 | Full Docker app | Reviewer chat and route restrictions verified. An authorized owner build persisted across container restart and required re-authentication |
-| Owner-private reviewer staging | HTTPS, sample chat with source, export, denial of owner actions, and denial of queue access without the relay credential |
-| Open gates | Independent native-language review, second live model provider, broader semantic/figure support and unauthenticated hosted access |
+| Public reviewer application | HTTPS homepage, four fictional samples, cited chat and runnable agent ZIP verified without sign-in. Anonymous build and relay queue requests were rejected |
+| Open gates | Independent native-language review, second live model provider, broader semantic and figure support |
 
 [Recorded cases and outputs](reports/recorded-build/) · [Chromium smoke output](reports/chromium-smoke.txt) · [Screenshots](screenshots/)

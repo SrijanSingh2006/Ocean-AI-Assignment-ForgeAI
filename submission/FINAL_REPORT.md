@@ -6,7 +6,7 @@ The nine requirements, source paths, evidence and statuses are in the [mandatory
 
 ## 2. Optional company features
 
-The [same matrix](COMPLIANCE_MATRIX.md) covers all six optional features. Prompt tournament, budget enforcement, human approval, human baseline, and regression passed. The owner-private UI and staging passed, while reviewer access without sign-in is pending approval.
+The [same matrix](COMPLIANCE_MATRIX.md) covers all six optional features. Prompt tournament, budget enforcement, human approval, human baseline, and regression passed. The hosted UI and public reviewer access passed. Sample chat and ZIP export were verified without sign-in.
 
 ## 3. Signature features
 
@@ -18,7 +18,7 @@ The original 32 tests and final 36 tests passed with zero failures or skips. Chr
 
 ## 5. Deployment
 
-ChatGPT Sites serves the staged frontend and a restricted relay. A FastAPI service uses cloud workspace files and SQLite metadata. The staged URL requires owner sign-in. Public access to the separate reviewer Site needs explicit approval after automatic review rejected the change. [Deployment report](DEPLOYMENT_REPORT.md) · [Hosted access](HOSTED_APP_URL.md)
+ChatGPT Sites serves the public reviewer frontend and a restricted relay. A FastAPI service uses cloud workspace files and SQLite metadata. Reviewers can open the public site without signing in. [Deployment report](DEPLOYMENT_REPORT.md) · [Hosted access](HOSTED_APP_URL.md)
 
 ## 6. Demo video
 
@@ -30,7 +30,6 @@ Changes are on enterprise/incremental-upgrade with a draft pull request targetin
 
 ## 8. Remaining acceptance gates
 
-- Approve public access for the separate fictional-sample reviewer Site, then verify unauthenticated chat, exports and restricted operations.
 - Configure a second independent live model provider and repeat the same-suite comparison.
 - Obtain independent Hindi and Tamil quality review across representative questions. The current models abstain when evidence checks fail.
 - Broaden chart and figure layouts and policy conflict detection beyond the verified fixtures.

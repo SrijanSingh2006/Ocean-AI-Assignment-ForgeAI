@@ -6,9 +6,9 @@ The project implements the OceanAI **Agent That Builds Agents** assignment. It p
 
 ## Submission
 
-[Submission dossier](submission/README.md) · [Recorded demo MP4 · 5:20](https://raw.githubusercontent.com/SrijanSingh2006/Ocean-AI-Assignment-ForgeAI/5c3e9954980dc7294620d44df8ec7b36b08bb196/ForgeAI-Studio-Demo.mp4) · [Hosted application status](submission/HOSTED_APP_URL.md)
+[Submission dossier](submission/README.md) · [Recorded demo MP4 · 5:20](https://raw.githubusercontent.com/SrijanSingh2006/Ocean-AI-Assignment-ForgeAI/5c3e9954980dc7294620d44df8ec7b36b08bb196/ForgeAI-Studio-Demo.mp4) · [Public reviewer app](https://forgeai-reviewer-demo.blondebiscuit2.chatgpt.site/)
 
-The dossier records the OceanAI requirements, measured results, verified workflows and open acceptance gates. The reviewer build uses fictional sample data with live chat and exports. Its staging link requires the Site owner's ChatGPT session.
+The dossier records the OceanAI requirements, measured results, verified workflows and open acceptance gates. Visitors can open the public reviewer app without signing in, explore four fictional sample agents, ask cited questions, and download runnable agent ZIPs.
 
 ## Contents
 

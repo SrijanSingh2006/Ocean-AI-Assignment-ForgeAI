@@ -19,6 +19,6 @@
 | Human checkpoint | **Review requirements** pauses generation and allows edits. The video shows the workflow. | PASS |
 | Factory vs human baseline | **Comparisons** on People Operations includes the same-suite manual baseline and gained and lost cases. | PASS |
 | Regression mode | The revised sample and impact workflow identify affected cases and retain historical scores. | PASS |
-| UI and hosting | The browser app and owner-private staging work. Access without sign-in is pending a separate Site audience approval. | PARTIAL |
+| UI and hosting | The hosted Studio supports the owner workflow. The public reviewer app was verified without sign-in for sample chat and agent export. | PASS |
 
 [Feature acceptance](FEATURE_MATRIX.md) · [Test and deployment evidence](TEST_REPORT.md)
