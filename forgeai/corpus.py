@@ -84,16 +84,17 @@ def split_text(text, base, locator):
 
 
 def read_blocks(path, check_time=None):
-    def recognized(image_or_pdf, locator):
+    def recognized(image_or_pdf, locator, heading=None):
+        heading = heading or title_for(name)
         try:
             blocks = list(image_or_pdf)
         except (OSError, subprocess.SubprocessError, ValueError):
-            yield title_for(name), "", locator, {}, {"warning": "OCR failed or the configured engine is unavailable."}
+            yield heading, "", locator, {}, {"warning": "OCR failed or the configured engine is unavailable."}
             return
         if not blocks:
-            yield title_for(name), "", locator, {}, {"warning": "OCR found no readable text."}
+            yield heading, "", locator, {}, {"warning": "OCR found no readable text."}
         for index, (body, details) in enumerate(blocks, 1):
-            yield title_for(name), body, f"{locator}, OCR block {index}", {}, details
+            yield heading, body, f"{locator}, OCR block {index}", {}, details
 
     name = path.name
     suffix = path.suffix.lower()
@@ -119,19 +120,34 @@ def read_blocks(path, check_time=None):
             yield title_for(name), "", "image", {}, {"warning": "Enable FORGE_OCR to read image sources."}
     elif suffix == ".docx":
         from docx import Document
+        from docx.opc.constants import RELATIONSHIP_TYPE
+        from docx.oxml.ns import qn
         from docx.text.paragraph import Paragraph
 
         doc = Document(path)
         heading = title_for(name)
         for number, entry in enumerate(doc.iter_inner_content(), 1):
+            if check_time:
+                check_time()
             if isinstance(entry, Paragraph):
                 value = clean(entry.text)
-                if not value:
-                    continue
-                if entry.style and entry.style.name.startswith(("Heading", "Title")):
+                if value and entry.style and entry.style.name.startswith(("Heading", "Title")):
                     heading = value
-                    continue
-                yield heading, value, f"block {number}", {}
+                elif value:
+                    yield heading, value, f"block {number}", {}
+                if ocr.enabled():
+                    for image_number, blip in enumerate(entry._element.xpath(".//a:blip"), 1):
+                        relation = entry.part.rels.get(blip.get(qn("r:embed")))
+                        if not relation or relation.is_external or relation.reltype != RELATIONSHIP_TYPE.IMAGE:
+                            continue
+                        if check_time:
+                            check_time()
+                        blob = relation.target_part.blob
+                        locator = f"block {number}, image {image_number}"
+                        if len(blob) > MAX_FILE_BYTES:
+                            yield heading, "", locator, {}, {"warning": "An embedded image exceeds the OCR size limit."}
+                            continue
+                        yield from recognized(ocr.embedded_image_blocks(blob), locator, heading)
             else:
                 rows = [[clean(cell.text) for cell in row.cells] for row in entry.rows]
                 if len(rows) > 1:

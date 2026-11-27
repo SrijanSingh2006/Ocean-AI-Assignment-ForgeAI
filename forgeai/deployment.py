@@ -16,7 +16,7 @@ from .versioning import load_snapshot_corpus
 EVIDENCE_FILES = (
     "evals.json", "eval_results.json", "scorecards.json", "iterations.json", "report.md",
     "security.json", "security_scorecard.json", "security_report.json",
-    "regression.json", "multilingual_results.json",
+    "regression.json", "multilingual_results.json", "blind_evals.json", "blind_results.json", "model_tournament.json",
 )
 REQUIREMENTS = """fastapi>=0.115,<1
 uvicorn>=0.30,<1

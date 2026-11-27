@@ -46,6 +46,13 @@ def image_blocks(path):
         }
 
 
+def embedded_image_blocks(blob):
+    with TemporaryDirectory() as folder:
+        target = Path(folder) / "embedded-image"
+        target.write_bytes(blob)
+        yield from image_blocks(target)
+
+
 def pdf_page_blocks(path, page):
     if not shutil.which("pdftoppm"):
         raise ValueError("pdftoppm is required to rasterize scanned PDFs.")
