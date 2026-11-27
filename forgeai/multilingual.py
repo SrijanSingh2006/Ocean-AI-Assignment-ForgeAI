@@ -27,6 +27,18 @@ ROMAN_QUERY_WORDS = {
         "enakku": "me", "sollunga": "tell", "kidaikkum": "receive", "kidaikum": "receive",
     },
 }
+PAID_LEAVE = re.compile(
+    r"\b(?:(?P<count>\d+) )?(?P<pay>paid|unpaid) "
+    r"(?P<leave>(?:(?:annual|sick|parental|compassionate) )?leave(?: days)?|"
+    r"vacation(?: days)?|time off|(?:working )?days)\b", re.I,
+)
+PAY_STATUS = {
+    "en": (r"\b(?:paid|with (?:pay|wages|salary))\b", r"\b(?:unpaid|without (?:pay|wages|salary))\b"),
+    "hi": (r"सवेतन|सशुल्क|वेतन सहित|वेतन के साथ|म[ज़ज]+दूरी (?:वाली|के साथ)|भुगतान किया जाता",
+           r"अवैतनिक|बिना वेतन|अवकाश अवैतनिक"),
+    "ta": (r"ஊதியத்துடன்|சம்பளத்துடன்|ஊதிய விடு|ஊதியம் வழங்க",
+           r"ஊதியமில்லா|ஊதியம் இல்லா|சம்பளமில்லா|ஊதியம் இல்லாமல்"),
+}
 
 
 def detect_language(text):
@@ -50,6 +62,17 @@ def detection_confidence(detected):
 def normalize_roman_query(text, detected):
     words = ROMAN_QUERY_WORDS[detected]
     return re.sub(r"\b[A-Za-z]+\b", lambda match: words.get(match[0].casefold(), match[0]), text)
+
+
+def express_leave_pay(match):
+    leave = match["leave"]
+    count = match["count"]
+    if count and leave.casefold().endswith(("leave days", "vacation days")):
+        leave = f"{count} days of {leave[:-5]}"
+    elif count:
+        leave = f"{count} {leave}"
+    relation = "with" if match["pay"].casefold() == "paid" else "without"
+    return f"{leave} {relation} pay"
 
 
 def language_model():
@@ -86,17 +109,24 @@ def translate(text, target, model):
 def translated_answer(answer, source, target, model):
     if source == target:
         return answer
-    translation = translate(answer, target, model)
-    if not translation:
-        return None
-    roundtrip = translate(translation, source, model)
-    if not roundtrip:
-        return None
 
     def tokens(text):
         return re.findall(r"[^\W_]+", unicodedata.normalize("NFC", text).casefold())
 
-    reviewed = tokens(roundtrip) == tokens(answer)
-    if not reviewed and (equivalent := getattr(type(model), "equivalent", None)):
-        reviewed = equivalent(model, answer, roundtrip)
-    return translation if reviewed else None
+    def pay_status(text, language):
+        return tuple(bool(re.search(pattern, text, re.I)) for pattern in PAY_STATUS[language])
+
+    original_pay = pay_status(answer, source)
+    prepared = PAID_LEAVE.sub(express_leave_pay, answer) if source == "en" else answer
+    for candidate in dict.fromkeys((prepared, answer)):
+        translation = translate(candidate, target, model)
+        if not translation or original_pay != pay_status(translation, target):
+            continue
+        roundtrip = translate(translation, source, model)
+        if not roundtrip or original_pay != pay_status(roundtrip, source):
+            continue
+        if tokens(roundtrip) in (tokens(answer), tokens(prepared)):
+            return translation
+        if (equivalent := getattr(type(model), "equivalent", None)) and equivalent(model, candidate, roundtrip):
+            return translation
+    return None

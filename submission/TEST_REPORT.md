@@ -24,8 +24,10 @@ Install Tesseract and Poppler for OCR tests. Add the optional languages extra an
 | Check | Observed result |
 | --- | --- |
 | Python baseline | 32 passed, zero failures, zero skips |
-| Python final | 38 passed, zero failures, zero skips |
+| Python final | 39 passed, zero failures, zero skips |
 | Multilingual reviewer replay | 19 passed across English, Hindi, Tamil, Romanized inputs, and script-English mixes. |
+| Uploaded English HR PDF | 8 passed across two policies in English, Hindi, Tamil and Romanized Hindi. Replies cited the same source page across languages. |
+| Unseen paid-leave translation | Hindi and Tamil retained the 14-day allowance and paid condition. A regression test rejects a translation that drops the paid condition. |
 | Chromium workflow | Build, theme switching and persistence, blind score, defensive checks, chat and citations, feedback, release approval and activation, traces, ZIP export, dashboard, keyboard and responsive navigation |
 | Resolutions and release names | Approved conflict generated a verified regression case. Named release, activation and rollback passed the API workflow |
 | Direct chat routes | The Marine Procurement link retained its requested agent after the page and run list loaded |

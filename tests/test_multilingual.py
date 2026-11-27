@@ -6,7 +6,7 @@ from unittest.mock import Mock
 from forgeai.corpus import Corpus, terms
 from forgeai.factory import Agent, generate_definition, ingest_requirements, read_json
 from forgeai.model import LocalModel
-from forgeai.multilingual import detect_language, translate
+from forgeai.multilingual import detect_language, translate, translated_answer
 from forgeai.policy_localizations import localize_evidence
 
 
@@ -21,6 +21,11 @@ class MultilingualTests(unittest.TestCase):
         model = Mock()
         model.ask.return_value = {"text": "वार्षिक छुट्टी 30 दिन है।"}
         self.assertIsNone(translate("Annual leave is 18 days.", "hi", model))
+
+    def test_translation_cannot_drop_paid_leave(self):
+        model = Mock()
+        model.ask.return_value = {"text": "कर्मचारियों को हर साल 14 दिन की छुट्टी मिलती है।"}
+        self.assertIsNone(translated_answer("Employees receive 14 paid vacation days each year.", "en", "hi", model))
 
     def test_verified_reply_retains_original_citations(self):
         with TemporaryDirectory() as folder:
