@@ -29,6 +29,10 @@ def detect_language(text):
 
 
 def language_model():
+    if folder := os.getenv("FORGE_NLLB_PATH"):
+        from .local_language import LocalTranslation, local_embeddings
+        embedding_path = os.getenv("FORGE_E5_PATH")
+        return LocalTranslation(folder, local_embeddings(embedding_path) if embedding_path else None)
     name = os.getenv("FORGE_LANGUAGE_MODEL_NAME")
     if not name:
         return None
@@ -68,5 +72,7 @@ def translated_answer(answer, source, target, model):
     def tokens(text):
         return re.findall(r"[^\W_]+", unicodedata.normalize("NFC", text).casefold())
 
-    # Strict round-trip verification trades coverage for a checkable abstention path.
-    return translation if tokens(roundtrip) == tokens(answer) else None
+    reviewed = tokens(roundtrip) == tokens(answer)
+    if not reviewed and (equivalent := getattr(type(model), "equivalent", None)):
+        reviewed = equivalent(model, answer, roundtrip)
+    return translation if reviewed else None

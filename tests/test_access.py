@@ -43,3 +43,23 @@ class AccessTests(unittest.TestCase):
                 self.assertEqual(client.post("/api/session", json={"username": "limited", "password": phrase}).status_code, 200)
                 self.assertEqual(client.get(f"/api/runs/{run_id}").status_code, 404)
                 self.assertEqual(client.get("/api/runs").json(), [])
+
+
+class ReviewerDemoTests(unittest.TestCase):
+    def test_public_sample_access_is_read_only_and_does_not_store_questions(self):
+        with TemporaryDirectory() as folder, patch.object(web, "REVIEW_DEMO", True), patch.object(web, "RUNS", Path(folder)):
+            with TestClient(web.app) as client:
+                self.assertTrue(client.get("/api/session").json()["review_demo"])
+                self.assertEqual(client.get("/api/runs").status_code, 200)
+                self.assertEqual(client.get("/api/runs/123456abcdef").status_code, 403)
+                self.assertEqual(client.post("/api/session", json={"username": "demo", "password": "demo"}).status_code, 403)
+                self.assertEqual(client.post("/api/runs").status_code, 403)
+                self.assertEqual(client.get("/api/runs/people-ops/traces").status_code, 403)
+                answer = client.post("/api/chat", json={"run_id": "people-ops", "question": "How many annual leave days does a full-time employee receive?"}).json()
+                self.assertEqual(answer["status"], "answered")
+                self.assertIn("22 paid annual leave days", answer["answer"])
+                self.assertEqual(answer["citations"][0]["document"], "Leave-Handbook.md")
+                self.assertNotIn("trace_id", answer)
+                result = client.post("/api/chat", json={"run_id": "123456abcdef", "question": "Annual leave?"})
+                self.assertEqual(result.status_code, 404)
+                self.assertFalse(list(Path(folder).iterdir()))

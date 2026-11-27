@@ -21,10 +21,13 @@ from .corpus import MAX_FILES, MAX_FILE_BYTES, SUPPORTED, Corpus
 from .factory import Agent, read_json, run_factory, write_json
 from .model import LocalModel, ROOT
 from .registry import REGISTRY
-from . import feedback, ocr, privacy
+from . import feedback, ocr, privacy, reviewer
 from .flight_recorder import FlightRecorder, store_trace, trace_retention
 
-app = FastAPI(title="ForgeAI", description="Local agent factory and evidence workspace")
+REVIEW_DEMO = os.getenv("FORGE_REVIEW_DEMO") == "1"
+if not REVIEW_DEMO and os.getenv("FORGE_REQUIRE_AUTH") == "1" and not privacy.users():
+    raise RuntimeError("Set up an access configuration before serving an authenticated deployment.")
+app = FastAPI(title="ForgeAI", description="Agent factory and evidence workspace")
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
 RUNS = Path(os.getenv("FORGE_RUN_DIR", str(ROOT / ".runs" / "web"))).resolve()
 DEMOS = {
@@ -90,6 +93,13 @@ def require_run(request, run_id):
 @app.middleware("http")
 async def authorize(request, call_next):
     path = request.url.path.rstrip("/")
+    if REVIEW_DEMO:
+        if not reviewer.permits(request.method, path, RUN_ROUTE.fullmatch(path), DEMOS):
+            return JSONResponse({"detail": "Only published sample workflows are available."}, status_code=403)
+        request.state.principal = reviewer.principal(DEMOS)
+        if request.method == "POST" and len(await request.body()) > 8192:
+            return JSONResponse({"detail": "The question is too large."}, status_code=413)
+        return await call_next(request)
     try:
         principal = privacy.current(request.cookies.get(privacy.COOKIE))
     except (OSError, ValueError, KeyError, TypeError, AttributeError):
@@ -130,7 +140,8 @@ async def authorize(request, call_next):
 @app.get("/api/session")
 def session_info(request: Request):
     principal = request.state.principal
-    return {"required": principal is not privacy.LOCAL, "authenticated": principal is not None,
+    return {"required": not REVIEW_DEMO and principal is not privacy.LOCAL, "authenticated": principal is not None,
+            "review_demo": REVIEW_DEMO,
             "role": principal.role if principal else None, "name": principal.name if principal else None,
             "can_approve": principal.can_approve if principal else False}
 
@@ -314,7 +325,7 @@ def workspace():
 @app.get("/api/runs")
 def runs(request: Request):
     entries = [current_state(key) for key in DEMOS if (demo_root(key) / "artifacts" / "run.json").is_file()]
-    if RUNS.exists():
+    if not REVIEW_DEMO and RUNS.exists():
         own = []
         for item in RUNS.iterdir():
             if (item / "status.json").is_file():
@@ -456,6 +467,21 @@ def download(run_id: str):
 
 @app.post("/api/chat")
 def chat(message: Message, request: Request):
+    if REVIEW_DEMO:
+        require_run(request, message.run_id)
+        if not reviewer.CHAT_SLOTS.acquire(blocking=False):
+            raise HTTPException(429, "The demo is busy. Try again in a moment.")
+        try:
+            from .multilingual import language_model
+
+            artifacts, documents = completed(message.run_id)
+            definition = read_json(artifacts / "definition.json")
+            retrieval = definition["retrieval"]
+            corpus = Corpus.load(documents, retrieval["chunk_words"], retrieval["overlap_words"])
+            agent = Agent(definition, corpus, permit_network=False, translator=language_model())
+            return agent.answer(message.question, requested_language=message.language)
+        finally:
+            reviewer.CHAT_SLOTS.release()
     _, agent, version, _ = enterprise_api.runtime(request, message.run_id)
     principal = request.state.principal
     recorder = FlightRecorder(message.question, principal.name)

@@ -9,7 +9,7 @@ import unicodedata
 
 from .multilingual import detect_language
 from .model import LatencyBudgetExceeded
-from . import ocr
+from . import figures, ocr
 from collections import Counter
 from pathlib import Path
 
@@ -113,6 +113,21 @@ def read_blocks(path, check_time=None):
                 yield from split_text(text, title_for(name), locator)
             elif ocr.enabled():
                 yield from recognized(ocr.pdf_page_blocks(path, page_number), locator)
+            if figures.enabled():
+                for figure_number, key in enumerate(list(page.images.keys())[:8], 1):
+                    if check_time:
+                        check_time()
+                    figure_locator = f"{locator}, figure {figure_number}"
+                    try:
+                        image = page.images[key]
+                        result = figures.extract_bar_chart(image.data) if len(image.data) <= MAX_FILE_BYTES else None
+                    except (OSError, subprocess.SubprocessError, ValueError, ImportError):
+                        result = None
+                    if result:
+                        body, extraction = result
+                        yield f"{title_for(name)} chart", body, figure_locator, {}, extraction
+                    else:
+                        yield title_for(name), "", figure_locator, {}, {"warning": "Figure values need manual verification."}
     elif suffix in {".png", ".jpg", ".jpeg"}:
         if ocr.enabled():
             yield from recognized(ocr.image_blocks(path), "image")

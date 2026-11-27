@@ -105,10 +105,11 @@ const engineering = (() => {
   }
 
   function displayConflicts(data) {
-    if (!data.conflicts.length) return empty("No comparable numeric disagreements were detected.");
+    if (!data.conflicts.length) return empty("No comparable policy disagreements were detected.");
     return data.conflicts.map((entry) => {
       const selection = data.selections[entry.id];
       return `<article class="lab-card"><h3>${esc(entry.topic)} ${badge(selection ? "Resolved" : "Needs review", selection ? "good" : "warn")}</h3>
+        <p class="muted">${esc(entry.type.replaceAll("_", " "))}${entry.basis ? " · " + esc(entry.basis) : ""}</p>
         <div class="lab-claims">${entry.claims.map((claim) => `<div><strong>${esc(claim.document)}</strong>
           <p>${esc(claim.statement)}</p><small>${esc(claim.locator)} ${claim.version_hint ? " · " + esc(claim.version_hint) : ""}</small></div>`).join("")}</div>
         ${canEdit() && !data.active_version ? form("resolve",

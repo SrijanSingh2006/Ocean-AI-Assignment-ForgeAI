@@ -1,5 +1,6 @@
 import { assets } from "./assets.js";
 
+const reviewerOnly = false;
 const encoded = new Uint8Array(0);
 const requestPrefix = "requests/";
 const responsePrefix = "responses/";
@@ -12,6 +13,12 @@ const problem = (detail, status) => json({ detail }, status);
 const timer = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function apiOperation(method, target) {
+  if (reviewerOnly) {
+    if (method === "POST") return target === "/api/chat";
+    if (method !== "GET") return false;
+    if (["/api/workspace", "/api/session", "/api/health", "/api/dashboard", "/api/runs"].includes(target)) return true;
+    return /^\/api\/runs\/(people-ops|marine-supply|operations-lab|people-ops-revised)(?:\/(download|deployment|artifact\/[a-z_]+\.(json|md)))?$/.test(target);
+  }
   const [path, query, extra] = target.split("?");
   const run = path.match(/^\/api\/runs\/(people-ops|marine-supply|operations-lab|people-ops-revised|[a-f0-9]{12})(?:\/(.*))?$/);
   if (query !== undefined) {
@@ -52,6 +59,25 @@ async function remove(bus, id) {
   await bus.delete([requestPrefix + id, responsePrefix + id, claimPrefix + id]);
 }
 
+async function boundedQuestion(request) {
+  if (!request.body || !request.headers.get("Content-Type")?.startsWith("application/json")) return null;
+  const reader = request.body.getReader();
+  const buffer = new Uint8Array(8192);
+  let length = 0;
+  try {
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      if (length + value.length > buffer.length) return null;
+      buffer.set(value, length);
+      length += value.length;
+    }
+    return buffer.subarray(0, length);
+  } finally {
+    await reader.cancel();
+  }
+}
+
 async function relay(request, path, bus, context) {
   const id = crypto.randomUUID();
   const started = Date.now();
@@ -59,7 +85,12 @@ async function relay(request, path, bus, context) {
   const length = Number(request.headers.get("Content-Length"));
   if (length > uploadLimit) return problem("Submit at most 90 MB per build in hosted Studio.", 413);
   try {
-    await bus.put(requestPrefix + id, request.body || encoded, {
+    let incoming = request.body || encoded;
+    if (reviewerOnly && request.method === "POST") {
+      incoming = await boundedQuestion(request);
+      if (!incoming) return problem("Submit a JSON question of at most 8 KB.", 413);
+    }
+    await bus.put(requestPrefix + id, incoming, {
       httpMetadata: { contentType },
       customMetadata: { method: request.method, path, created: String(started) },
     });
@@ -82,8 +113,11 @@ async function relay(request, path, bus, context) {
   }
 }
 
-async function bridge(request, path, bus, context) {
-  if (request.headers.get("x-forge-runtime") !== "1" || request.headers.has("oai-authenticated-user-id")) {
+async function bridge(request, path, bus, context, secret) {
+  const authorized = reviewerOnly
+    ? typeof secret === "string" && secret.length >= 32 && request.headers.get("x-forge-relay-key") === secret
+    : !request.headers.has("oai-authenticated-user-id");
+  if (request.headers.get("x-forge-runtime") !== "1" || !authorized) {
     return problem("Not found", 404);
   }
 
@@ -149,7 +183,7 @@ export default {
     if (asset) return asset;
     if (path.startsWith("/_forge/")) {
       try {
-        return await bridge(request, path, env.BUCKET, context);
+        return await bridge(request, path, env.BUCKET, context, env.FORGE_RELAY_KEY);
       } catch (error) {
         console.error("ForgeAI queue failed", error.name);
         return problem("Workspace queue unavailable", 502);

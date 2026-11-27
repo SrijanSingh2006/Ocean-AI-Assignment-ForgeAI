@@ -1,0 +1,7 @@
+.git
+.runs
+.runtime
+.venv
+**/__pycache__
+.env
+.env.local

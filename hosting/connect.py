@@ -98,8 +98,9 @@ def resolve(origin, local, key, id_):
     raise RuntimeError("The workspace response could not be delivered")
 
 
-def run(origin, local, token):
-    auth = {"OAI-Sites-Authorization": "Bearer " + token, "x-forge-runtime": "1"}
+def run(origin, local, token, review_demo=False):
+    credential = {"x-forge-relay-key": token} if review_demo else {"OAI-Sites-Authorization": "Bearer " + token}
+    auth = {**credential, "x-forge-runtime": "1"}
     previous = {}
     active = {}
     online = False
@@ -128,7 +129,8 @@ def run(origin, local, token):
                     raise RuntimeError(f"Queue returned HTTP {status}")
                 ids = json.loads(body)["requests"]
                 if not online:
-                    print("ForgeAI workspace connected to the private live Site.", flush=True)
+                    print("ForgeAI workspace connected to the reviewer Site." if review_demo else
+                          "ForgeAI workspace connected to the private live Site.", flush=True)
                     online = True
                 for id_ in ids:
                     if UUID.fullmatch(id_) and id_ not in active and id_ not in previous and len(active) < 8:
@@ -145,15 +147,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("site")
     parser.add_argument("--port", type=int, default=8765, choices=range(1, 65536), metavar="1–65535")
+    parser.add_argument("--review-demo", action="store_true", help="Connect the isolated sample workspace")
     args = parser.parse_args()
     url = urllib.parse.urlsplit(args.site)
     if url.scheme != "https" or not url.hostname or not url.hostname.endswith(".chatgpt.site") or url.netloc != url.hostname:
         parser.error("Use the HTTPS origin of the private ChatGPT Site.")
-    token = getpass.getpass("Site service credential: ")
+    token = getpass.getpass("Reviewer relay key: " if args.review_demo else "Site service credential: ")
     if not token:
         parser.error("The Site service credential is required.")
     try:
-        run(f"https://{url.hostname}", f"http://127.0.0.1:{args.port}", token)
+        run(f"https://{url.hostname}", f"http://127.0.0.1:{args.port}", token, args.review_demo)
     except KeyboardInterrupt:
         pass
 

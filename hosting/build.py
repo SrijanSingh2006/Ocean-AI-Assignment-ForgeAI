@@ -91,7 +91,7 @@ def add_bytes(archive, path, content):
     archive.addfile(entry, io.BytesIO(content))
 
 
-def package(project_id, destination):
+def package(project_id, destination, review_demo=False):
     commit = git("rev-parse", "HEAD").stdout.decode().strip()
     source_zip = git("archive", "--format=zip", "--prefix=ForgeAI/", commit).stdout
     assets, worker = worker_assets(source_zip, source_bundle(commit))
@@ -100,6 +100,8 @@ def package(project_id, destination):
     if not worker.startswith(entrypoint):
         raise ValueError("The Worker entry point must import its generated assets.")
     worker = worker.replace(entrypoint, f"const assets = {encoded};", 1)
+    if review_demo:
+        worker = worker.replace("const reviewerOnly = false;", "const reviewerOnly = true;", 1)
     manifest = {"project_id": project_id, "r2": "BUCKET"}
     destination.parent.mkdir(parents=True, exist_ok=True)
     with tarfile.open(destination, "w:gz") as archive:
@@ -112,8 +114,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project-id", required=True, help="ID of your owner-private Sites project")
     parser.add_argument("--out", type=Path, default=ROOT / ".runs" / "site-deployment" / "forgeai-hosting.tar.gz")
+    parser.add_argument("--review-demo", action="store_true", help="Restrict the public site to fictional sample runs")
     args = parser.parse_args()
-    commit = package(args.project_id, args.out)
+    commit = package(args.project_id, args.out, args.review_demo)
     print(f"Packaged {commit} into {args.out}")
 
 

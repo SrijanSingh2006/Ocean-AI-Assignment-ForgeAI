@@ -9,8 +9,9 @@ from pathlib import Path
 
 from .blind_eval import stratified_holdout
 from .confidence import evidence_confidence
-from .conflict_detector import numeric_conflicts, resolve_conflicts
+from .conflict_detector import document_conflicts, resolve_conflicts
 from .corpus import Corpus, Index, clean, least_duplicate, terms
+from .embeddings import configured_embeddings
 from .model import LatencyBudgetExceeded, LocalModel
 from .multilingual import LANGUAGES, detect_language, translate, translated_answer
 from .security import conformance_scorecard, findings, scan_corpus
@@ -103,6 +104,8 @@ def ingest_requirements(brief, corpus, model, answers=None, edits=None):
     tone = string(edits.get("tone", answers.get("tone")), 120, default_tone)
     tools = select_tools(brief + " " + answers.get("scope", "") + ". " + ". ".join(requested), corpus)
     supported, gaps = [], []
+    semantic = configured_embeddings() if requested else None
+    eligible = set(corpus.by_id) - {row["passage_id"] for row in scan_corpus(corpus)}
     for topic in requested:
         model.check_time()
         if blocked(topic, refused):
@@ -110,12 +113,16 @@ def ingest_requirements(brief, corpus, model, answers=None, edits=None):
         if select_tools(topic, corpus):
             supported.append({"topic": topic, "evidence": [], "basis": "configured tool"})
             continue
-        hits = index.search(topic, 3)
+        hits = index.search(topic, 3, eligible)
         viable = [p for _, coverage, p in hits if coverage >= 0.55]
+        basis = "document"
+        if not viable and semantic:
+            viable = [p for _, _, p in semantic.search(topic, corpus, eligible, 2)]
+            basis = "semantic evidence candidate"
         if not viable:
-            gaps.append({"topic": topic, "reason": "No passage has sufficient vocabulary overlap to verify this requested topic."})
+            gaps.append({"topic": topic, "reason": "The configured retrieval found no passage that supports this topic."})
             continue
-        supported.append({"topic": topic, "basis": "document", "evidence": [{"document": p["document"], "passage": p["id"]} for p in viable[:2]]})
+        supported.append({"topic": topic, "basis": basis, "evidence": [{"document": p["document"], "passage": p["id"]} for p in viable[:2]]})
     questions = []
     if not audience_match:
         questions.append({"id": "audience", "text": "Who will use this agent?", "default": audience})
@@ -136,7 +143,7 @@ def ingest_requirements(brief, corpus, model, answers=None, edits=None):
         "must_refuse": refused + ["Requests without verifiable source evidence"],
         "groundability_gaps": gaps, "questions": questions[:5], "interview_answers": answers, "review_edits": edits,
         "scope_notes": scope_notes, "tools": tools, "documents": corpus.documents,
-        "ingestion_warnings": corpus.warnings,
+        "ingestion_warnings": corpus.warnings, "source_conflicts": document_conflicts(corpus),
     }
 
 
@@ -173,7 +180,7 @@ def generate_definition(requirements, model):
     return {
         "schema_version": 1, "name": name, "description": role, "system_prompt": "\n".join(instructions),
         "audience": requirements["audience"], "tone": requirements["tone"], "scope": scope,
-        "denied_topics": denied + excluded, "tools": allowed,
+        "denied_topics": denied + excluded, "tools": allowed, "sources": requirements["documents"],
         "retrieval": {"algorithm": "BM25 with section weighting", "chunk_words": 135, "overlap_words": 24,
                       "top_k": 1, "heading_weight": 0.9, "min_coverage": 0.36, "split_compound": False,
                       "require_distinctive_match": False},
@@ -202,7 +209,7 @@ class Agent:
         self.index = Index(corpus, definition["retrieval"]["heading_weight"])
         self.model = model
         self.permit_network = permit_network
-        self.conflicts = numeric_conflicts(corpus)
+        self.conflicts = document_conflicts(corpus)
         self.resolutions = resolutions if resolutions is not None else definition.get("conflict_resolutions", {})
         self.translator = translator
         self.embeddings = embeddings
@@ -472,7 +479,7 @@ def evaluate_cases(requirements, corpus, model, size=EXPECTED_CASES):
         else:
             add("elliptical", question, anchors=[p])
         seen_questions.add(question.casefold())
-    conflicts = numeric_conflicts(corpus)
+    conflicts = document_conflicts(corpus)
     conflicting_ids = {claim["passage_id"] for item in conflicts for claim in item["claims"]}
     for case in cases:
         if any(anchor["passage_id"] in conflicting_ids for anchor in case["expected_grounding"]):
@@ -834,7 +841,7 @@ def run_factory(brief, folder, output, *, model=None, max_iterations=3, intervie
         "iterations": changes, "scorecards": [a["scorecard"] for a in attempts],
         "scorecard": best["scorecard"], "results": best["results"], "stop_reason": stop,
         "budget_notes": [],
-        "conflicts": numeric_conflicts(corpus),
+        "conflicts": document_conflicts(corpus),
     }
     if tournament:
         result["tournament"] = {"winner": winner, "candidates": candidates, "complete": len(candidates) == 3}

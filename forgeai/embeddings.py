@@ -38,7 +38,7 @@ class Embeddings:
             return []
         try:
             vectors = self.encode([query] + [p["text"][:1400] for p in passages])
-        except (OSError, ValueError, KeyError, TypeError, OverflowError):
+        except (OSError, ValueError, KeyError, TypeError, OverflowError, RuntimeError):
             return []
         match = [(similarity, similarity, passage) for vector, passage in zip(vectors[1:], passages)
                  if (similarity := min(1.0, sum(a * b for a, b in zip(vector, vectors[0])))) >= 0.72]
@@ -47,4 +47,9 @@ class Embeddings:
 
 def configured_embeddings():
     url, name = os.getenv("FORGE_EMBEDDING_URL"), os.getenv("FORGE_EMBEDDING_MODEL")
-    return Embeddings(url, name, os.getenv("FORGE_EMBEDDING_API_KEY")) if url and name else None
+    if url and name:
+        return Embeddings(url, name, os.getenv("FORGE_EMBEDDING_API_KEY"))
+    if folder := os.getenv("FORGE_E5_PATH"):
+        from .local_language import local_embeddings
+        return local_embeddings(folder)
+    return None

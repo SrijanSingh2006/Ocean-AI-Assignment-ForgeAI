@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field
 
 from . import deployment, feedback, versioning, web
 from .confidence import calibration_report
-from .conflict_detector import numeric_conflicts
+from .conflict_detector import document_conflicts
 from .embeddings import configured_embeddings
 from .factory import Agent, read_json, write_json
 from .flight_recorder import list_traces, read_trace as read_trace_file, redact, trace_path, trace_retention
@@ -172,7 +172,7 @@ def conflicts(run_id: str, request: Request):
     state = optional_json(conflict_state(request, run_id), {"selections": {}, "history": []})
     if version:
         state["selections"] = agent.resolutions
-    return {"conflicts": numeric_conflicts(agent.corpus), "active_version": version, **state}
+    return {"conflicts": document_conflicts(agent.corpus), "active_version": version, **state}
 
 
 @router.post("/runs/{run_id}/conflicts/{conflict_id}")

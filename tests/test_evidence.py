@@ -38,3 +38,22 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(report["brier_score"], 1)
         with self.assertRaisesRegex(ValueError, "disjoint"):
             calibration_report(train, train)
+
+    def test_policy_conflicts_preserve_date_negation_and_conditions(self):
+        from forgeai.conflict_detector import document_conflicts
+        with TemporaryDirectory() as folder:
+            root = Path(folder)
+            texts = [
+                ("Policy A.md", "# Remote work\n\nEmployees may work remotely.\n\n# Effective period\n\nPolicy effective on 2027-01-01.\n\n# Returns\n\nEmployees may submit returns when a supervisor approves."),
+                ("Policy B.md", "# Remote work\n\nStaff are prohibited from working remotely.\n\n# Effective period\n\nPolicy effective on March 1, 2027.\n\n# Returns\n\nEmployees may not submit returns when a supervisor approves."),
+                ("Exceptions.md", "# Remote work\n\nContractors may not work remotely when travelling."),
+            ]
+            for name, text in texts:
+                (root / name).write_text(text)
+            corpus = Corpus.load(root)
+            clashes = document_conflicts(corpus)
+            self.assertEqual({row["type"] for row in clashes}, {"effective_date", "permission", "conditional_policy"})
+            self.assertTrue(all({c["document"] for c in row["claims"]} == {"Policy A.md", "Policy B.md"} for row in clashes))
+            self.assertTrue(all(row["precedence"] is None for row in clashes))
+            agent = run_factory("Cover remote work and returns.", root, root / "out", model=LocalModel(False))
+            self.assertIn("source_conflicts", agent["requirements"])

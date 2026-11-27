@@ -213,7 +213,7 @@ function historyScreen() {
     </div>
     <a class="btn small" href="#run/${esc(item.id)}">${icon("file")} Open run</a>
   </div>`).join("");
-  return `<div class="screen"><div class="page-heading"><div><h1>Run history</h1><p>Open a recorded build, inspect its evidence, or test its agent.</p></div>
+  return `<div class="screen"><div class="page-heading"><div><h1>${state.session?.review_demo ? "Recruiter demo" : "Run history"}</h1><p>${state.session?.review_demo ? "Explore fictional sample agents, read their evaluations, and try live cited answers." : "Open a recorded build, inspect its evidence, or test its agent."}</p></div>
     ${isAdmin() ? `<a class="btn primary" href="#build">${icon("sparkles")} New build</a>` : ""}</div>
     <section class="card sheet">${section("history", "Builds")}${rows || `<div class="empty"><p>Build an agent to see its run here.</p></div>`}</section></div>`;
 }
@@ -251,6 +251,7 @@ function requirementsContent(req) {
     <h3>Must answer</h3><ul class="list">${req.must_answer.map((item) => `<li>${esc(item.topic)} ${item.evidence.length ? `· <small>${esc(item.evidence.map((e) => e.document).join(", "))}</small>` : ""}</li>`).join("")}</ul>
     <h3>Must refuse</h3><ul class="list">${req.must_refuse.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
     <h3>Source documents</h3><ul class="list">${(req.documents || []).map((doc) => `<li>${esc(doc.name)}${doc.languages?.length ? ` · ${esc(doc.languages.join(", "))}` : ""}</li>`).join("")}</ul>
+    ${(req.source_conflicts || []).map((item) => `<div class="info warn"><strong>${esc(item.topic)}</strong> · Conflicting source claims require review</div>`).join("")}
     ${req.groundability_gaps.map((item) => `<div class="info warn"><strong>${esc(item.topic)}</strong> · ${esc(item.reason)}</div>`).join("")}
     ${req.ingestion_warnings.map((text) => `<div class="info warn">${esc(text)}</div>`).join("")}`;
 }
@@ -355,11 +356,11 @@ function runScreen(run) {
     const result = run.result;
     const tabs = [["overview", "Overview"], ["evaluations", "Evaluations"], ["definition", "Definition"], ["requirements", "Requirements"], ["log", "Run log"]];
     if (result.blind) tabs.push(["blind", "Blind evaluation"]);
-    tabs.push(["engineering", "Engineering lab"]);
+    if (!state.session?.review_demo) tabs.push(["engineering", "Engineering lab"]);
     if (result.tournament || result.manual_baseline) tabs.splice(2, 0, ["comparisons", "Comparisons"]);
     return `<div class="screen"><div class="page-heading"><div><h1>${esc(run.name)}</h1><p>Factory report · ${run.demo ? "Recorded demonstration" : "Workspace build"}</p></div>
         <div class="actions"><a class="btn" href="#chat/${esc(run.id)}">${icon("message")} Open chat</a>
-          <a class="btn primary" href="/api/runs/${esc(run.id)}/download">${icon("download")} Export run</a></div></div>
+          <a class="btn primary" href="/api/runs/${esc(run.id)}/${state.session?.review_demo ? "deployment" : "download"}">${icon("download")} ${state.session?.review_demo ? "Export agent" : "Export run"}</a></div></div>
       <div class="panel-grid">
         <div class="card metric"><small>Final score</small><strong>${result.scorecard.score}%</strong><p>${result.scorecard.passed} of ${result.scorecard.total} cases passed</p></div>
         <div class="card metric"><small>Repair attempts</small><strong>${result.iterations.length}</strong><p>${result.iterations.filter((item) => item.accepted).length} accepted changes</p></div>
@@ -397,9 +398,10 @@ function chatResponse(item) {
   return `<div class="message">${badge(titleFor(response.status), response.status === "answered" ? "good" : response.status === "error" ? "bad" : "warn")}
     ${response.tool ? badge(state.workspace.tools[response.tool]?.name || response.tool) : ""}
     ${evidence ? badge(`Evidence ${Math.round(evidence.score * 100)}%`) : ""}
+    ${response.translation_status === "verified_roundtrip" ? badge("Machine translation") : ""}
     <div>${esc(response.answer)}</div>
     ${response.citations.map((c) => `<details><summary>${esc(c.document)} · ${esc(c.heading)} · ${esc(c.locator)}</summary><p>${esc(c.quote)}</p>
-      ${c.extraction ? `<p class="muted">OCR source · ${esc(c.extraction.confidence)} confidence</p>` : ""}</details>`).join("")}
+      ${c.extraction ? `<p class="muted">${c.extraction.kind === "bar_chart" ? "Verified figure extraction" : "OCR source"} · ${esc(c.extraction.confidence)} confidence</p>` : ""}</details>`).join("")}
     ${response.trace_id ? `<details class="chat-feedback"><summary>Give feedback</summary>
       <form data-feedback-trace="${esc(response.trace_id)}" data-run-id="${esc(state.chatId)}">
         <label class="field"><span class="field-label">Feedback type</span><select name="category">${feedbackCategories.map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}</select></label>
@@ -503,7 +505,7 @@ function route() {
   cancelPoll();
   const [view, id = ""] = window.location.hash.slice(1).split("/");
   const available = visibleNav().map(([key]) => key);
-  const fallback = isAdmin() ? "build" : isStaff() ? "dashboard" : "chat";
+  const fallback = state.session?.review_demo ? "history" : isAdmin() ? "build" : isStaff() ? "dashboard" : "chat";
   const permitted = available.includes(view) || (isStaff() && view === "run" && id);
   state.location = !state.session?.authenticated ? "login" : permitted ? view : fallback;
   if (state.location === "dashboard") engineering.loadDashboard();

@@ -105,7 +105,7 @@ try {
   assert.equal(await evaluate("document.querySelectorAll('.result-row').length"), 8);
   await screenshot("blind-results");
   await click('[data-action=tab][data-value=engineering]');
-  await waitFor(text("No comparable numeric disagreements"));
+  await waitFor(text("No comparable policy disagreements"));
   await click('[data-lab-panel=security]');
   await waitFor(text("Run conformance checks"));
   await submit("[data-engineering-form=security]");
