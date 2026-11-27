@@ -2,7 +2,7 @@
 
 ForgeAI Studio turns a short brief and a folder of documents into a runnable question-and-answer agent. It checks what those sources can support, writes an agent definition, generates an evaluation suite, and makes measured repairs. Each run produces inspectable evidence, including the final agent, source citations, per-case judgments, scorecards, and a report of remaining gaps.
 
-The project implements the OceanAI **Agent That Builds Agents** assignment. It provides a browser workspace, a command-line interface, two distinct primary demonstrations, and two additional sample packs for tool coverage and regression testing.
+The project implements the OceanAI **Agent That Builds Agents** assignment. It provides a browser workspace, a command-line interface, four recorded sample packs, and a separate observatory replay. Studio adds blind evaluation, source conflict review, execution traces, feedback, and versioned exports to the original agent factory.
 
 ## Contents
 
@@ -119,7 +119,7 @@ flowchart LR
     F --> D[("Workspace run files")]
 ```
 
-The browser assets and FastAPI application live in this checkout. The Worker and connector are maintained as hosting configuration. Use the local launcher for review access from the public repository. The hosted workspace depends on its connected Cloud runtime and its owner-only sign-in. [Open the hosted Studio](https://forgeai-studio-project.blondebiscuit2.chatgpt.site/)
+The upgraded private Studio has been deployed and verified through its hosted URL. The hosted verification covered the dashboard, a cited People Operations answer, its execution trace, and the standalone agent ZIP. Use the Site owner's ChatGPT session to open it. Builds and chat require the FastAPI workspace and connector to stay active. Reviewers can run the public repository with the local launcher. [Open the private Studio](https://forgeai-studio-project.blondebiscuit2.chatgpt.site/) · [Hosting source and setup](hosting/README.md)
 
 ## How the factory works
 
@@ -403,7 +403,7 @@ flowchart LR
     Ops --> Releases
 ```
 
-Run folders hold source files, scorecards, traces, and exports. SQLite, Python's embedded relational database, stores reviewed feedback and release metadata. Release snapshots include source fingerprints and the extracted passages used during the release. The API and CLI share the same validation and retrieval code. The existing hosted build and this local enterprise branch have separate deployment paths.
+Run folders hold source files, scorecards, traces, and exports. SQLite, Python's embedded relational database, stores reviewed feedback and release metadata. Release snapshots include source fingerprints and the extracted passages used during the release. The API and CLI share the same validation and retrieval code. The private hosted frontend uses the same Python workspace through the [Sites connector](hosting/README.md).
 
 ### Configuration
 
@@ -469,19 +469,22 @@ The screenshots below were captured from the running branch in Chromium. Open th
 ```text
 ForgeAI/
 ├── forgeai/
-│   ├── cli.py          Command-line build, chat, replay, and server commands
-│   ├── corpus.py       File extraction, passage provenance, and BM25 search
-│   ├── factory.py      Intake, definitions, evaluations, repairs, and reports
-│   ├── model.py        Local chat API adapter, fallback, and budget accounting
-│   ├── registry.py     Tool selection and four runtime operations
-│   └── web.py          FastAPI routes, background jobs, and ZIP exports
-├── static/             Studio HTML, styles, JavaScript, theme, and images
-├── prompts/            Prompts for intake, design, evidence, evaluation, and critic
-├── demos/              Fictional source packs, briefs, and recorded run artifacts
-├── scripts/            Linux model setup and development server wrapper
-├── tests/              Unit tests and HTTP workflow checks
-├── launch.py           Local dependency setup and browser launcher
-└── pyproject.toml      Python package metadata and dependency ranges
+│   ├── cli.py             Build, chat, replay, and server commands
+│   ├── corpus.py          File extraction, passage provenance, and BM25 search
+│   ├── enterprise_api.py  Dashboard, feedback, releases, and export routes
+│   ├── factory.py         Intake, definitions, evaluation, repairs, and reports
+│   ├── model.py           Local model adapter, fallback, and budget accounting
+│   ├── registry.py        Tool selection and runtime operations
+│   └── web.py             FastAPI routes, background jobs, and ZIP exports
+├── static/                Studio interface and theme
+├── prompts/               Model prompts for the factory and runtime
+├── demos/                 Fictional samples and recorded evidence
+├── docs/                  Verification report, access example, and screenshots
+├── hosting/               Private Sites Worker, connector, and packager
+├── scripts/               Model setup, dev server wrapper, and browser checks
+├── tests/                 Unit tests and HTTP integration tests
+├── launch.py              Local dependency setup and browser launcher
+└── pyproject.toml         Python package metadata and dependency ranges
 ```
 
 The `prompts/` directory includes the question paraphrasing, tournament, and repair instructions. It also contains the sample data synthesis prompt. This lets reviewers inspect the model's role in the pipeline alongside the code that verifies its outputs. [Pipeline prompts](prompts/) · [Sample synthesis prompt](prompts/demo_synthesis.txt)
@@ -495,13 +498,14 @@ python -m pip install -e '.[test]'
 python -m unittest discover -s tests -v
 node --check static/app.js
 node --check static/theme.js
+node --check static/enterprise.js
 ```
 
-The automated checks cover a separate exhibition-policy corpus, unsupported scope, PDF/DOCX/CSV extraction, citation integrity, tool selection and dispatch, token and latency limits, a repair with no score gain, regression after a source edit, and the HTTP path from upload and edited approval to grounded chat and ZIP export. The sample guide includes steps for exercising the recorded browser workflows and all four tools. [Sample guide](demos/SAMPLE_GUIDE.md)
+The verified suite passed **32 tests**, with OCR dependencies installed. The checks cover file extraction, citation integrity, budgets, contracts for held-out evaluation, workspace access, trace redaction, feedback, rollback, and the upload-to-export workflow. The four original sample builds replayed with local Qwen. The People Operations and observatory replays both recorded 24/24 development and 8/8 blind cases. [Verification report](docs/enterprise-upgrade.md) · [Sample guide](demos/SAMPLE_GUIDE.md)
 
 | Area | Current boundary |
 | --- | --- |
-| Evaluation | The generated suite and optimizer use the same corpus. Scores measure those specific cases. A separate collection and independently written questions are needed to measure generalization. |
+| Evaluation | Blind mode holds back questions and expected answers from optimization. Scores measure the stated suites. Measuring generalization requires separate collections and independently authored questions. |
 | Retrieval and coverage | Term matching can miss synonyms, paraphrases, or indirect evidence. Extractive responses may be longer than a human-written answer. Broad topics benefit from concrete terminology in the brief. |
 | Document extraction | Scanned PDFs need OCR. Complex layouts and broken files can reduce extractable evidence. The report lists ingestion warnings. |
 | Budget and concurrency | A local build queue processes one build at a time. A parser can finish its current operation before the next deadline check. Restarting the server can interrupt unfinished jobs. |

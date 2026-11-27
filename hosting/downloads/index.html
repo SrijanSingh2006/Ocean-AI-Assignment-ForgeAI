@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Download the ForgeAI Studio application and review the recorded evaluation runs.">
+  <meta name="theme-color" content="#f6f4fa">
+  <title>ForgeAI Studio · Project download</title>
+  <link rel="icon" href="forge-icon.svg" type="image/svg+xml">
+  <script src="/static/theme.js"></script>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="header">
+    <a class="brandmark" href="/" aria-label="Open ForgeAI Studio">
+      <img src="/forge-icon.svg" width="36" height="36" alt=""><strong>Forge<span>AI</span> Studio</strong>
+    </a>
+    <div class="theme-control" role="group" aria-label="Color theme">
+      <button type="button" data-theme-toggle title="Switch to dark theme" aria-label="Dark mode" aria-pressed="false">
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 14.1A9 9 0 0 1 9.9 3.2a9 9 0 1 0 10.9 10.9Z"/></svg>
+      </button>
+      <button type="button" data-theme-choice="system" aria-label="Match device theme" aria-pressed="true">Device</button>
+    </div>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>ForgeAI Studio</h1>
+        <p>Build agents from a brief and source documents, check their answers against evidence, and export the complete run.</p>
+        <div class="actions">
+          <a class="primary" href="ForgeAI.zip" download>Download project ZIP</a>
+          <a class="secondary" href="sample-documents" download>Download sample documents</a>
+          <a class="secondary" href="ForgeAI.bundle" download>Download Git bundle</a>
+        </div>
+      </div>
+    </section>
+    <div class="grid">
+      <section class="card">
+        <h2>Start the application</h2>
+        <p>Extract the ZIP and run this command inside the ForgeAI folder with Python 3.10 or newer.</p>
+        <pre><code>python launch.py</code></pre>
+        <p>The launcher installs the dependencies and opens Studio. On Linux x86-64, add <code>--with-model</code> to start the local Qwen model.</p>
+      </section>
+      <section class="card">
+        <h2>Recorded demo runs</h2>
+        <a class="demo" href="people-operations-report.md" download><strong>People Operations</strong><span>18/24 → 24/24</span></a>
+        <a class="demo" href="marine-procurement-report.md" download><strong>Marine Procurement</strong><span>18/24 → 24/24</span></a>
+        <a class="demo" href="warehouse-tools-report.md" download><strong>Warehouse Tools</strong><span>Four tools</span></a>
+        <a class="demo" href="policy-regression-report.md" download><strong>People Operations revision</strong><span>Regression report</span></a>
+        <p>The ZIP also includes held-out evaluation results, the observatory sample, and the enterprise verification report.</p>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

@@ -43,7 +43,7 @@ The original checkout at `a10f5bf` passed eight tests before the upgrade. The ap
 | Human checkpoint | PASS | The workspace pauses after intake, exposes source coverage and structured edits, and continues after authorized approval. |
 | Factory versus hand-written baseline | PASS | The People Operations replay recorded factory 24/24 and hand-written 22/24 on the same suite. |
 | Regression testing | PASS | The revised People Operations sample passed its new suite at 24/24. Three cases from the previous policy regressed and were reported separately. |
-| UI and hosting | PARTIAL | The existing Studio UI and hosted baseline are preserved. Chromium verified the enterprise branch locally. Enterprise hosting remains a separate deployment step. |
+| UI and hosting | PASS | Chromium verified Studio locally. The owner-private deployment served the enterprise bundle, dashboard, chat citations, execution traces, and agent export. |
 
 ## 3. Additional features implemented
 
@@ -71,6 +71,7 @@ The original checkout at `a10f5bf` passed eight tests before the upgrade. The ap
 | New runtime modules | `blind_eval.py`, `multilingual.py`, `embeddings.py`, `ocr.py`, `conflict_detector.py`, `confidence.py`, `security.py`, `flight_recorder.py`, and `privacy.py` handle the shared evaluation and answer boundaries. |
 | New operations modules | `enterprise_api.py`, `model_tournament.py`, `feedback.py`, `impact.py`, `versioning.py`, and `deployment.py` implement authorized workflows and export. |
 | Studio | `static/enterprise.js` adds the live dashboard and engineering controls. `app.js`, `index.html` and `style.css` connect navigation, settings, chat, and accessible presentation to the API. |
+| Private hosting | `hosting/` contains the Worker, workspace connector, and packager for the deployed browser and API relay. |
 | Tests and evidence | Nine new Python test modules cover enterprise behavior. `scripts/check-enterprise-ui.mjs` drives a real Chromium session. New synthetic artifacts and screenshots are under `demos/enterprise-evidence` and `docs/screenshots`. |
 | Storage | SQLite tables for feedback and releases initialize on first use. Existing file-based runs still load, and their data requires no migration. New release snapshots coexist with existing reports. |
 | Dependencies | Python’s SQLite is built in. Pillow was added to the test extra for image fixtures. Tesseract and Poppler are optional system tools. The browser smoke test uses Node.js and Chromium, with no npm test dependency. |
@@ -101,6 +102,7 @@ No tracked files were removed. Use `git diff --name-status a10f5bf..HEAD` for th
 - The enterprise API test detected conflicting leave allowances, recorded the admin's citation and reason, answered from the chosen 18-day source, activated a snapshot containing a 20-day policy, and restored the 18-day result on rollback.
 - The browser submitted feedback against a real chat trace. The review tests validated anchors before promotion and scored a repair suggestion without automatically applying it.
 - The exported agent answered from a clean Python installation and a container, with a health response and HTTP 401 for an unauthenticated chat when configured with a bearer token. The authenticated result cited the bundled handbook.
+- The private hosted URL served the upgraded frontend and engineering endpoints. A hosted chat returned 22 days with the handbook citation and a linked execution trace. Hosted agent export returned the deployment ZIP. [Hosted Studio](https://forgeai-studio-project.blondebiscuit2.chatgpt.site/) · [Hosting source](../hosting/README.md)
 - Browser captures show actual completed workflows. [Factory](screenshots/factory-light.jpg) · [Blind evaluation](screenshots/blind-results.jpg) · [Flight recorder](screenshots/execution-trace.jpg) · [Mobile dashboard](screenshots/dashboard-mobile.jpg)
 
 ## 7. Remaining limitations
@@ -110,7 +112,7 @@ No tracked files were removed. Use `git diff --name-status a10f5bf..HEAD` for th
 - Security measurement is scoped to offline conformance and static checks. Pattern-based trace redaction detects selected shapes such as email, phone, national ID and credential strings.
 - Conflict support is limited to comparable numeric claims. OCR supports readable source text and native tables. Complex layout, chart and figure understanding remain open.
 - Intake groundability uses vocabulary overlap. All reported evaluation scores describe the stated datasets. The confidence calibration example requires labeled data supplied by the operator.
-- Workspace sessions are process-local. Shared enterprise hosting would require TLS, an external identity and session architecture, and suitable retention and management procedures. The existing hosted submission is the baseline release.
+- Workspace sessions are process-local. The current private hosted deployment relies on the Site owner's session and an active Python workspace. Shared multi-tenant hosting requires an external identity and session architecture, and suitable retention and management procedures.
 
 ## 8. Final completion matrix
 
@@ -122,7 +124,8 @@ No tracked files were removed. Use `git diff --name-status a10f5bf..HEAD` for th
 | Multilingual and cross-language operation | PARTIAL |
 | Security measurement and advanced conflict detection | PARTIAL |
 | Multi-provider benchmarking and multimodal understanding | PARTIAL |
-| Shared enterprise deployment | BLOCKED on deployment configuration |
+| Owner-private hosted Studio | PASS |
+| Shared multi-tenant deployment | BLOCKED on deployment configuration |
 
 ## 9. Launch and test
 
