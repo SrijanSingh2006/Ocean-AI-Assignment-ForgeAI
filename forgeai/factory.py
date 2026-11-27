@@ -8,6 +8,8 @@ from collections import Counter
 from pathlib import Path
 
 from .blind_eval import stratified_holdout
+from .confidence import evidence_confidence
+from .conflict_detector import numeric_conflicts, resolve_conflicts
 from .corpus import Corpus, Index, clean, least_duplicate, terms
 from .model import LatencyBudgetExceeded, LocalModel
 from .registry import REGISTRY, dispatch, select_tools
@@ -188,7 +190,7 @@ def split_question(question):
 
 
 class Agent:
-    def __init__(self, definition, corpus, model=None, permit_network=True):
+    def __init__(self, definition, corpus, model=None, permit_network=True, resolutions=None):
         if definition.get("schema_version") != 1 or set(definition["tools"]) - REGISTRY.keys():
             raise ValueError("Unsupported agent definition schema or tool key")
         self.definition = definition
@@ -196,6 +198,8 @@ class Agent:
         self.index = Index(corpus, definition["retrieval"]["heading_weight"])
         self.model = model
         self.permit_network = permit_network
+        self.conflicts = numeric_conflicts(corpus)
+        self.resolutions = resolutions or {}
 
     @staticmethod
     def reply(status, answer, passages=(), tool=None):
@@ -224,6 +228,7 @@ class Agent:
             return self.reply("clarify" if definition["policy"]["clarify_vague"] else "refused", CLARIFICATION if definition["policy"]["clarify_vague"] else REFUSAL)
         queries = split_question(question) if options["split_compound"] else [question]
         chosen = []
+        coverages = []
         for part in queries:
             if not part.strip():
                 continue
@@ -236,6 +241,7 @@ class Agent:
                     return self.reply("clarify", CLARIFICATION)
                 return self.reply("refused", REFUSAL)
             first_score, coverage, first = valid[0]
+            coverages.append(coverage)
             close = [p for score, _, p in valid[:3] if score >= first_score * 0.86]
             if definition["policy"]["clarify_vague"] and len(words) <= 1 and len(close) > 1:
                 return self.reply("clarify", CLARIFICATION)
@@ -261,7 +267,16 @@ class Agent:
         if not chosen:
             return self.reply("refused", REFUSAL)
         passages = least_duplicate(chosen)[:options["top_k"]]
-        return self.reply("answered", "\n\n".join(p["text"] for p in passages), passages)
+        passages, conflict = resolve_conflicts(passages, self.corpus, self.conflicts, self.resolutions)
+        confidence = evidence_confidence(coverages, passages, self.corpus, conflict=bool(conflict))
+        if conflict:
+            result = self.reply("clarify", f"The sources disagree about {conflict['topic']}. Ask a reviewer to select the applicable source.")
+            return {**result, "confidence": confidence, "conflict_id": conflict["id"]}
+        minimum = definition.get("evidence_policy", {}).get("minimum_score", 0)
+        if confidence["score"] < minimum:
+            return {**self.reply("refused", REFUSAL), "confidence": confidence}
+        result = self.reply("answered", "\n\n".join(p["text"] for p in passages), passages)
+        return {**result, "confidence": confidence}
 
 
 def fact_for(passage):
@@ -365,6 +380,11 @@ def evaluate_cases(requirements, corpus, model, size=EXPECTED_CASES):
         else:
             add("elliptical", question, anchors=[p])
         seen_questions.add(question.casefold())
+    conflicts = numeric_conflicts(corpus)
+    conflicting_ids = {claim["passage_id"] for item in conflicts for claim in item["claims"]}
+    for case in cases:
+        if any(anchor["passage_id"] in conflicting_ids for anchor in case["expected_grounding"]):
+            case.update(category="conflict", expected_status="clarify", expected_grounding=[])
     return cases
 
 
@@ -714,6 +734,7 @@ def run_factory(brief, folder, output, *, model=None, max_iterations=3, intervie
         "iterations": changes, "scorecards": [a["scorecard"] for a in attempts],
         "scorecard": best["scorecard"], "results": best["results"], "stop_reason": stop,
         "budget_notes": [],
+        "conflicts": numeric_conflicts(corpus),
     }
     if tournament:
         result["tournament"] = {"winner": winner, "candidates": candidates, "complete": len(candidates) == 3}
