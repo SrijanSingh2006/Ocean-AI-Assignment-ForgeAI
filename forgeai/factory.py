@@ -215,7 +215,8 @@ class Agent:
         return {
             "status": status, "answer": answer, "tool": tool,
             "citations": [
-                {"passage_id": p["id"], "document": p["document"], "heading": p["heading"], "locator": p["locator"], "quote": p["text"]}
+                {"passage_id": p["id"], "document": p["document"], "heading": p["heading"], "locator": p["locator"],
+                 "quote": p["text"], **({"extraction": p["extraction"]} if p.get("extraction") else {})}
                 for p in passages
             ],
         }
@@ -360,6 +361,9 @@ class Agent:
         if conflict:
             result = self.reply("clarify", f"The sources disagree about {conflict['topic']}. Ask a reviewer to select the applicable source.")
             return {**result, "confidence": confidence, "conflict_id": conflict["id"]}
+        if any(p.get("extraction", {}).get("confidence", 1) < 0.50 for p in passages):
+            return {**self.reply("clarify", "The extracted text has low OCR confidence. Please supply a clearer source."),
+                    "confidence": confidence}
         minimum = definition.get("evidence_policy", {}).get("minimum_score", 0)
         if confidence["score"] < minimum:
             return {**self.reply("refused", REFUSAL), "confidence": confidence}

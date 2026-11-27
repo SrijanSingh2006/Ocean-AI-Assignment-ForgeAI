@@ -4,13 +4,16 @@ import csv
 import io
 import math
 import re
+import subprocess
 import unicodedata
 
 from .multilingual import detect_language
+from .model import LatencyBudgetExceeded
+from . import ocr
 from collections import Counter
 from pathlib import Path
 
-SUPPORTED = {".md", ".txt", ".csv", ".pdf", ".docx"}
+SUPPORTED = {".md", ".txt", ".csv", ".pdf", ".docx", ".png", ".jpg", ".jpeg"}
 MAX_FILE_BYTES = 10 * 1024 * 1024
 MAX_FILES = 30
 STOP = set("""
@@ -80,7 +83,18 @@ def split_text(text, base, locator):
     return blocks
 
 
-def read_blocks(path):
+def read_blocks(path, check_time=None):
+    def recognized(image_or_pdf, locator):
+        try:
+            blocks = list(image_or_pdf)
+        except (OSError, subprocess.SubprocessError, ValueError):
+            yield title_for(name), "", locator, {}, {"warning": "OCR failed or the configured engine is unavailable."}
+            return
+        if not blocks:
+            yield title_for(name), "", locator, {}, {"warning": "OCR found no readable text."}
+        for index, (body, details) in enumerate(blocks, 1):
+            yield title_for(name), body, f"{locator}, OCR block {index}", {}, details
+
     name = path.name
     suffix = path.suffix.lower()
     if path.stat().st_size > MAX_FILE_BYTES:
@@ -90,7 +104,19 @@ def read_blocks(path):
 
         reader = PdfReader(path)
         for page_number, page in enumerate(reader.pages, 1):
-            yield from split_text(page.extract_text() or "", title_for(name), f"page {page_number}")
+            if check_time:
+                check_time()
+            text = page.extract_text() or ""
+            locator = f"page {page_number}"
+            if text.strip():
+                yield from split_text(text, title_for(name), locator)
+            elif ocr.enabled():
+                yield from recognized(ocr.pdf_page_blocks(path, page_number), locator)
+    elif suffix in {".png", ".jpg", ".jpeg"}:
+        if ocr.enabled():
+            yield from recognized(ocr.image_blocks(path), "image")
+        else:
+            yield title_for(name), "", "image", {}, {"warning": "Enable FORGE_OCR to read image sources."}
     elif suffix == ".docx":
         from docx import Document
         from docx.text.paragraph import Paragraph
@@ -168,14 +194,22 @@ class Corpus:
                 check_time()
             provenance = path.relative_to(root).as_posix()
             try:
-                blocks = list(read_blocks(path))
+                blocks = list(read_blocks(path, check_time))
+            except LatencyBudgetExceeded:
+                raise
             except Exception as exc:
                 warnings.append(f"{provenance}: {exc}")
                 continue
             first = len(passages)
-            for block_number, (heading, body, locator, cells) in enumerate(blocks, 1):
+            for block_number, block in enumerate(blocks, 1):
                 if check_time:
                     check_time()
+                heading, body, locator, cells = block[:4]
+                extraction = block[4] if len(block) > 4 else None
+                if extraction and "warning" in extraction:
+                    warnings.append(f"{provenance} {locator} · {extraction['warning']}")
+                if extraction and extraction.get("confidence", 1) < 0.50:
+                    warnings.append(f"{provenance} {locator} · low OCR confidence.")
                 if not terms(body) or len(body) < 5:
                     continue
                 segments = [body] if cells else windows(body, size, overlap)
@@ -186,6 +220,8 @@ class Corpus:
                         "heading": heading, "locator": f"{locator}, block {block_number}" if locator == "text" else locator,
                         "text": segment, "cells": cells, "language": detect_language(segment),
                     })
+                    if extraction:
+                        passages[-1]["extraction"] = extraction
             added = len(passages) - first
             if added:
                 languages = sorted({passage["language"] for passage in passages[first:]})
