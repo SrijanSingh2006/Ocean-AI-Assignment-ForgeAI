@@ -4,6 +4,7 @@ ForgeAI turns a brief and source documents into a portable agent, grades its ans
 
 | Deliverable | Location |
 | --- | --- |
+| Final report | [Eight-section verification](FINAL_REPORT.md) |
 | Repository and setup | [Project README](../README.md) |
 | Assignment verification | [Mandatory and optional requirements](COMPLIANCE_MATRIX.md) |
 | Signature features | [Feature matrix](FEATURE_MATRIX.md) |
