@@ -9,6 +9,7 @@
   <link rel="icon" href="/static/forge-icon.svg" type="image/svg+xml">
   <script src="/static/theme.js"></script>
   <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/enterprise.js" defer></script>
   <script src="/static/app.js" defer></script>
 </head>
 <body>
@@ -36,7 +37,8 @@
       <header class="topbar">
         <div class="breadcrumbs"><button id="open-menu" class="icon-button mobile-menu" data-action="menu" aria-label="Open workspace navigation" aria-controls="sidebar" aria-expanded="false" data-icon="menu" type="button"></button><span class="crumb-root">Workspace</span><span class="crumb-chevron" data-icon="chevron-right"></span><strong id="page-name">Agent factory</strong></div>
         <div class="topbar-actions">
-          <span class="local-pill"><span></span> Local workspace</span>
+          <span class="local-pill"><span></span> Workspace</span>
+          <button id="sign-out" type="button" class="btn small" data-action="sign-out" hidden>Sign out</button>
           <div class="theme-control" role="group" aria-label="Color theme">
             <button type="button" data-theme-toggle data-icon="moon" title="Switch to dark theme" aria-label="Dark mode" aria-pressed="false"></button>
             <button type="button" data-theme-choice="system" data-icon="monitor" title="Match device" aria-label="Match device theme" aria-pressed="true"></button>

@@ -5,8 +5,10 @@ import sys
 from pathlib import Path
 
 from .corpus import Corpus
+from .embeddings import configured_embeddings
 from .factory import Agent, read_json, run_factory
 from .model import LocalModel, ROOT
+from .multilingual import language_model
 
 
 def interview(requirements):
@@ -47,6 +49,8 @@ def main():
     build.add_argument("--latency-budget", type=int, default=120, help="Seconds of active build time")
     build.add_argument("--blind", action="store_true", help="Score held-out questions after development repairs")
     build.add_argument("--unseen-corpus", action="store_true", help="Label a requester-supplied new corpus and run blind evaluation")
+    build.add_argument("--security-audit", action="store_true", help="Run fixed defensive conformance checks")
+    build.add_argument("--minimum-confidence", type=float, default=0, help="Minimum heuristic evidence score (0 to 1)")
     build.add_argument("--no-tournament", action="store_true")
     build.add_argument("--baseline-definition", type=Path, help="Hand-written agent to compare")
     build.add_argument("--interview", action="store_true")
@@ -57,6 +61,7 @@ def main():
     chat.add_argument("--definition", type=Path, required=True)
     chat.add_argument("--docs", type=Path, required=True)
     chat.add_argument("--ask")
+    chat.add_argument("--language", choices=("auto", "en", "hi", "ta"), default="auto")
     chat.add_argument("--no-model", action="store_true")
 
     demo = commands.add_parser("demo", help="Reproduce both committed demonstrations")
@@ -86,7 +91,8 @@ def main():
                 prior_results=read_json(prior_run).get("results") if prior_run and prior_run.is_file() else None,
                 manual_baseline=read_json(args.baseline_definition) if args.baseline_definition else None,
                 tournament=not args.no_tournament, latency_budget=args.latency_budget,
-                blind=args.blind, unseen_corpus=args.unseen_corpus,
+                blind=args.blind, unseen_corpus=args.unseen_corpus, security_audit=args.security_audit,
+                minimum_confidence=args.minimum_confidence,
             )
             print(f'{result["definition"]["name"]}: {result["scorecard"]["passed"]}/{result["scorecard"]["total"]} · {args.out}')
         elif args.command == "demo":
@@ -113,9 +119,10 @@ def main():
             definition = read_json(args.definition)
             retrieval = definition["retrieval"]
             corpus = Corpus.load(args.docs, retrieval["chunk_words"], retrieval["overlap_words"])
-            agent = Agent(definition, corpus, model)
+            agent = Agent(definition, corpus, model, translator=None if args.no_model else language_model(),
+                          embeddings=None if args.no_model else configured_embeddings())
             if args.ask:
-                render_answer(agent.answer(args.ask))
+                render_answer(agent.answer(args.ask, requested_language=args.language))
                 return
             print(f'{definition["name"]} · type /exit to quit')
             while True:
@@ -126,6 +133,6 @@ def main():
                 if question == "/exit":
                     break
                 if question:
-                    render_answer(agent.answer(question))
+                    render_answer(agent.answer(question, requested_language=args.language))
     except (ValueError, KeyError, OSError) as exc:
         parser.exit(2, f"forgeai: {exc}\n")

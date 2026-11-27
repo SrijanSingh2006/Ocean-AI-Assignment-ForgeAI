@@ -13,7 +13,6 @@ from pydantic import BaseModel, Field
 from . import deployment, feedback, versioning, web
 from .confidence import calibration_report
 from .conflict_detector import numeric_conflicts
-from .corpus import Corpus
 from .embeddings import configured_embeddings
 from .factory import Agent, read_json, write_json
 from .flight_recorder import list_traces, redact, trace_path
@@ -124,8 +123,7 @@ def snapshot_artifacts(request, run_id, artifacts, version):
 def runtime(request, run_id, *, version_id=None, use_model=True):
     artifacts, documents, version = active_paths(request, run_id, version_id)
     definition = read_json(artifacts / "definition.json")
-    settings = definition["retrieval"]
-    corpus = Corpus.load(documents, settings["chunk_words"], settings["overlap_words"])
+    corpus = versioning.load_snapshot_corpus(artifacts, documents, definition)
     resolved = optional_json(conflict_state(request, run_id), {"selections": {}, "history": []})
     translator = language_model()
     agent = Agent(definition, corpus, LocalModel() if use_model else None, use_model,

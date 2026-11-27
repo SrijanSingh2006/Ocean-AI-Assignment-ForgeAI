@@ -21,7 +21,7 @@ from .corpus import MAX_FILES, MAX_FILE_BYTES, SUPPORTED, Corpus
 from .factory import Agent, read_json, run_factory, write_json
 from .model import LocalModel, ROOT
 from .registry import REGISTRY
-from . import feedback, privacy
+from . import feedback, ocr, privacy
 from .flight_recorder import FlightRecorder, store_trace
 
 app = FastAPI(title="ForgeAI", description="Local agent factory and evidence workspace")
@@ -131,7 +131,8 @@ async def authorize(request, call_next):
 def session_info(request: Request):
     principal = request.state.principal
     return {"required": principal is not privacy.LOCAL, "authenticated": principal is not None,
-            "role": principal.role if principal else None, "name": principal.name if principal else None}
+            "role": principal.role if principal else None, "name": principal.name if principal else None,
+            "can_approve": principal.can_approve if principal else False}
 
 
 @app.post("/api/session")
@@ -306,7 +307,8 @@ def workspace():
                       "files": sorted(p.name for p in (root / "documents").iterdir()),
                       "recorded": (root / "artifacts" / "run.json").exists()})
     return {"model_online": LocalModel().probe(), "model": LocalModel().name,
-            "demos": demos, "tools": REGISTRY, "max_files": MAX_FILES, "max_file_bytes": MAX_FILE_BYTES}
+            "demos": demos, "tools": REGISTRY, "max_files": MAX_FILES, "max_file_bytes": MAX_FILE_BYTES,
+            "ocr_enabled": ocr.enabled() and ocr.available()}
 
 
 @app.get("/api/runs")

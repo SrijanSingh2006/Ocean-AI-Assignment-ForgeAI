@@ -38,7 +38,7 @@ const section = (symbol, title, caption = "", color = "") =>
 const badge = (label, color = "") => `<span class="badge ${color}">${esc(label)}</span>`;
 const jsonBlock = (value) => `<pre>${esc(JSON.stringify(value, null, 2))}</pre>`;
 const navItems = [
-  ["build", "wand", "Agent factory"], ["history", "history", "Run history"],
+  ["build", "wand", "Agent factory"], ["dashboard", "chart", "Dashboard"], ["history", "history", "Run history"],
   ["chat", "message", "Agent chat"], ["tools", "box", "Tool registry"],
 ];
 const stages = [
@@ -49,6 +49,7 @@ const state = {
   workspace: { demos: [], tools: {}, max_files: 30, max_file_bytes: 10485760 },
   runs: [], brief: "", files: [], demo: "", iterations: 3, model: true, checkpoint: false,
   tournament: true, token_budget: 12000, latency_budget: 120, regression: "", pending: false, active: null, tab: "overview", chatId: "", chats: {}, chatPending: {},
+  session: null, blind: false, unseen_corpus: false, security_audit: false, minimum_confidence: "0", chatLanguage: "auto",
   reviewAnswers: {}, reviewEdits: {}, location: "build", runScreen: "", poll: null,
 };
 const titleFor = (kind) => ({
@@ -63,6 +64,7 @@ async function api(path, options) {
   const payload = await response.json();
   if (!response.ok) {
     const detail = Array.isArray(payload.detail) ? payload.detail.map((item) => item.msg).join(". ") : payload.detail;
+    if (response.status === 401 && path !== "/api/session" && state.session?.required) clearSession();
     throw new Error(detail || "The workspace could not complete this request.");
   }
   return payload;
@@ -77,15 +79,22 @@ function toast(message) {
   toastTimer = setTimeout(() => { node.hidden = true; }, 4000);
 }
 
+const isAdmin = () => state.session?.role === "admin";
+const isStaff = () => isAdmin() || state.session?.role === "reviewer";
+const visibleNav = () => navItems.filter(([key]) =>
+  (key === "build" ? isAdmin() : ["dashboard", "history"].includes(key) ? isStaff() : state.session?.authenticated));
+
 function refreshNav() {
   const active = state.location === "run" ? "history" : state.location;
   const nav = $("nav");
-  if (nav.dataset.current !== active) {
-    nav.dataset.current = active;
-    nav.innerHTML = navItems.map(([key, symbol, title]) => `
+  const navState = active + ":" + state.session?.role;
+  if (nav.dataset.current !== navState) {
+    nav.dataset.current = navState;
+    nav.innerHTML = visibleNav().map(([key, symbol, title]) => `
       <a href="#${key}" class="nav-item ${key === active ? "active" : ""}" ${key === active ? 'aria-current="page"' : ""}>${icon(symbol)} <span>${title}</span></a>`).join("");
   }
-  $("page-name").textContent = state.location === "run" ? "Run report" : navItems.find(([key]) => key === active)?.[2] || "Agent factory";
+  $("page-name").textContent = state.location === "run" ? "Run report" : navItems.find(([key]) => key === active)?.[2] || "Sign in";
+  $("sign-out").hidden = !state.session?.required || !state.session.authenticated;
   $("runtime-title").textContent = state.workspace.model_online ? "Local model online" : "Offline runtime";
   $("runtime-subtitle").textContent = state.workspace.model_online ? state.workspace.model : "Deterministic fallback";
   $("runtime-dot").classList.toggle("online", !!state.workspace.model_online);
@@ -139,10 +148,10 @@ function buildScreen() {
         </div>
         <div class="field">
           <label for="files">Source documents <span class="required">*</span></label>
-          <input type="file" id="files" accept=".pdf,.csv,.md,.txt,.docx" multiple hidden>
+          <input type="file" id="files" accept=".pdf,.csv,.md,.txt,.docx${state.workspace.ocr_enabled ? ",.png,.jpg,.jpeg" : ""}" multiple hidden>
           <button class="drop-zone" id="drop-zone" data-action="browse" type="button" style="width:100%">
             <span class="section-icon">${icon("upload")}</span><span><strong>Drop files here or <span class="browse">browse files</span></strong>
-            <p>PDF, CSV, Markdown, TXT, DOCX · Up to 10 MB each</p></span>
+            <p>PDF, CSV, Markdown, TXT, DOCX${state.workspace.ocr_enabled ? ", PNG, JPEG" : ""} · Up to 10 MB each</p></span>
           </button>
           <div id="file-list" class="file-list">${fileChips()}</div>
         </div>
@@ -161,6 +170,15 @@ function buildScreen() {
             <label class="switch-row"><input id="model" type="checkbox" ${state.model ? "checked" : ""}><span>Use local model<small>Assist with drafting and evaluation.</small></span></label>
             <label class="switch-row"><input id="checkpoint" type="checkbox" ${state.checkpoint ? "checked" : ""}><span>Review requirements<small>Pause for your input before generation.</small></span></label>
             <label class="switch-row"><input id="tournament" type="checkbox" ${state.tournament ? "checked" : ""}><span>Prompt tournament<small>Compare three prompts on the same evaluation suite.</small></span></label>
+            <details class="settings-details evidence-settings" ${state.blind || state.security_audit || Number(state.minimum_confidence) ? "open" : ""}>
+              <summary>Evaluation and evidence</summary>
+              <label class="switch-row"><input id="blind" type="checkbox" ${state.blind ? "checked" : ""}><span>Blind evaluation<small>Score held-out questions after optimization.</small></span></label>
+              ${state.demo ? "" : `<label class="switch-row"><input id="unseen_corpus" type="checkbox" ${state.unseen_corpus ? "checked" : ""}><span>New corpus<small>Mark these uploads as a collection you have held back.</small></span></label>`}
+              <label class="switch-row"><input id="security_audit" type="checkbox" ${state.security_audit ? "checked" : ""}><span>Security conformance<small>Check source and tool boundaries.</small></span></label>
+              <label for="minimum_confidence">Minimum evidence score</label>
+              <input id="minimum_confidence" form="build-form" type="number" required min="0" max="1" step=".01" value="${esc(state.minimum_confidence)}">
+              <p class="muted">The agent declines to answer below this heuristic threshold. Zero disables the threshold.</p>
+            </details>
             <details class="settings-details">
               <summary>Build budgets</summary>
               <div class="budget-fields">
@@ -196,7 +214,7 @@ function historyScreen() {
     <a class="btn small" href="#run/${esc(item.id)}">${icon("file")} Open run</a>
   </div>`).join("");
   return `<div class="screen"><div class="page-heading"><div><h1>Run history</h1><p>Open a recorded build, inspect its evidence, or test its agent.</p></div>
-    <a class="btn primary" href="#build">${icon("sparkles")} New build</a></div>
+    ${isAdmin() ? `<a class="btn primary" href="#build">${icon("sparkles")} New build</a>` : ""}</div>
     <section class="card sheet">${section("history", "Builds")}${rows || `<div class="empty"><p>Build an agent to see its run here.</p></div>`}</section></div>`;
 }
 
@@ -232,6 +250,7 @@ function requirementsContent(req) {
     <ul class="list"><li><strong>Audience</strong> · ${esc(req.audience)}</li><li><strong>Tone</strong> · ${esc(req.tone)}</li></ul>
     <h3>Must answer</h3><ul class="list">${req.must_answer.map((item) => `<li>${esc(item.topic)} ${item.evidence.length ? `· <small>${esc(item.evidence.map((e) => e.document).join(", "))}</small>` : ""}</li>`).join("")}</ul>
     <h3>Must refuse</h3><ul class="list">${req.must_refuse.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
+    <h3>Source documents</h3><ul class="list">${(req.documents || []).map((doc) => `<li>${esc(doc.name)}${doc.languages?.length ? ` · ${esc(doc.languages.join(", "))}` : ""}</li>`).join("")}</ul>
     ${req.groundability_gaps.map((item) => `<div class="info warn"><strong>${esc(item.topic)}</strong> · ${esc(item.reason)}</div>`).join("")}
     ${req.ingestion_warnings.map((text) => `<div class="info warn">${esc(text)}</div>`).join("")}`;
 }
@@ -258,6 +277,15 @@ function resultContent(run) {
   const path = `/api/runs/${esc(run.id)}`;
   const download = (file, label) => `<a href="${path}/artifact/${file}" class="btn small">${icon("download")} ${label}</a>`;
   const invalidModel = result.model.calls.filter((call) => call.status !== "ok");
+  if (state.tab === "engineering") return engineering.evidence(run);
+  if (state.tab === "blind" && result.blind) {
+    const blind = result.blind;
+    const card = blind.scorecard;
+    const origin = blind.corpus_origin === "user_supplied_unseen" ? "Requester-supplied new corpus" : "Held-out questions from the same corpus";
+    return `<section class="card sheet">${section("target", "Blind evaluation", origin)}
+      <div class="info"><strong>${card.passed} of ${card.total} passed · ${card.score}%</strong> · Scored after development decisions.</div>
+      ${blind.results.map(checkRow).join("")}${download("blind_results.json", "Download blind results")}</section>`;
+  }
   if (state.tab === "evaluations") {
     return `<section class="card sheet">${section("target", "Generated evaluation suite", "Expand a case to see its grounding, decision, and expected outcome.")}
       <div class="actions" style="margin-bottom:8px">${download("evals.json", "Evaluation cases")} ${download("eval_results.json", "All evaluations")}</div>
@@ -311,7 +339,7 @@ function resultContent(run) {
       ${result.requirements.groundability_gaps.map((item) => `<div class="info warn"><strong>Source gap</strong> · ${esc(item.topic)}</div>`).join("")}
       ${invalidModel.length ? `<div class="info">${invalidModel.length} model calls used fallback or reached a limit. Open the run log for details.</div>` : ""}
       <div class="actions" style="margin-top:11px">${download("report.md", "Quality report")} ${download("scorecards.json", "Scorecards")}
-      <button class="btn small" data-action="regression">${icon("history")} Set as regression baseline</button></div>
+      ${isAdmin() ? `<button class="btn small" data-action="regression">${icon("history")} Set as regression baseline</button>` : ""}</div>
     </section>
     ${result.regression ? `<section class="card sheet">${section("history", "Regression results", `${result.regression.scorecard.passed}/${result.regression.scorecard.total} cases from the prior run passed.`)}
       ${result.regression.prior_results_available ? `<div class="info">Newly failing · ${esc(result.regression.changes.lost.join(", ") || "None")}
@@ -326,6 +354,8 @@ function runScreen(run) {
   if (run.status === "complete") {
     const result = run.result;
     const tabs = [["overview", "Overview"], ["evaluations", "Evaluations"], ["definition", "Definition"], ["requirements", "Requirements"], ["log", "Run log"]];
+    if (result.blind) tabs.push(["blind", "Blind evaluation"]);
+    tabs.push(["engineering", "Engineering lab"]);
     if (result.tournament || result.manual_baseline) tabs.splice(2, 0, ["comparisons", "Comparisons"]);
     return `<div class="screen"><div class="page-heading"><div><h1>${esc(run.name)}</h1><p>Factory report · ${run.demo ? "Recorded demonstration" : "Workspace build"}</p></div>
         <div class="actions"><a class="btn" href="#chat/${esc(run.id)}">${icon("message")} Open chat</a>
@@ -342,7 +372,9 @@ function runScreen(run) {
   return `<div class="screen"><div class="page-heading"><div><h1>${run.status === "approval" ? "Review requirements" : run.status === "failed" ? "Build interrupted" : "Building your agent"}</h1>
       <p aria-live="polite">${esc(run.detail)}</p></div>${badge(titleFor(run.status), run.status === "failed" ? "bad" : "warn")}</div>
     ${pipeline(run)}
-    ${run.status === "approval" && review ? `
+    ${run.status === "approval" && review && !isAdmin() && !state.session.can_approve ?
+      `<section class="card sheet">${section("clipboard", "Scope and source coverage")}${requirementsContent(review)}<p class="muted">Awaiting a reviewer with approval access.</p></section>` :
+      run.status === "approval" && review ? `
       <form class="card sheet" id="review-form">${section("clipboard", "Scope and source coverage")}${requirementsContent(review)}${reviewEditor(review)}
       ${review.questions.map((q) => `<div class="field"><label for="review-${esc(q.id)}">${esc(q.text)}</label>
         <input type="text" id="review-${esc(q.id)}" name="${esc(q.id)}" maxlength="400" value="${esc(state.reviewAnswers[q.id] ?? "")}" placeholder="${esc(q.default || "Optional")}"></div>`).join("")}
@@ -353,11 +385,27 @@ function runScreen(run) {
     </div>`;
 }
 
+const feedbackCategories = [
+  ["helpful", "Helpful answer"], ["incorrect_answer", "Incorrect answer"], ["missing_information", "Missing information"],
+  ["wrong_citation", "Wrong citation"], ["incorrect_refusal", "Incorrect refusal"], ["inappropriate_response", "Inappropriate response"],
+];
+
 function chatResponse(item) {
   const response = item.response;
   if (!response) return `<div class="message user">${esc(item.question)}</div>`;
-  return `<div class="message">${badge(titleFor(response.status), response.status === "answered" ? "good" : response.status === "error" ? "bad" : "warn")}${response.tool ? ` ${badge(state.workspace.tools[response.tool]?.name || response.tool)}` : ""}<div>${esc(response.answer)}</div>${response.citations.map((c) =>
-    `<details><summary>${esc(c.document)} · ${esc(c.heading)} · ${esc(c.locator)}</summary><p>${esc(c.quote)}</p></details>`).join("")}</div>`;
+  const evidence = response.confidence;
+  return `<div class="message">${badge(titleFor(response.status), response.status === "answered" ? "good" : response.status === "error" ? "bad" : "warn")}
+    ${response.tool ? badge(state.workspace.tools[response.tool]?.name || response.tool) : ""}
+    ${evidence ? badge(`Evidence ${Math.round(evidence.score * 100)}%`) : ""}
+    <div>${esc(response.answer)}</div>
+    ${response.citations.map((c) => `<details><summary>${esc(c.document)} · ${esc(c.heading)} · ${esc(c.locator)}</summary><p>${esc(c.quote)}</p>
+      ${c.extraction ? `<p class="muted">OCR source · ${esc(c.extraction.confidence)} confidence</p>` : ""}</details>`).join("")}
+    ${response.trace_id ? `<details class="chat-feedback"><summary>Give feedback</summary>
+      <form data-feedback-trace="${esc(response.trace_id)}" data-run-id="${esc(state.chatId)}">
+        <label class="field"><span class="field-label">Feedback type</span><select name="category">${feedbackCategories.map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}</select></label>
+        <label class="field"><span class="field-label">Comment</span><textarea name="comment" maxlength="1000" rows="2"></textarea></label>
+        <button type="submit" class="btn small">Send feedback</button>
+      </form></details>` : ""}</div>`;
 }
 
 function chatScreen() {
@@ -370,7 +418,8 @@ function chatScreen() {
     <div class="chat-grid">
       <aside class="card chat-list"><h3>Available agents</h3>${complete.map((item) => `<a class="btn small ${item.id === state.chatId ? "active" : ""}" href="#chat/${esc(item.id)}">${icon("message")} ${esc(item.name)}</a>`).join("") || '<p class="muted">Build an agent to start chatting.</p>'}</aside>
       <section class="card conversation">
-        ${agent ? section("message", agent.name) : ""}
+        ${agent ? `<div class="chat-header">${section("message", agent.name)}
+          <label class="field"><span class="field-label">Answer language</span><select id="chat-language">${[["auto", "Automatic"], ["en", "English"], ["hi", "Hindi"], ["ta", "Tamil"]].map(([key, label]) => `<option value="${key}" ${state.chatLanguage === key ? "selected" : ""}>${label}</option>`).join("")}</select></label></div>` : ""}
         <div class="thread" id="thread" aria-live="polite">
           ${messages.map(chatResponse).join("")}
           ${state.chatPending[state.chatId] ? '<div class="message"><span class="spinner"></span> Checking sources…</div>' : ""}
@@ -382,16 +431,48 @@ function chatScreen() {
     </div></div>`;
 }
 
+function loginScreen() {
+  return `<section class="card login-panel">${section("layers", "Sign in to ForgeAI")}
+    <form id="login-form">
+      <div class="field"><label for="login-user">Username</label><input type="text" name="username" id="login-user" required maxlength="64" autocomplete="username"></div>
+      <div class="field"><label for="login-password">Password</label><input type="password" name="password" id="login-password" required maxlength="256" autocomplete="current-password"></div>
+      <p class="info bad" id="login-error" role="alert" hidden></p>
+      <button class="btn primary" type="submit">Sign in</button>
+    </form></section>`;
+}
+
+function clearSession() {
+  cancelPoll();
+  engineering.clear();
+  Object.assign(state, {
+    active: null, runs: [], files: [], brief: "", demo: "", regression: "", chats: {}, chatId: "", chatPending: {},
+    reviewAnswers: {}, reviewEdits: {}, location: "login", runScreen: "", tab: "overview",
+    session: {required: true, authenticated: false},
+  });
+  render();
+}
+
+async function openSession() {
+  state.session = await api("/api/session");
+  if (state.session.authenticated) state.workspace = await api("/api/workspace");
+  route();
+}
+
 function render() {
   refreshNav();
-  const screens = { build: buildScreen, history: historyScreen, tools: toolsScreen, chat: chatScreen, run: () => runScreen(state.active) };
-  $("main").innerHTML = screens[state.location]();
+  const screens = {
+    build: buildScreen, dashboard: engineering.dashboard, history: historyScreen, tools: toolsScreen,
+    chat: chatScreen, run: () => runScreen(state.active), login: loginScreen,
+  };
+  $("main").innerHTML = state.session ? screens[state.location]() : '<div class="card sheet" role="status">Connecting to workspace…</div>';
   const thread = $("thread");
   if (thread) thread.scrollTop = thread.scrollHeight;
 }
 
 async function loadRuns() {
-  state.runs = await api("/api/runs");
+  const session = state.session;
+  const runs = await api("/api/runs");
+  if (state.session === session) state.runs = runs;
 }
 function cancelPoll() {
   clearTimeout(state.poll);
@@ -421,7 +502,11 @@ async function inspectRun(id, lookBusy = true) {
 function route() {
   cancelPoll();
   const [view, id = ""] = window.location.hash.slice(1).split("/");
-  state.location = [...navItems.map(([key]) => key), "run"].includes(view) ? view : "build";
+  const available = visibleNav().map(([key]) => key);
+  const fallback = isAdmin() ? "build" : isStaff() ? "dashboard" : "chat";
+  const permitted = available.includes(view) || (isStaff() && view === "run" && id);
+  state.location = !state.session?.authenticated ? "login" : permitted ? view : fallback;
+  if (state.location === "dashboard") engineering.loadDashboard();
   if (state.location === "run") {
     if (state.runScreen !== id) {
       state.tab = "overview";
@@ -439,14 +524,15 @@ function route() {
   if (menuWasOpen) $("main").focus();
   window.scrollTo(0, 0);
   if (state.location === "history" || state.location === "chat") {
+    const location = state.location;
     loadRuns().then(() => {
-      if (state.location === view) render();
+      if (state.location === location) render();
     }).catch((error) => toast(error.message));
   }
 }
 
 function addFiles(files) {
-  const supported = /\.(pdf|csv|md|txt|docx)$/i;
+  const supported = state.workspace.ocr_enabled ? /\.(pdf|csv|md|txt|docx|png|jpe?g)$/i : /\.(pdf|csv|md|txt|docx)$/i;
   const accepted = new Set(state.files.map((file) => file.name));
   const example = state.workspace.demos.find((item) => item.id === state.demo);
   const errors = [];
@@ -474,19 +560,24 @@ async function build() {
     return;
   }
   const form = new FormData();
-  for (const key of ["brief", "iterations", "model", "checkpoint", "demo", "regression", "tournament", "token_budget", "latency_budget"]) form.append(key, state[key]);
+  for (const key of ["brief", "iterations", "model", "checkpoint", "demo", "regression", "tournament", "token_budget", "latency_budget", "blind",
+    "unseen_corpus", "security_audit", "minimum_confidence"]) form.append(key, state[key]);
   for (const file of state.files) form.append("files", file);
+  const session = state.session;
   state.pending = true;
   render();
   try {
     const run = await api("/api/runs", { method: "POST", body: form });
+    if (session !== state.session) return;
     state.active = run;
     window.location.hash = `#run/${run.id}`;
   } catch (error) {
     state.pending = false;
     render();
-    $("form-error").textContent = error.message;
-    $("form-error").hidden = false;
+    if ($("form-error")) {
+      $("form-error").textContent = error.message;
+      $("form-error").hidden = false;
+    } else toast(error.message);
   } finally {
     state.pending = false;
   }
@@ -497,21 +588,24 @@ async function sendMessage(question) {
   question = question.trim();
   if (!question || !runId || state.chatPending[runId]) return;
   state.chats[runId] ||= [];
-  state.chats[runId].push({ question });
+  const messages = state.chats[runId];
+  messages.push({ question });
   state.chatPending[runId] = true;
   render();
   try {
     const response = await api("/api/chat", {
-      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ run_id: runId, question }),
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ run_id: runId, question, language: state.chatLanguage }),
     });
-    state.chats[runId].push({ response });
+    messages.push({ response });
   } catch (error) {
-    state.chats[runId].push({ response: { status: "error", answer: error.message, citations: [] } });
+    messages.push({ response: { status: "error", answer: error.message, citations: [] } });
   } finally {
-    state.chatPending[runId] = false;
-    if (state.location === "chat" && state.chatId === runId) {
-      render();
-      $("chat-question").focus();
+    if (messages === state.chats[runId]) {
+      state.chatPending[runId] = false;
+      if (state.location === "chat" && state.chatId === runId) {
+        render();
+        $("chat-question").focus();
+      }
     }
   }
 }
@@ -553,7 +647,7 @@ document.addEventListener("input", (event) => {
     $("brief-count").textContent = `${value.length.toLocaleString()} / 4,000`;
   } else if (id.startsWith("review-")) state.reviewAnswers[event.target.name] = value;
   else if (id.startsWith("edit-")) state.reviewEdits[id.slice(5)] = value;
-  else if (["token_budget", "latency_budget"].includes(id)) state[id] = value;
+  else if (["token_budget", "latency_budget", "minimum_confidence"].includes(id)) state[id] = value;
 });
 document.addEventListener("change", (event) => {
   const { id, checked, value } = event.target;
@@ -561,7 +655,12 @@ document.addEventListener("change", (event) => {
     addFiles(event.target.files);
     event.target.value = "";
   } else if (id === "iterations") state.iterations = Number(value);
-  else if (["model", "checkpoint", "tournament"].includes(id)) state[id] = checked;
+  else if (["model", "checkpoint", "tournament", "blind", "security_audit"].includes(id)) state[id] = checked;
+  else if (id === "unseen_corpus") {
+    state.unseen_corpus = checked;
+    if (checked) state.blind = true;
+    render();
+  } else if (id === "chat-language") state.chatLanguage = value;
 });
 document.addEventListener("click", async (event) => {
   const navLink = event.target.closest('#sidebar a[href^="#"]');
@@ -574,7 +673,14 @@ document.addEventListener("click", async (event) => {
   const { action, value } = button.dataset;
   if (action === "menu") setMenu(true);
   else if (action === "close-menu") setMenu(false, true);
-  else if (action === "browse") $("files").click();
+  else if (action === "sign-out") {
+    try {
+      await api("/api/session", {method: "DELETE"});
+      clearSession();
+    } catch (error) {
+      toast(error.message);
+    }
+  } else if (action === "browse") $("files").click();
   else if (action === "remove-file") {
     state.files.splice(Number(value), 1);
     $("file-list").innerHTML = fileChips();
@@ -585,6 +691,7 @@ document.addEventListener("click", async (event) => {
     const item = state.workspace.demos.find((demo) => demo.id === value);
     if (!item) return;
     state.demo = item.id;
+    state.unseen_corpus = false;
     if (item.regression) state.regression = item.regression;
     state.brief = item.brief;
     state.files = state.files.filter((file) => !item.files.includes(file.name));
@@ -593,7 +700,8 @@ document.addEventListener("click", async (event) => {
   } else if (action === "tab") {
     state.tab = value;
     render();
-    document.querySelector('.tab[aria-pressed="true"]').focus();
+    if (value === "engineering") engineering.open(state.runScreen);
+    document.querySelector('.tab[aria-pressed="true"]')?.focus();
   } else if (action === "copy-definition") {
     try {
       await navigator.clipboard.writeText(JSON.stringify(state.active.result.definition, null, 2));
@@ -622,6 +730,23 @@ for (const eventName of ["dragover", "dragleave", "drop"]) {
 }
 document.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (event.target.id === "login-form") {
+    const form = event.target;
+    const button = form.querySelector("button[type=submit]");
+    button.disabled = true;
+    try {
+      const values = new FormData(form);
+      await api("/api/session", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(Object.fromEntries(values))});
+      await openSession();
+    } catch (error) {
+      const message = $("login-error");
+      if (message) {
+        message.textContent = error.message;
+        message.hidden = false;
+      } else toast(error.message);
+      button.disabled = false;
+    }
+  }
   if (event.target.id === "build-form") build();
   if (event.target.id === "chat-form") sendMessage($("chat-question").value);
   if (event.target.id === "review-form") {
@@ -649,5 +774,7 @@ document.addEventListener("keydown", (event) => {
   }
 });
 window.addEventListener("hashchange", route);
-api("/api/workspace").then((info) => { state.workspace = info; render(); }).catch((error) => toast(error.message));
-route();
+render();
+openSession().catch((error) => {
+  $("main").innerHTML = `<div class="card sheet info bad" role="alert">${esc(error.message)}</div>`;
+});
