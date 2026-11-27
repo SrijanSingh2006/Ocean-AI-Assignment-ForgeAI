@@ -11,9 +11,22 @@ LANGUAGES = {"en": "English", "hi": "Hindi", "ta": "Tamil"}
 DEVANAGARI = re.compile(r"[\u0900-\u097f]")
 TAMIL = re.compile(r"[\u0b80-\u0bff]")
 LATIN = re.compile(r"[A-Za-z]{2,}")
-ROMAN_HINDI = {"kya", "kitna", "kitne", "kaise", "chutti", "chhutti", "batao", "hain", "mujhe"}
-ROMAN_TAMIL = {"enna", "eppadi", "evvalavu", "viduppu", "sollunga", "enakku"}
+ROMAN_HINDI = {"kya", "kitna", "kitni", "kitne", "kaise", "chutti", "chhutti", "batao", "mujhe"}
+ROMAN_TAMIL = {"enna", "eppadi", "evvalavu", "ethanai", "eththanai", "viduppu", "sollunga", "enakku"}
 TOKEN = re.compile(r"\d+(?:[.,:/-]\d+)*|\b[A-Z]{2,}(?:-\d+)?\b")
+ROMAN_QUERY_WORDS = {
+    "hi-Latn": {
+        "kitna": "how much", "kitni": "how much", "kitne": "how many", "kya": "what", "kab": "when",
+        "kaise": "how", "chutti": "leave", "chhutti": "leave", "din": "days", "saal": "year",
+        "milta": "receive", "milti": "receive", "milte": "receive", "hai": "is", "hain": "are",
+        "mujhe": "me", "batao": "tell", "ko": "to", "ke": "of", "liye": "for", "mein": "in",
+    },
+    "ta-Latn": {
+        "evvalavu": "how much", "ethanai": "how many", "eththanai": "how many", "enna": "what",
+        "eppadi": "how", "eppo": "when", "viduppu": "leave", "naal": "days", "naatkal": "days",
+        "enakku": "me", "sollunga": "tell", "kidaikkum": "receive", "kidaikum": "receive",
+    },
+}
 
 
 def detect_language(text):
@@ -26,6 +39,17 @@ def detect_language(text):
     if words & ROMAN_TAMIL:
         return "ta-Latn"
     return "en"
+
+
+def detection_confidence(detected):
+    if detected.endswith("-Latn"):
+        return "heuristic"
+    return "assumed" if detected == "en" else "script"
+
+
+def normalize_roman_query(text, detected):
+    words = ROMAN_QUERY_WORDS[detected]
+    return re.sub(r"\b[A-Za-z]+\b", lambda match: words.get(match[0].casefold(), match[0]), text)
 
 
 def language_model():

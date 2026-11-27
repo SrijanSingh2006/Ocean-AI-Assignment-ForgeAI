@@ -4,9 +4,10 @@ import unittest
 from unittest.mock import Mock
 
 from forgeai.corpus import Corpus, terms
-from forgeai.factory import Agent, generate_definition, ingest_requirements
+from forgeai.factory import Agent, generate_definition, ingest_requirements, read_json
 from forgeai.model import LocalModel
 from forgeai.multilingual import detect_language, translate
+from forgeai.policy_localizations import localize_evidence
 
 
 class MultilingualTests(unittest.TestCase):
@@ -41,6 +42,37 @@ class MultilingualTests(unittest.TestCase):
             self.assertEqual(reply["translation_status"], "verified_roundtrip")
             self.assertEqual(reply["citations"][0]["quote"], source)
             self.assertEqual(Agent(definition, corpus).answer("वार्षिक छुट्टी कितनी है?")["status"], "clarify")
+
+    def test_romanized_query_localizes_the_selected_revision(self):
+        demo = Path(__file__).resolve().parents[1] / "demos" / "people-ops-revised"
+        definition = read_json(demo / "artifacts" / "definition.json")
+        retrieval = definition["retrieval"]
+        corpus = Corpus.load(demo / "documents", retrieval["chunk_words"], retrieval["overlap_words"])
+        reply = Agent(definition, corpus).answer("Annual leave kitne din hai?")
+        self.assertEqual(reply["status"], "answered")
+        self.assertEqual(reply["detected_language"], "hi-Latn")
+        self.assertEqual(reply["translation_status"], "source_localization")
+        self.assertIn("25", reply["answer"])
+        self.assertIn("25 paid annual leave days", reply["citations"][0]["quote"])
+        updated = reply["citations"][0]["quote"].replace("25 paid", "26 paid")
+        self.assertIsNone(localize_evidence({"answer": updated, "citations": [{"quote": updated}]}, "hi"))
+
+    def test_original_script_retrieval_requires_a_distinct_match(self):
+        demo = Path(__file__).resolve().parents[1] / "demos" / "people-ops"
+        definition = read_json(demo / "artifacts" / "definition.json")
+        corpus = Corpus.load(demo / "documents")
+        question = "பயிற்சி உதவித்தொகை எவ்வளவு?"
+        training = next(p for p in corpus.passages if p["document"] == "Training-Benefit.pdf")
+        embeddings = Mock()
+        embeddings.search.return_value = [(0.85, 0.85, training), (0.80, 0.80, corpus.passages[0])]
+        agent = Agent(definition, corpus, embeddings=embeddings)
+        reply = agent.answer(question)
+        self.assertEqual(embeddings.search.call_args.args[0], question)
+        self.assertEqual(reply["status"], "answered")
+        self.assertEqual(reply["citations"][0]["quote"], training["text"])
+        self.assertIn("EUR 350", reply["answer"])
+        embeddings.search.return_value[1] = (0.84, 0.84, corpus.passages[0])
+        self.assertEqual(agent.answer(question)["status"], "refused")
 
 
 class LocalTranslationIntegrityTests(unittest.TestCase):

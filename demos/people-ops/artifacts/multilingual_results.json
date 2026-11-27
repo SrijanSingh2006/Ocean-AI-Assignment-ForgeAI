@@ -1,0 +1,762 @@
+{
+  "review": "Automated source and fact checks on fictional policies. Independent native-language review is pending.",
+  "providers": [
+    "NLLB-200 distilled 600M",
+    "multilingual E5-small",
+    "aligned fictional policy sources"
+  ],
+  "languages": {
+    "en": {
+      "passed": 4,
+      "scored": 4,
+      "total": 4
+    },
+    "hi": {
+      "passed": 5,
+      "scored": 5,
+      "total": 5
+    },
+    "ta": {
+      "passed": 5,
+      "scored": 5,
+      "total": 5
+    },
+    "hi-Latn": {
+      "passed": 2,
+      "scored": 2,
+      "total": 2
+    },
+    "ta-Latn": {
+      "passed": 1,
+      "scored": 1,
+      "total": 1
+    },
+    "hi-en": {
+      "passed": 1,
+      "scored": 1,
+      "total": 1
+    },
+    "ta-en": {
+      "passed": 1,
+      "scored": 1,
+      "total": 1
+    }
+  },
+  "results": [
+    {
+      "case_id": "annual-leave",
+      "language": "en",
+      "question": "What does the policy say about annual leave?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "Permanent shore employees receive 22 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p001c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Annual leave",
+            "locator": "text, block 1",
+            "quote": "Permanent shore employees receive 22 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "case_id": "annual-leave",
+      "language": "hi",
+      "question": "वार्षिक छुट्टी कितनी मिलती है?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "तट पर कार्यरत स्थायी कर्मचारियों को हर कैलेंडर वर्ष में 22 दिन का सवेतन वार्षिक अवकाश मिलता है। अधिकतम पाँच दिन का बचा हुआ अवकाश अगले वर्ष में ले जाया जा सकता है। यह अवकाश अगले वर्ष की 31 मार्च को समाप्त हो जाता है।",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p001c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Annual leave",
+            "locator": "text, block 1",
+            "quote": "Permanent shore employees receive 22 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year."
+          }
+        ],
+        "confidence": {
+          "score": 0.6,
+          "kind": "heuristic",
+          "coverage": 0.5,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "source_localization",
+        "language": "hi",
+        "detected_language": "hi",
+        "language_detection_confidence": "script"
+      }
+    },
+    {
+      "case_id": "annual-leave",
+      "language": "ta",
+      "question": "வருடாந்திர விடுப்பு எத்தனை நாட்கள் கிடைக்கும்?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "கரைப் பணிகளில் உள்ள நிரந்தர ஊழியர்களுக்கு ஒவ்வொரு காலண்டர் ஆண்டும் ஊதியத்துடன் 22 நாட்கள் வருடாந்திர விடுப்பு கிடைக்கும். பயன்படுத்தாத விடுப்பில் அதிகபட்சம் ஐந்து நாட்களை அடுத்த ஆண்டுக்கு மாற்றலாம். அந்த விடுப்பு அடுத்த ஆண்டு மார்ச் 31 அன்று காலாவதியாகும்.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p001c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Annual leave",
+            "locator": "text, block 1",
+            "quote": "Permanent shore employees receive 22 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year."
+          }
+        ],
+        "confidence": {
+          "score": 0.675,
+          "kind": "heuristic",
+          "coverage": 0.6,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "source_localization",
+        "language": "ta",
+        "detected_language": "ta",
+        "language_detection_confidence": "script"
+      }
+    },
+    {
+      "case_id": "annual-leave",
+      "language": "hi-Latn",
+      "question": "Annual leave kitne din hai?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "तट पर कार्यरत स्थायी कर्मचारियों को हर कैलेंडर वर्ष में 22 दिन का सवेतन वार्षिक अवकाश मिलता है। अधिकतम पाँच दिन का बचा हुआ अवकाश अगले वर्ष में ले जाया जा सकता है। यह अवकाश अगले वर्ष की 31 मार्च को समाप्त हो जाता है।",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p001c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Annual leave",
+            "locator": "text, block 1",
+            "quote": "Permanent shore employees receive 22 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year."
+          }
+        ],
+        "confidence": {
+          "score": 0.787,
+          "kind": "heuristic",
+          "coverage": 0.75,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "source_localization",
+        "language": "hi",
+        "detected_language": "hi-Latn",
+        "language_detection_confidence": "heuristic"
+      }
+    },
+    {
+      "case_id": "annual-leave",
+      "language": "ta-Latn",
+      "question": "Annual leave evvalavu naal?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "கரைப் பணிகளில் உள்ள நிரந்தர ஊழியர்களுக்கு ஒவ்வொரு காலண்டர் ஆண்டும் ஊதியத்துடன் 22 நாட்கள் வருடாந்திர விடுப்பு கிடைக்கும். பயன்படுத்தாத விடுப்பில் அதிகபட்சம் ஐந்து நாட்களை அடுத்த ஆண்டுக்கு மாற்றலாம். அந்த விடுப்பு அடுத்த ஆண்டு மார்ச் 31 அன்று காலாவதியாகும்.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p001c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Annual leave",
+            "locator": "text, block 1",
+            "quote": "Permanent shore employees receive 22 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year."
+          }
+        ],
+        "confidence": {
+          "score": 0.787,
+          "kind": "heuristic",
+          "coverage": 0.75,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "source_localization",
+        "language": "ta",
+        "detected_language": "ta-Latn",
+        "language_detection_confidence": "heuristic"
+      }
+    },
+    {
+      "case_id": "hybrid-work",
+      "language": "en",
+      "question": "What does the policy say about remote work?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "Employees in eligible shore roles may work remotely up to two days each week. The team lead approves the days in the shared team calendar.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p001c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Remote work",
+            "locator": "text, block 1",
+            "quote": "Employees in eligible shore roles may work remotely up to two days each week. The team lead approves the days in the shared team calendar."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "case_id": "hybrid-work",
+      "language": "hi",
+      "question": "दूर से काम करने की नीति क्या है?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "तट पर पात्र भूमिकाओं में काम करने वाले कर्मचारी हर सप्ताह अधिकतम दो दिन दूरस्थ रूप से काम कर सकते हैं। टीम प्रमुख साझा टीम कैलेंडर में उन दिनों को मंज़ूरी देते हैं।",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p001c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Remote work",
+            "locator": "text, block 1",
+            "quote": "Employees in eligible shore roles may work remotely up to two days each week. The team lead approves the days in the shared team calendar."
+          }
+        ],
+        "confidence": {
+          "score": 0.6,
+          "kind": "heuristic",
+          "coverage": 0.5,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "source_localization",
+        "language": "hi",
+        "detected_language": "hi",
+        "language_detection_confidence": "script"
+      }
+    },
+    {
+      "case_id": "hybrid-work",
+      "language": "ta",
+      "question": "தொலைதூர வேலைக் கொள்கை என்ன?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "கரைப் பணிகளில் தகுதியுள்ள ஊழியர்கள் வாரத்துக்கு அதிகபட்சம் இரண்டு நாட்கள் தொலைவிலிருந்து பணிபுரியலாம். குழுத் தலைவர் பகிரப்பட்ட குழு நாள்காட்டியில் அந்த நாட்களுக்கு ஒப்புதல் அளிப்பார்.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p001c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Remote work",
+            "locator": "text, block 1",
+            "quote": "Employees in eligible shore roles may work remotely up to two days each week. The team lead approves the days in the shared team calendar."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "source_localization",
+        "language": "ta",
+        "detected_language": "ta",
+        "language_detection_confidence": "script"
+      }
+    },
+    {
+      "case_id": "training-pdf",
+      "language": "en",
+      "question": "What is the training allowance for accredited courses?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "Training allowance Shore employees may request up to EUR 350 annually for accredited courses. Submit the request in PeopleHub before paying the course provider.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d04p001c01",
+            "document": "Training-Benefit.pdf",
+            "heading": "Training Benefit",
+            "locator": "page 1",
+            "quote": "Training allowance Shore employees may request up to EUR 350 annually for accredited courses. Submit the request in PeopleHub before paying the course provider."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "case_id": "training-pdf",
+      "language": "hi",
+      "question": "प्रशिक्षण के लिए कितना भत्ता मिलता है?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "प्रशिक्षण भत्ता। तट पर कार्यरत कर्मचारी मान्यता प्राप्त पाठ्यक्रमों के लिए सालाना अधिकतम EUR 350 का अनुरोध कर सकते हैं। पाठ्यक्रम प्रदाता को भुगतान करने से पहले PeopleHub में अनुरोध जमा करें।",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d04p001c01",
+            "document": "Training-Benefit.pdf",
+            "heading": "Training Benefit",
+            "locator": "page 1",
+            "quote": "Training allowance Shore employees may request up to EUR 350 annually for accredited courses. Submit the request in PeopleHub before paying the course provider."
+          }
+        ],
+        "confidence": {
+          "score": 0.725,
+          "kind": "heuristic",
+          "coverage": 0.667,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "source_localization",
+        "language": "hi",
+        "detected_language": "hi",
+        "language_detection_confidence": "script"
+      }
+    },
+    {
+      "case_id": "training-pdf",
+      "language": "ta",
+      "question": "பயிற்சி உதவித்தொகைக்கு விண்ணப்பிக்க அதிகபட்சம் எவ்வளவு?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "பயிற்சி உதவித்தொகை. கரைப் பணிகளில் உள்ள ஊழியர்கள் அங்கீகாரம் பெற்ற படிப்புகளுக்கு ஆண்டுக்கு அதிகபட்சம் EUR 350 கோரலாம். படிப்பை வழங்கும் நிறுவனத்துக்குப் பணம் செலுத்துவதற்கு முன் PeopleHub தளத்தில் விண்ணப்பிக்கவும்.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d04p001c01",
+            "document": "Training-Benefit.pdf",
+            "heading": "Training Benefit",
+            "locator": "page 1",
+            "quote": "Training allowance Shore employees may request up to EUR 350 annually for accredited courses. Submit the request in PeopleHub before paying the course provider."
+          }
+        ],
+        "confidence": {
+          "score": 0.845,
+          "kind": "heuristic",
+          "coverage": 0.826,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "source_localization",
+        "language": "ta",
+        "detected_language": "ta",
+        "language_detection_confidence": "script"
+      }
+    },
+    {
+      "case_id": "training-pdf",
+      "language": "hi-Latn",
+      "question": "Training allowance kitna milta hai?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "प्रशिक्षण भत्ता। तट पर कार्यरत कर्मचारी मान्यता प्राप्त पाठ्यक्रमों के लिए सालाना अधिकतम EUR 350 का अनुरोध कर सकते हैं। पाठ्यक्रम प्रदाता को भुगतान करने से पहले PeopleHub में अनुरोध जमा करें।",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d04p001c01",
+            "document": "Training-Benefit.pdf",
+            "heading": "Training Benefit",
+            "locator": "page 1",
+            "quote": "Training allowance Shore employees may request up to EUR 350 annually for accredited courses. Submit the request in PeopleHub before paying the course provider."
+          }
+        ],
+        "confidence": {
+          "score": 0.6,
+          "kind": "heuristic",
+          "coverage": 0.5,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "source_localization",
+        "language": "hi",
+        "detected_language": "hi-Latn",
+        "language_detection_confidence": "heuristic"
+      }
+    },
+    {
+      "case_id": "sick-leave",
+      "language": "hi-en",
+      "question": "Sick leave में manager को कब बताना है?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "बीमारी के पहले दिन स्थानीय समयानुसार 09:30 बजे से पहले अपने प्रत्यक्ष प्रबंधक को सूचित करें। लगातार तीन कार्यदिवसों के बाद चिकित्सा प्रमाणपत्र देना अनिवार्य है।",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p003c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Sick leave",
+            "locator": "text, block 3",
+            "quote": "Notify your line manager before 09:30 local time on the first day of sickness. A medical certificate is required after three consecutive working days."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "source_localization",
+        "language": "hi",
+        "detected_language": "hi-en",
+        "language_detection_confidence": "script"
+      }
+    },
+    {
+      "case_id": "travel",
+      "language": "ta-en",
+      "question": "Travel reimbursement எத்தனை நாட்களுக்குள் submit செய்ய வேண்டும்?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "பயணத்திலிருந்து திரும்பிய 30 காலண்டர் நாட்களுக்குள் செலவுத் தளத்தில் பயணச் செலவுத் திருப்பீட்டுக்கான கோரிக்கையைச் சமர்ப்பிக்கவும். கோரும் ஒவ்வொரு செலவுக்கும் பொருள்வாரியான ரசீதை இணைக்கவும்.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d05p001c01",
+            "document": "Travel-and-Expenses.md",
+            "heading": "Travel reimbursements",
+            "locator": "text, block 1",
+            "quote": "Submit travel reimbursements in the expense portal within 30 calendar days of returning. Attach itemized receipts for every claimed expense."
+          }
+        ],
+        "confidence": {
+          "score": 0.825,
+          "kind": "heuristic",
+          "coverage": 0.8,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "source_localization",
+        "language": "ta",
+        "detected_language": "ta-en",
+        "language_detection_confidence": "script"
+      }
+    },
+    {
+      "case_id": "unsupported",
+      "language": "en",
+      "question": "What is the income tax filing deadline?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "refused",
+        "answer": "The supplied sources do not establish an answer to that question.",
+        "tool": null,
+        "citations": []
+      }
+    },
+    {
+      "case_id": "unsupported",
+      "language": "hi",
+      "question": "व्यक्तिगत चिकित्सा निदान कैसे करें?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "refused",
+        "answer": "दिए गए स्रोतों में इस सवाल का उत्तर स्थापित करने के लिए पर्याप्त जानकारी नहीं है।",
+        "tool": null,
+        "citations": [],
+        "translation_status": "source_localization",
+        "language": "hi",
+        "detected_language": "hi",
+        "language_detection_confidence": "script"
+      }
+    },
+    {
+      "case_id": "unsupported",
+      "language": "ta",
+      "question": "எனக்கு வீட்டு கடன் வட்டி விகிதம் என்ன?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "refused",
+        "answer": "வழங்கப்பட்ட ஆதாரங்களில் இந்தக் கேள்விக்குப் பதிலளிக்கப் போதுமான தகவல் இல்லை.",
+        "tool": null,
+        "citations": [],
+        "translation_status": "source_localization",
+        "language": "ta",
+        "detected_language": "ta",
+        "language_detection_confidence": "script"
+      }
+    },
+    {
+      "case_id": "explicit-tamil",
+      "language": "ta",
+      "question": "What is the training allowance for accredited courses?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "பயிற்சி உதவித்தொகை. கரைப் பணிகளில் உள்ள ஊழியர்கள் அங்கீகாரம் பெற்ற படிப்புகளுக்கு ஆண்டுக்கு அதிகபட்சம் EUR 350 கோரலாம். படிப்பை வழங்கும் நிறுவனத்துக்குப் பணம் செலுத்துவதற்கு முன் PeopleHub தளத்தில் விண்ணப்பிக்கவும்.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d04p001c01",
+            "document": "Training-Benefit.pdf",
+            "heading": "Training Benefit",
+            "locator": "page 1",
+            "quote": "Training allowance Shore employees may request up to EUR 350 annually for accredited courses. Submit the request in PeopleHub before paying the course provider."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "source_localization",
+        "language": "ta",
+        "detected_language": "en",
+        "language_detection_confidence": "assumed"
+      }
+    },
+    {
+      "case_id": "revised-allowance",
+      "language": "hi",
+      "question": "वार्षिक छुट्टी कितनी मिलती है?",
+      "status": "scored",
+      "passed": true,
+      "checks": {
+        "status": true,
+        "language": true,
+        "detection": true,
+        "original_evidence": true,
+        "symbols": true,
+        "fact_anchors": true
+      },
+      "response": {
+        "status": "answered",
+        "answer": "तट पर कार्यरत स्थायी कर्मचारियों को हर कैलेंडर वर्ष में 25 दिन का सवेतन वार्षिक अवकाश मिलता है। अधिकतम पाँच दिन का बचा हुआ अवकाश अगले वर्ष में ले जाया जा सकता है। यह अवकाश अगले वर्ष की 31 मार्च को समाप्त हो जाता है।",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p001c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Annual leave",
+            "locator": "text, block 1",
+            "quote": "Permanent shore employees receive 25 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year."
+          }
+        ],
+        "confidence": {
+          "score": 0.6,
+          "kind": "heuristic",
+          "coverage": 0.5,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "source_localization",
+        "language": "hi",
+        "detected_language": "hi",
+        "language_detection_confidence": "script"
+      }
+    }
+  ]
+}

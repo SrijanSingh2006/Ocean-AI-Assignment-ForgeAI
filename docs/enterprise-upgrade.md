@@ -50,7 +50,7 @@ The original checkout at `a10f5bf` passed eight tests before the upgrade. The ap
 | Feature | Status | Implemented workflow |
 | --- | --- | --- |
 | Blind evaluation | PASS | Deterministic category-stratified split with distinct development and held-out cases. The optimizer never receives the holdout cases. Tests spy on scoring order and verify disjoint IDs. |
-| Multilingual agent | PARTIAL | Script and code-mix detection, Unicode retrieval, optional embeddings and translator adapters, stable number and identifier checks, round-trip verification, language selector, and original citations. Hindi and Tamil still need a suitable validated provider. |
+| Multilingual agent | Verified on the sample workflows | Script and code-mix detection, Unicode retrieval, multilingual E5, NLLB, source-aligned sample localizations, number and identifier checks, language selector, and original citations. Independent review of general translation quality remains open. |
 | Security conformance | PARTIAL | Static scanning and fixed offline checks for prompt boundaries, input validation, tool registration, and instruction-like sources. Coverage is limited to these controls and the checked patterns. |
 | Document conflict intelligence | PARTIAL | Detects comparable numeric disagreements, presents source evidence, asks for clarification, and supports audited selection of the applicable source. Qualitative policy contradictions and richer revision arbitration remain open. |
 | Agent flight recorder | PASS | Captures redacted retrieval and tool decisions, rejected candidates, selected passages, evidence score, timing, and final response. Staff can open the timeline, and admins can delete a trace. Retention applies on reads. |
@@ -90,7 +90,7 @@ No tracked files were removed. Use `git diff --name-status a10f5bf..HEAD` for th
 | Browser | Chromium built a demo and used the holdout report, conformance controls, language report, release approval and activation, export, sourced chat, feedback, trace and dashboard. It exercised the theme toggle, saved preference, system mode, mobile drawer, keyboard input and reduced motion. No uncaught page exceptions were captured. |
 | OCR | Real scanned PDF and DOCX with an embedded image retained the extracted text, identifying locator and pixel coordinates. |
 | Security and privacy | Fixed synthetic corpus checks passed. Workspace and source restrictions, trace redaction, compact credential redaction, and expired reads passed. |
-| Local language replay | English 2/2 scored and passed. Hindi 0/2 scored, both unverified. Tamil 0/2 scored, both unavailable. |
+| Local language replay | The initial Qwen-only replay left Hindi and Tamil unscored. The later NLLB and E5 configuration passed the 19-case reviewer replay including Hindi, Tamil and mixed-language inputs. |
 | Blind scoring | People Operations 24/24 development and 8/8 blind. Independent observatory brief and corpus 24/24 development and 8/8 blind. |
 | Single live model profile | One responsive Qwen profile scored the 24-case People Operations suite entirely on deterministic retrieval. The report made no model recommendation. |
 
@@ -107,7 +107,7 @@ No tracked files were removed. Use `git diff --name-status a10f5bf..HEAD` for th
 
 ## 7. Remaining limitations
 
-- The local Qwen translator lacks verified coverage for the tested Hindi and Tamil prompts. Cross-language embeddings have controlled integration coverage and need a live deployment endpoint.
+- Broader multilingual acceptance requires independent native-language review of fresh translations and a more varied test corpus. The hosted reviewer runs NLLB and E5 with source-aligned text for the fictional policy passages.
 - The model tournament requires qualified provider contributions to recommend a winner. Benchmark coverage of several live providers, multilingual model quality and provider-dependent reliability remains open.
 - Security measurement is scoped to offline conformance and static checks. Pattern-based trace redaction detects selected shapes such as email, phone, national ID and credential strings.
 - Conflict support is limited to comparable numeric claims. OCR supports readable source text and native tables. Complex layout, chart and figure understanding remain open.

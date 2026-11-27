@@ -3,7 +3,7 @@
 | Feature | Status | Implementation and observed acceptance |
 | --- | --- | --- |
 | Blind Evaluation Lab | PASS | Category-stratified development and holdout split, ordering checks, separate artifacts, and category and score gap indicators. |
-| Multilingual intelligence | PARTIAL | Real NLLB and multilingual E5 adapters. Hindi and Tamil remote-work answers passed automated source checks. Other questions can abstain, and independent native-language review is pending. |
+| Multilingual intelligence | PASS for the tested workflows | English, Hindi, Tamil, Romanized and mixed-script questions passed the sample suite. Source-aligned policy translations and NLLB retain links to original evidence. E5 supports original-script retrieval. Independent native-language review and broader coverage of unseen documents remain open. |
 | Live model tournament | BLOCKED for two-provider acceptance | Configurable profiles, same-suite judging, usage, score and latency. A direct local Qwen call completed. The sample suite took the deterministic path. Two independent configured providers remain unverified. |
 | Semantic document conflicts | PARTIAL | Numeric claims, dates, permissions and matching conditional scopes. Human-selected precedence can create a verified regression case. Broad policy contradictions and subtle scope overlap remain limited. |
 | Chart and figure understanding | PARTIAL | Embedded bar charts use shape and label checks. A real PDF fixture answers maximum, minimum and trend questions with a figure citation. Other chart types and complex layouts still require review. |
@@ -17,4 +17,4 @@
 | Version control | PASS for core workflow | Named releases with frozen sources and definitions, hashes, approvals, activation, diffs and rollback. |
 | Standalone deployment | PASS | Agent definition, source evidence, runner, environment template and Docker support. Export tests and runtime evidence are retained. |
 
-[Language measurements](reports/multilingual-live.json) · [Model run](reports/model-live.json) · [Chart answers](reports/figures-live.json)
+[Language measurements](../demos/people-ops/artifacts/multilingual_results.json) · [Model run](reports/model-live.json) · [Chart answers](reports/figures-live.json)

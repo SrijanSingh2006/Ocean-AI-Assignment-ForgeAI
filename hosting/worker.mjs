@@ -179,7 +179,7 @@ async function bridge(request, path, bus, context, secret) {
 export default {
   async fetch(request, env, context) {
     const { pathname: path, search } = new URL(request.url);
-    const asset = staticAsset(path, request.method);
+    const asset = staticAsset(reviewerOnly && path === "/project-download" ? "/ForgeAI.zip" : path, request.method);
     if (asset) return asset;
     if (path.startsWith("/_forge/")) {
       try {

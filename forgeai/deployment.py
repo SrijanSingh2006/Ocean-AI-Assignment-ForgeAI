@@ -103,8 +103,13 @@ only to users authorized for the included documents.
 Lexical retrieval works with local dependencies. Set `FORGE_DEPLOY_MODEL=1`
 and configure an OpenAI-compatible model server for optional model-assisted
 evidence selection. Set `FORGE_DEPLOY_NETWORK=1` to permit the already-selected
-weather tool to contact its data provider. Enable an external service only when
-the deployment can share the data that service needs.
+weather tool to contact its data provider. The chat request accepts a language
+of auto, en, hi, or ta. The CLI exposes the same choices with --language.
+For cross-language retrieval and translation, configure FORGE_EMBEDDING_URL
+and FORGE_LANGUAGE_MODEL_URL with their matching model names, or install the
+optional CTranslate2, SentencePiece, ONNX Runtime, and tokenizers packages and
+set FORGE_NLLB_PATH and FORGE_E5_PATH to compatible local model directories.
+Enable an external service only when the deployment can share its data.
 
 ## Evidence and limits
 
@@ -122,14 +127,17 @@ import hmac
 import json
 import os
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
 
 from forgeai.corpus import Corpus
+from forgeai.embeddings import configured_embeddings
 from forgeai.factory import Agent, read_json
 from forgeai.impact import fingerprints
 from forgeai.model import LocalModel
+from forgeai.multilingual import language_model
 
 ROOT = Path(__file__).resolve().parent
 configuration = read_json(ROOT / "runner-config.json")
@@ -151,15 +159,17 @@ app = FastAPI(title=definition["name"])
 
 class Question(BaseModel):
     question: str = Field(min_length=1, max_length=2000)
+    language: Literal["auto", "en", "hi", "ta"] = "auto"
 
 
-def answer(question):
+def answer(question, language="auto"):
     if not question.strip():
         raise ValueError("Enter a question")
     return Agent(
         definition, corpus, LocalModel() if os.getenv("FORGE_DEPLOY_MODEL") == "1" else None,
         permit_network=os.getenv("FORGE_DEPLOY_NETWORK") == "1",
-    ).answer(question)
+        translator=language_model(), embeddings=configured_embeddings(),
+    ).answer(question, requested_language=language)
 
 
 @app.get("/health")
@@ -173,7 +183,7 @@ def chat(payload: Question, authorization: str = Header(default="")):
     if token and not hmac.compare_digest(authorization.encode(), ("Bearer " + token).encode()):
         raise HTTPException(401, "Agent access token required", headers={"WWW-Authenticate": "Bearer"})
     try:
-        return answer(payload.question)
+        return answer(payload.question, payload.language)
     except ValueError as exc:
         raise HTTPException(422, "Enter a valid question") from exc
 
@@ -183,9 +193,10 @@ def main():
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
     parser.add_argument("--ask")
+    parser.add_argument("--language", choices=("auto", "en", "hi", "ta"), default="auto")
     arguments = parser.parse_args()
     if arguments.ask is not None:
-        print(json.dumps(answer(arguments.ask), ensure_ascii=False, indent=2))
+        print(json.dumps(answer(arguments.ask, arguments.language), ensure_ascii=False, indent=2))
     else:
         import uvicorn
         uvicorn.run(app, host=arguments.host, port=arguments.port)

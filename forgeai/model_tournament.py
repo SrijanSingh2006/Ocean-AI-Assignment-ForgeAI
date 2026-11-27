@@ -85,7 +85,7 @@ def compare_languages(agent, cases, translator, latency=40):
                     results.append({"language": code, "case_id": case["id"], "status": "unverified"})
                     continue
                 canonical = response
-                if response.get("translation_status") == "verified_roundtrip" and response["status"] == "answered":
+                if response.get("translation_status") in {"source_localization", "verified_roundtrip"} and response["status"] == "answered":
                     joiner = "\n" if response.get("tool") == "csv_lookup" else "\n\n"
                     canonical = {**response, "answer": joiner.join(c["quote"] for c in response["citations"])}
                 grade = judge(case, canonical, agent.corpus)

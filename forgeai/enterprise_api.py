@@ -128,7 +128,7 @@ def runtime(request, run_id, *, version_id=None, use_model=True):
     resolved = optional_json(conflict_state(request, run_id), {"selections": {}, "history": []})
     translator = language_model()
     agent = Agent(definition, corpus, LocalModel() if use_model else None, use_model,
-                  resolutions=None if version else resolved["selections"], translator=translator, embeddings=configured_embeddings() if use_model else None)
+                  resolutions=None if version else resolved["selections"], translator=translator, embeddings=configured_embeddings())
     return artifacts, agent, version, translator
 
 

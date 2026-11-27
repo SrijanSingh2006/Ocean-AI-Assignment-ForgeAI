@@ -14,7 +14,7 @@ The [14-feature acceptance matrix](FEATURE_MATRIX.md) records tested scope and r
 
 ## 4. Tests
 
-The original 32 tests and final 36 tests passed with zero failures or skips. Chromium checked the real factory, chat, export, timeline, blind evaluation and responsive controls. Docker verified reviewer restrictions and an authenticated agent build that survived restart. The recorded development suite improved from 18/24 through 22/24 to 24/24, with 8/8 on the separate holdout. Scores apply to those cases. [Commands and test evidence](TEST_REPORT.md)
+The original 32 tests and final 38 tests passed with zero failures or skips. The multilingual reviewer suite passed 19 cases with exact source checks. Chromium checked the real factory, chat, export, timeline, blind evaluation and responsive controls. Docker verified reviewer restrictions and an authenticated agent build that survived restart. The recorded development suite improved from 18/24 through 22/24 to 24/24, with 8/8 on the separate holdout. Scores apply to those cases. [Commands and test evidence](TEST_REPORT.md)
 
 ## 5. Deployment
 

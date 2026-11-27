@@ -195,14 +195,31 @@ const engineering = (() => {
   }
 
   function displayLanguages(data) {
-    const names = {en: "English", hi: "Hindi", ta: "Tamil"};
+    const names = {en: "English", hi: "Hindi", ta: "Tamil", "hi-Latn": "Romanized Hindi",
+      "ta-Latn": "Romanized Tamil", "hi-en": "Hindi–English", "ta-en": "Tamil–English"};
+    const groups = Object.entries(data.languages);
     return `<div class="panel-grid">${Object.entries(data.languages).map(([code, entry]) =>
       `<div class="lab-card"><h3>${names[code] || esc(code)}</h3><strong>${entry.passed} passed · ${entry.scored}/${entry.total} scored</strong></div>`).join("")}</div>
-      ${data.results.map((entry) => `<article class="lab-card"><h3>${names[entry.language] || esc(entry.language)} · ${esc(entry.case_id)}
+      ${data.review ? `<p class="muted">${esc(data.review)}</p>` : ""}
+      <div data-language-report><label class="field"><span class="field-label">Filter by language</span>
+        <select data-language-filter><option value="">All languages</option>
+          ${groups.map(([code]) => `<option value="${esc(code)}">${names[code] || esc(code)}</option>`).join("")}
+        </select></label>
+      ${data.results.map((entry) => `<article class="lab-card" data-case-language="${esc(entry.language)}"><h3>${names[entry.language] || esc(entry.language)} · ${esc(entry.case_id)}
         ${badge(entry.status === "scored" ? (entry.passed ? "Passed" : "Failed") : entry.status.replaceAll("_", " "), entry.passed ? "good" : "warn")}</h3>
-        ${entry.response ? `<p>${esc(entry.response.answer)}</p>
-          ${table(entry.response.citations.map((citation) => `${esc(citation.document)} · ${esc(citation.locator)}`))}` : ""}</article>`).join("")}`;
+        ${entry.question ? `<p><strong>${esc(entry.question)}</strong></p>` : ""}
+        ${entry.response ? `<p lang="${esc(entry.response.language || "en")}">${esc(entry.response.answer)}</p>
+          ${entry.response.citations.map((citation) => `<details><summary>${esc(citation.document)} · ${esc(citation.locator)}</summary>
+            <blockquote>${esc(citation.quote)}</blockquote></details>`).join("")}` : ""}</article>`).join("")}</div>`;
   }
+
+  document.addEventListener("change", (event) => {
+    const select = event.target.closest("[data-language-filter]");
+    if (!select) return;
+    for (const row of select.closest("[data-language-report]").querySelectorAll("[data-case-language]")) {
+      row.hidden = Boolean(select.value && select.value !== row.dataset.caseLanguage);
+    }
+  });
 
   function evidence(run) {
     const entry = record(run.id);
@@ -328,5 +345,5 @@ const engineering = (() => {
     }
   });
 
-  return {dashboard, loadDashboard, evidence, open, clear};
+  return {dashboard, loadDashboard, evidence, open, clear, displayLanguages};
 })();

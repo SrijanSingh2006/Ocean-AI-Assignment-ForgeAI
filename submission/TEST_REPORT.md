@@ -15,7 +15,7 @@ Install Tesseract and Poppler for OCR tests. Add the optional languages extra an
 ## Live evidence
 
 - Three chart questions cite the verified embedded figure. [PDF fixture](fixtures/Regional%20Shipments.pdf) · [Results](reports/figures-live.json)
-- The real NLLB and E5 run produced cited Hindi and Tamil remote-work answers and abstention on less reliable cases. [Measurements](reports/multilingual-live.json)
+- The language suite checks annual leave, remote work, the training PDF, sick leave, travel, a revised policy, and out-of-scope refusal. It verifies the expected facts, language, source document, locator and exact evidence on each case. [Measurements](../demos/people-ops/artifacts/multilingual_results.json)
 - Local Qwen completed a direct model call. The sample tournament used deterministic retrieval and qualified no model. [Model evidence](reports/model-live.json)
 - Reviewer builds and Docker checks used separate fictional sample data. [Deployment report](DEPLOYMENT_REPORT.md)
 
@@ -24,7 +24,8 @@ Install Tesseract and Poppler for OCR tests. Add the optional languages extra an
 | Check | Observed result |
 | --- | --- |
 | Python baseline | 32 passed, zero failures, zero skips |
-| Python final | 36 passed, zero failures, zero skips |
+| Python final | 38 passed, zero failures, zero skips |
+| Multilingual reviewer replay | 19 passed across English, Hindi, Tamil, Romanized inputs, and script-English mixes. |
 | Chromium workflow | Build, theme switching and persistence, blind score, defensive checks, chat and citations, feedback, release approval and activation, traces, ZIP export, dashboard, keyboard and responsive navigation |
 | Resolutions and release names | Approved conflict generated a verified regression case. Named release, activation and rollback passed the API workflow |
 | Direct chat routes | The Marine Procurement link retained its requested agent after the page and run list loaded |
@@ -32,6 +33,6 @@ Install Tesseract and Poppler for OCR tests. Add the optional languages extra an
 | Recorded browser errors | No uncaught page errors. The final video uses individually verified Hindi and Tamil clips |
 | Full Docker app | Reviewer chat and route restrictions verified. An authorized owner build persisted across container restart and required re-authentication |
 | Public reviewer application | HTTPS homepage, four fictional samples, cited chat and runnable agent ZIP verified without sign-in. Anonymous build and relay queue requests were rejected |
-| Open gates | Independent native-language review, second live model provider, broader semantic and figure support |
+| Open gates | Independent native-language review of fresh translations, second live model provider, broader semantic and figure support |
 
 [Recorded cases and outputs](reports/recorded-build/) · [Chromium smoke output](reports/chromium-smoke.txt) · [Screenshots](screenshots/)

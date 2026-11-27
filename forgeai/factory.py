@@ -13,12 +13,25 @@ from .conflict_detector import document_conflicts, resolve_conflicts
 from .corpus import Corpus, Index, clean, least_duplicate, terms
 from .embeddings import configured_embeddings
 from .model import LatencyBudgetExceeded, LocalModel
-from .multilingual import LANGUAGES, detect_language, translate, translated_answer
+from .multilingual import LANGUAGES, detect_language, detection_confidence, normalize_roman_query, translate, translated_answer
+from .policy_localizations import localize_evidence
 from .security import conformance_scorecard, findings, scan_corpus
 from .registry import REGISTRY, dispatch, select_tools
 
 REFUSAL = "The supplied sources do not establish an answer to that question."
 CLARIFICATION = "Which topic, item, or document should I look for?"
+LANGUAGE_MESSAGES = {
+    "hi": {
+        REFUSAL: "दिए गए स्रोतों में इस सवाल का उत्तर स्थापित करने के लिए पर्याप्त जानकारी नहीं है।",
+        CLARIFICATION: "कृपया बताएं कि मैं कौन-सा विषय, वस्तु या दस्तावेज़ खोजूँ।",
+        "unverified": "मैं इस अनुरोध के उत्तर का हिंदी अनुवाद सत्यापित नहीं कर सका। कृपया स्रोत की भाषा आज़माएँ।",
+    },
+    "ta": {
+        REFUSAL: "வழங்கப்பட்ட ஆதாரங்களில் இந்தக் கேள்விக்குப் பதிலளிக்கப் போதுமான தகவல் இல்லை.",
+        CLARIFICATION: "எந்தத் தலைப்பு, பொருள் அல்லது ஆவணத்தைத் தேட வேண்டும் என்று குறிப்பிடுங்கள்.",
+        "unverified": "இந்தக் கோரிக்கைக்கான தமிழ் மொழிபெயர்ப்பைச் சரிபார்க்க முடியவில்லை. மூல ஆவணத்தின் மொழியை முயற்சி செய்யுங்கள்.",
+    },
+}
 EXPECTED_CASES = 24
 
 MISSING_TOPICS = [
@@ -235,18 +248,50 @@ class Agent:
         target = source if requested_language == "auto" else requested_language
         if target not in LANGUAGES:
             raise ValueError("Choose auto, en, hi, or ta.")
+        detection = {"detected_language": detected, "language_detection_confidence": detection_confidence(detected)}
         if recorder:
-            recorder.event("normalized", question=question, detected_language=detected, requested_language=target)
-        if findings(question):
-            return self._answer(question, recorder)
+            recorder.event("normalized", question=question, requested_language=target, **detection)
         query = question
         translated_for = source
+        if findings(question) or blocked(question, self.definition["denied_topics"]):
+            result = self._answer(question, recorder)
+        else:
+            query, translated_for = self.retrieval_query(question, detected)
+            if not query:
+                return self.language_unavailable(target, detection)
+            if recorder and query != question:
+                recorder.event("translated_query", query=query, retrieval_language=translated_for)
+            cross_language = source not in self.source_languages or detected.endswith("-Latn") or query != question
+            result = self._answer(query, recorder, semantic_query=question if cross_language else None)
+        answer_language = detect_language(result["answer"]).split("-")[0]
+        if target == "en" and detected == "en" and translated_for == "en" and answer_language == "en":
+            return result
+        if answer_language != target:
+            localized = LANGUAGE_MESSAGES.get(target, {}).get(result["answer"])
+            if not localized and result["status"] == "answered":
+                localized = localize_evidence(result, target)
+            if localized:
+                result.update(answer=localized, translation_status="source_localization")
+            elif output := translated_answer(result["answer"], answer_language, target, self.translator):
+                result.update(answer=output, translation_status="verified_roundtrip")
+            elif result["status"] == "answered":
+                return self.language_unavailable(target, detection, result["citations"])
+            else:
+                return {**result, "language": answer_language, "translation_status": "unverified", **detection}
+        return {**result, "language": target, **detection}
+
+    def retrieval_query(self, question, detected):
+        source = detected.split("-")[0]
+        query = question
+        translated_for = source
+        if detected.endswith("-Latn") and "en" in self.source_languages:
+            normalized = normalize_roman_query(question, detected)
+            if self.index.search(normalized, 1, self.eligible_ids):
+                return normalized, "en"
         if source not in self.source_languages or detected.endswith("-Latn"):
             translated_for = "en" if "en" in self.source_languages else self.source_languages[0]
             query = translate(question, translated_for, self.translator)
-            if not query:
-                if not self.embeddings:
-                    return self.language_unavailable(target, detected)
+            if not query and self.embeddings:
                 query = question
         elif self.translator and len(self.source_languages) > 1:
             hits = self.index.search(query, 1, self.eligible_ids)
@@ -258,29 +303,16 @@ class Agent:
                 candidates = self.index.search(variant, 1, self.eligible_ids) if variant else []
                 if candidates and candidates[0][1] > coverage:
                     coverage, query, translated_for = candidates[0][1], variant, alternative
-        if recorder and query != question:
-            recorder.event("translated_query", query=query, retrieval_language=translated_for)
-        result = self._answer(query, recorder)
-        answer_language = detect_language(result["answer"]).split("-")[0]
-        if target == "en" and detected == "en" and translated_for == "en" and answer_language == "en":
-            return result
-        if answer_language != target:
-            output = translated_answer(result["answer"], answer_language, target, self.translator)
-            if not output:
-                if result["status"] == "answered":
-                    return self.language_unavailable(target, detected)
-                return {**result, "language": answer_language, "detected_language": detected,
-                        "translation_status": "unverified"}
-            result["answer"] = output
-            result["translation_status"] = "verified_roundtrip"
-        return {**result, "language": target, "detected_language": detected}
+        return query, translated_for
 
-    def language_unavailable(self, target, detected):
-        name = LANGUAGES[target]
-        return {**self.reply("clarify", f"I could not verify this request in {name}. Try a language used in the sources."),
-                "language": "en", "detected_language": detected, "translation_status": "unverified"}
+    def language_unavailable(self, target, detection, citations=()):
+        notice = LANGUAGE_MESSAGES.get(target, {}).get(
+            "unverified", "I could not verify an English translation. Try a language used in the sources.",
+        )
+        return {**self.reply("clarify", notice), **detection, "citations": list(citations),
+                "language": target, "translation_status": "unverified"}
 
-    def _answer(self, question, recorder):
+    def _answer(self, question, recorder, *, semantic_query=None):
         def event(stage, **details):
             if recorder:
                 recorder.event(stage, **details)
@@ -314,10 +346,16 @@ class Agent:
                 valid = [hit for hit in valid if hit[1] >= 0.65 or len(set(terms(part)) & set(terms(hit[2]["heading"]))) >= 2]
             strategy = "BM25"
             if not valid and self.embeddings:
-                semantic = self.embeddings.search(part, self.corpus, self.eligible_ids, options["top_k"])
-                if semantic:
-                    hits = valid = semantic
-                    strategy = "multilingual_embedding"
+                # A dense match needs a strong, distinct leader to stand in for lexical evidence.
+                dense_queries = (semantic_query, part) if semantic_query and len(queries) == 1 else (part,)
+                for dense_query in dict.fromkeys(dense_queries):
+                    semantic = self.embeddings.search(dense_query, self.corpus, self.eligible_ids, 2)
+                    if semantic and semantic[0][0] >= 0.80 and (
+                        len(semantic) == 1 or semantic[0][0] - semantic[1][0] >= 0.025
+                    ):
+                        hits = valid = semantic[:1]
+                        strategy = "multilingual_embedding"
+                        break
             if recorder:
                 eligible = {row[2]["id"] for row in valid}
                 event("retrieval", strategy=strategy, query=part, candidates=[

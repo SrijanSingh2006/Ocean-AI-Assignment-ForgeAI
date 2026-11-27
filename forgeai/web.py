@@ -18,6 +18,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from .corpus import MAX_FILES, MAX_FILE_BYTES, SUPPORTED, Corpus
+from .embeddings import configured_embeddings
 from .factory import Agent, read_json, run_factory, write_json
 from .model import LocalModel, ROOT
 from .registry import REGISTRY
@@ -48,6 +49,7 @@ ARTIFACTS = (
     "report.md", "requirements.json", "definition.json", "initial_definition.json", "evals.json",
     "eval_results.json", "iterations.json", "scorecards.json", "model_trace.json", "regression.json", "run.json",
     "tournament.json", "manual_comparison.json", "blind_evals.json", "blind_results.json", "security.json",
+    "multilingual_results.json",
 )
 QUEUE = ThreadPoolExecutor(max_workers=1, thread_name_prefix="forge")
 LOCK = threading.RLock()
@@ -425,6 +427,9 @@ def show(run_id: str, request: Request):
     if state["status"] == "complete" and request.state.principal.staff:
         folder, _ = completed(run_id)
         state["result"] = read_json(folder / "run.json")
+        languages = folder / "multilingual_results.json"
+        if state["demo"] and languages.is_file():
+            state["result"]["language_evaluation"] = read_json(languages)
     return state
 
 
@@ -480,7 +485,8 @@ def chat(message: Message, request: Request):
             definition = read_json(artifacts / "definition.json")
             retrieval = definition["retrieval"]
             corpus = Corpus.load(documents, retrieval["chunk_words"], retrieval["overlap_words"])
-            agent = Agent(definition, corpus, permit_network=False, translator=language_model())
+            agent = Agent(definition, corpus, permit_network=False, translator=language_model(),
+                          embeddings=configured_embeddings())
             return agent.answer(message.question, requested_language=message.language)
         finally:
             reviewer.CHAT_SLOTS.release()

@@ -277,6 +277,11 @@ function resultContent(run) {
   const result = run.result;
   const path = `/api/runs/${esc(run.id)}`;
   const download = (file, label) => `<a href="${path}/artifact/${file}" class="btn small">${icon("download")} ${label}</a>`;
+  if (state.tab === "languages" && result.language_evaluation) {
+    return `<section class="card sheet">${section("message", "Language evaluation")}
+      ${engineering.displayLanguages(result.language_evaluation)}
+      <div class="actions">${download("multilingual_results.json", "Language results JSON")}</div></section>`;
+  }
   const invalidModel = result.model.calls.filter((call) => call.status !== "ok");
   if (state.tab === "engineering") return engineering.evidence(run);
   if (state.tab === "blind" && result.blind) {
@@ -359,6 +364,7 @@ function runScreen(run) {
     const result = run.result;
     const tabs = [["overview", "Overview"], ["evaluations", "Evaluations"], ["definition", "Definition"], ["requirements", "Requirements"], ["log", "Run log"]];
     if (result.blind) tabs.push(["blind", "Blind evaluation"]);
+    if (result.language_evaluation) tabs.push(["languages", "Language evaluation"]);
     if (!state.session?.review_demo) tabs.push(["engineering", "Engineering lab"]);
     if (result.tournament || result.manual_baseline) tabs.splice(2, 0, ["comparisons", "Comparisons"]);
     return `<div class="screen"><div class="page-heading"><div><h1>${esc(run.name)}</h1><p>Factory report · ${run.demo ? "Recorded demonstration" : "Workspace build"}</p></div>
@@ -401,9 +407,12 @@ function chatResponse(item) {
   return `<div class="message">${badge(titleFor(response.status), response.status === "answered" ? "good" : response.status === "error" ? "bad" : "warn")}
     ${response.tool ? badge(state.workspace.tools[response.tool]?.name || response.tool) : ""}
     ${evidence ? badge(`Evidence ${Math.round(evidence.score * 100)}%`) : ""}
-    ${response.translation_status === "verified_roundtrip" ? badge("Machine translation") : ""}
-    <div>${esc(response.answer)}</div>
-    ${response.citations.map((c) => `<details><summary>${esc(c.document)} · ${esc(c.heading)} · ${esc(c.locator)}</summary><p>${esc(c.quote)}</p>
+    ${response.translation_status === "verified_roundtrip" ? badge("Machine translation")
+      : response.translation_status === "source_localization" ? badge("Localized response")
+      : response.translation_status === "unverified" ? badge("Translation unverified", "warn") : ""}
+    <div lang="${esc(response.language || "en")}">${esc(response.answer)}</div>
+    ${response.citations.map((c) => `<details><summary>${esc(c.document)} · ${esc(c.heading)} · ${esc(c.locator)}</summary>
+      <p class="muted">Original evidence</p><blockquote>${esc(c.quote)}</blockquote>
       ${c.extraction ? `<p class="muted">${c.extraction.kind === "bar_chart" ? "Verified figure extraction" : "OCR source"} · ${esc(c.extraction.confidence)} confidence</p>` : ""}</details>`).join("")}
     ${response.trace_id ? `<details class="chat-feedback"><summary>Give feedback</summary>
       <form data-feedback-trace="${esc(response.trace_id)}" data-run-id="${esc(state.chatId)}">
