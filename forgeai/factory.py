@@ -12,6 +12,7 @@ from .confidence import evidence_confidence
 from .conflict_detector import numeric_conflicts, resolve_conflicts
 from .corpus import Corpus, Index, clean, least_duplicate, terms
 from .model import LatencyBudgetExceeded, LocalModel
+from .multilingual import LANGUAGES, detect_language, translate, translated_answer
 from .security import conformance_scorecard, findings, scan_corpus
 from .registry import REGISTRY, dispatch, select_tools
 
@@ -193,7 +194,7 @@ def split_question(question):
 
 
 class Agent:
-    def __init__(self, definition, corpus, model=None, permit_network=True, resolutions=None):
+    def __init__(self, definition, corpus, model=None, permit_network=True, resolutions=None, translator=None):
         if definition.get("schema_version") != 1 or set(definition["tools"]) - REGISTRY.keys():
             raise ValueError("Unsupported agent definition schema or tool key")
         self.definition = definition
@@ -203,6 +204,8 @@ class Agent:
         self.permit_network = permit_network
         self.conflicts = numeric_conflicts(corpus)
         self.resolutions = resolutions or {}
+        self.translator = translator
+        self.source_languages = sorted({p.get("language", "en").split("-")[0] for p in corpus.passages})
         flagged = {row["passage_id"] for row in scan_corpus(corpus)}
         self.eligible_ids = set(corpus.by_id) - flagged if definition.get("security", {}).get("exclude_instruction_like_passages", True) else None
 
@@ -216,11 +219,55 @@ class Agent:
             ],
         }
 
-    def answer(self, question, recorder=None):
+    def answer(self, question, recorder=None, requested_language="auto"):
         question = clean(question)
+        detected = detect_language(question)
+        source = detected.split("-")[0]
+        target = source if requested_language == "auto" else requested_language
+        if target not in LANGUAGES:
+            raise ValueError("Choose auto, en, hi, or ta.")
         if recorder:
-            recorder.event("normalized", question=question)
-        return self._answer(question, recorder)
+            recorder.event("normalized", question=question, detected_language=detected, requested_language=target)
+        if findings(question):
+            return self._answer(question, recorder)
+        query = question
+        translated_for = source
+        if source not in self.source_languages or detected.endswith("-Latn"):
+            translated_for = "en" if "en" in self.source_languages else self.source_languages[0]
+            query = translate(question, translated_for, self.translator)
+            if not query:
+                return self.language_unavailable(target, detected)
+        elif self.translator and len(self.source_languages) > 1:
+            hits = self.index.search(query, 1, self.eligible_ids)
+            coverage = hits[0][1] if hits else 0
+            for alternative in (code for code in self.source_languages if code != source):
+                if coverage >= .75:
+                    break
+                variant = translate(question, alternative, self.translator)
+                candidates = self.index.search(variant, 1, self.eligible_ids) if variant else []
+                if candidates and candidates[0][1] > coverage:
+                    coverage, query, translated_for = candidates[0][1], variant, alternative
+        if recorder and query != question:
+            recorder.event("translated_query", query=query, retrieval_language=translated_for)
+        result = self._answer(query, recorder)
+        if target == "en" and detected == "en" and translated_for == "en":
+            return result
+        answer_language = detect_language(result["answer"]).split("-")[0]
+        if answer_language != target:
+            output = translated_answer(result["answer"], answer_language, target, self.translator)
+            if not output:
+                if result["status"] == "answered":
+                    return self.language_unavailable(target, detected)
+                return {**result, "language": answer_language, "detected_language": detected,
+                        "translation_status": "unverified"}
+            result["answer"] = output
+            result["translation_status"] = "verified_roundtrip"
+        return {**result, "language": target, "detected_language": detected}
+
+    def language_unavailable(self, target, detected):
+        name = LANGUAGES[target]
+        return {**self.reply("clarify", f"I could not verify this request in {name}. Try a language used in the sources."),
+                "language": "en", "detected_language": detected, "translation_status": "unverified"}
 
     def _answer(self, question, recorder):
         def event(stage, **details):

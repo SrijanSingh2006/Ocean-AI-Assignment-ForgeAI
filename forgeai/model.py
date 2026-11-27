@@ -17,10 +17,13 @@ class LatencyBudgetExceeded(TimeoutError):
 
 
 class LocalModel:
-    def __init__(self, enabled=True, token_budget=12_000):
+    def __init__(self, enabled=True, token_budget=12_000, url=None, name=None, api_key=None):
         self.enabled = enabled
-        self.url = os.getenv("FORGE_MODEL_URL", DEFAULT_URL).rstrip("/")
-        self.name = os.getenv("FORGE_MODEL_NAME", DEFAULT_MODEL)
+        self.url = (url or os.getenv("FORGE_MODEL_URL", DEFAULT_URL)).rstrip("/")
+        self.name = name or os.getenv("FORGE_MODEL_NAME", DEFAULT_MODEL)
+        self.headers = {"Content-Type": "application/json"}
+        if api_key:
+            self.headers["Authorization"] = f"Bearer {api_key}"
         self.token_budget = token_budget
         self.calls = []
         self.tokens = 0
@@ -38,7 +41,7 @@ class LocalModel:
         if not self.enabled:
             return False
         try:
-            with urlopen(self.url + "/models", timeout=1.5) as response:
+            with urlopen(Request(self.url + "/models", headers=self.headers), timeout=1.5) as response:
                 return bool(json.load(response).get("data"))
         except (OSError, ValueError):
             return False
@@ -64,7 +67,7 @@ class LocalModel:
         request = Request(
             self.url + "/chat/completions",
             data=json.dumps(body).encode(),
-            headers={"Content-Type": "application/json"},
+            headers=self.headers,
         )
         try:
             with urlopen(request, timeout=min(40, self.remaining_time() + 0.001)) as response:

@@ -4,6 +4,9 @@ import csv
 import io
 import math
 import re
+import unicodedata
+
+from .multilingual import detect_language
 from collections import Counter
 from pathlib import Path
 
@@ -25,7 +28,22 @@ def clean(text):
 
 
 def terms(text):
-    words = re.findall(r"[^\W_]+(?:[.-][^\W_]+)*", text.casefold())
+    normalized = unicodedata.normalize("NFC", text.casefold())
+    if any(unicodedata.category(char).startswith("M") for char in normalized):
+        words = []
+        word = ""
+        for index, char in enumerate(normalized):
+            if char.isalnum() or (word and unicodedata.category(char).startswith("M")):
+                word += char
+            elif char in ".-" and word and index + 1 < len(normalized) and normalized[index + 1].isalnum():
+                word += char
+            elif word:
+                words.append(word)
+                word = ""
+        if word:
+            words.append(word)
+    else:
+        words = re.findall(r"[^\W_]+(?:[.-][^\W_]+)*", normalized)
     return [
         word[:-1] if len(word) > 4 and word.endswith("s") and not word.endswith("ss") else word
         for word in words if word not in STOP and (len(word) > 1 or word.isdigit())
@@ -166,11 +184,13 @@ class Corpus:
                         "id": f"d{file_number:02}p{block_number:03}c{segment_number:02}",
                         "document": provenance, "title": title_for(path.name),
                         "heading": heading, "locator": f"{locator}, block {block_number}" if locator == "text" else locator,
-                        "text": segment, "cells": cells,
+                        "text": segment, "cells": cells, "language": detect_language(segment),
                     })
             added = len(passages) - first
             if added:
-                documents.append({"name": provenance, "format": path.suffix[1:].upper(), "passages": added})
+                languages = sorted({passage["language"] for passage in passages[first:]})
+                documents.append({"name": provenance, "format": path.suffix[1:].upper(), "passages": added,
+                                  "languages": languages})
             else:
                 warnings.append(f"{provenance}: no extractable text; scanned PDF pages need OCR first.")
         if not passages:
