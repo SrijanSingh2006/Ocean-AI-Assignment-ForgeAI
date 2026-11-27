@@ -45,6 +45,8 @@ def main():
     build.add_argument("--iterations", type=int, default=3)
     build.add_argument("--token-budget", type=int, default=12_000)
     build.add_argument("--latency-budget", type=int, default=120, help="Seconds of active build time")
+    build.add_argument("--blind", action="store_true", help="Score held-out questions after development repairs")
+    build.add_argument("--unseen-corpus", action="store_true", help="Label a requester-supplied new corpus and run blind evaluation")
     build.add_argument("--no-tournament", action="store_true")
     build.add_argument("--baseline-definition", type=Path, help="Hand-written agent to compare")
     build.add_argument("--interview", action="store_true")
@@ -84,6 +86,7 @@ def main():
                 prior_results=read_json(prior_run).get("results") if prior_run and prior_run.is_file() else None,
                 manual_baseline=read_json(args.baseline_definition) if args.baseline_definition else None,
                 tournament=not args.no_tournament, latency_budget=args.latency_budget,
+                blind=args.blind, unseen_corpus=args.unseen_corpus,
             )
             print(f'{result["definition"]["name"]}: {result["scorecard"]["passed"]}/{result["scorecard"]["total"]} · {args.out}')
         elif args.command == "demo":
