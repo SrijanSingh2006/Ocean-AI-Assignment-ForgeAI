@@ -112,3 +112,59 @@ class ImpactTests(ServiceTests):
         self.assertEqual(result["changes"]["sections"][0]["kind"], "deleted")
         self.assertEqual(result["impacted_agents"], ["demo"])
         self.assertNotIn("targeted_regression", result)
+
+
+class ReleaseTests(ServiceTests):
+    def setUp(self):
+        super().setUp()
+        from forgeai.factory import write_json
+
+        self.artifacts = self.root / "artifacts"
+        self.artifacts.mkdir()
+        write_json(self.artifacts / "definition.json", self.definition)
+        write_json(self.artifacts / "scorecards.json", {"final": {"passed": 21, "total": 24}})
+        (self.artifacts / ".env").write_text("AN_EXAMPLE_SECRET=outside-snapshot")
+
+    def test_release_approval_snapshot_and_rollback(self):
+        from forgeai.factory import read_json, write_json
+        from forgeai.versioning import (
+            activate_release, approve_release, compare_releases, create_release,
+            list_releases, release_history, release_paths, rollback_release,
+        )
+
+        first = create_release(self.store, "agent", self.artifacts, self.root / "documents", actor="owner")
+        with self.assertRaisesRegex(ValueError, "approved"):
+            activate_release(self.store, "agent", first["id"])
+        approve_release(self.store, "agent", first["id"], actor="reviewer")
+        activate_release(self.store, "agent", first["id"], actor="owner")
+
+        (self.root / "documents" / "policy.md").write_text("# Remote work\n\nRemote work is available three days each week.")
+        write_json(self.artifacts / "definition.json", {**self.definition, "tone": "Direct"})
+        write_json(self.artifacts / "scorecards.json", {"final": {"passed": 24, "total": 24}})
+        second = create_release(self.store, "agent", self.artifacts, self.root / "documents")
+        approve_release(self.store, "agent", second["id"])
+        activate_release(self.store, "agent", second["id"])
+        self.assertEqual(list_releases(self.store, "agent")[0]["id"], second["id"])
+        comparison = compare_releases(self.store, "agent", first["id"], second["id"])
+        self.assertEqual(comparison["changed_fields"], ["tone"])
+        self.assertEqual(comparison["sources"]["modified"], ["policy.md"])
+        self.assertEqual(comparison["score_after"]["passed"], 24)
+        self.assertEqual(first["evaluation"]["passed"], 21)
+
+        rollback_release(self.store, "agent", first["id"], actor="owner")
+        artifacts, docs = release_paths(self.store, "agent")
+        self.assertEqual(read_json(artifacts / "definition.json"), self.definition)
+        self.assertIn("two days", Agent(self.definition, Corpus.load(docs)).answer(self.question)["answer"])
+        self.assertFalse((artifacts / ".env").exists())
+        self.assertEqual(release_history(self.store, "agent")[-1]["previous_id"], second["id"])
+
+    def test_release_detects_tampering_and_rejects_traversal(self):
+        from forgeai.versioning import create_release, release_paths
+
+        with self.assertRaisesRegex(ValueError, "Invalid agent ID"):
+            create_release(self.store, "../outside", self.artifacts, self.root / "documents")
+        version = create_release(self.store, "agent", self.artifacts, self.root / "documents")
+        _, docs = release_paths(self.store, "agent", version["id"])
+        (docs / "policy.md").write_text("Tampered text")
+        with self.assertRaisesRegex(ValueError, "integrity"):
+            release_paths(self.store, "agent", version["id"])
