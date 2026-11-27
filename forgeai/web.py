@@ -11,8 +11,8 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi import FastAPI, File, Form, HTTPException, Request, Response, UploadFile
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -20,6 +20,7 @@ from .corpus import MAX_FILES, MAX_FILE_BYTES, SUPPORTED, Corpus
 from .factory import Agent, read_json, run_factory, write_json
 from .model import LocalModel, ROOT
 from .registry import REGISTRY
+from . import privacy
 
 app = FastAPI(title="ForgeAI", description="Local agent factory and evidence workspace")
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
@@ -41,11 +42,119 @@ DEMOS = {
 ARTIFACTS = (
     "report.md", "requirements.json", "definition.json", "initial_definition.json", "evals.json",
     "eval_results.json", "iterations.json", "scorecards.json", "model_trace.json", "regression.json", "run.json",
-    "tournament.json", "manual_comparison.json",
+    "tournament.json", "manual_comparison.json", "blind_evals.json", "blind_results.json", "security.json",
 )
 QUEUE = ThreadPoolExecutor(max_workers=1, thread_name_prefix="forge")
 LOCK = threading.RLock()
 JOBS = {}
+RUN_ROUTE = re.compile(r"/api/runs/([^/]+)(/.*)?$")
+
+
+class Login(BaseModel):
+    username: str = Field(min_length=1, max_length=64)
+    password: str = Field(min_length=1, max_length=256)
+
+
+def source_names(folder):
+    return [item.relative_to(folder).as_posix() for item in folder.rglob("*") if item.is_file()]
+
+
+def can_access(principal, run_id):
+    if principal.agents is not None and run_id not in principal.agents:
+        return False
+    if run_id in DEMOS:
+        documents = demo_root(run_id) / "documents"
+    else:
+        if not re.fullmatch(r"[0-9a-f]{12}", run_id):
+            return False
+        root = RUNS / run_id
+        try:
+            metadata = read_json(root / "status.json")
+        except (OSError, ValueError):
+            return False
+        if metadata.get("workspace", "local") != principal.workspace:
+            return False
+        documents = root / "documents"
+    return principal.allows_documents(source_names(documents))
+
+
+def require_run(request, run_id):
+    principal = request.state.principal
+    if principal is not privacy.LOCAL and not can_access(principal, run_id):
+        raise HTTPException(404, "Run not found")
+    return principal
+
+
+@app.middleware("http")
+async def authorize(request, call_next):
+    path = request.url.path.rstrip("/")
+    try:
+        principal = privacy.current(request.cookies.get(privacy.COOKIE))
+    except (OSError, ValueError, KeyError, TypeError, AttributeError):
+        return JSONResponse({"detail": "The workspace authorization configuration is invalid."}, status_code=503)
+    request.state.principal = principal
+    if request.method in {"POST", "PUT", "PATCH", "DELETE"} and principal is not privacy.LOCAL:
+        origin = request.headers.get("origin")
+        if origin and origin != f"{request.url.scheme}://{request.url.netloc}":
+            return JSONResponse({"detail": "This session accepts requests from its own origin."}, status_code=403)
+    if not path.startswith("/api/") or path in {"/api/session", "/api/health"}:
+        return await call_next(request)
+    if principal is None:
+        return JSONResponse({"detail": "Sign in to continue."}, status_code=401)
+    match = RUN_ROUTE.fullmatch(path)
+    if principal is not privacy.LOCAL and match and not can_access(principal, match[1]):
+        return JSONResponse({"detail": "Run not found"}, status_code=404)
+    suffix = match[2] if match else None
+    if not principal.staff and request.method == "GET" and (suffix or path == "/api/dashboard"):
+        return JSONResponse({"detail": "This operation requires a reviewer or admin."}, status_code=403)
+    if request.method in {"POST", "PUT", "PATCH", "DELETE"} and principal.role != "admin":
+        allowed = path == "/api/chat" or (request.method == "POST" and suffix == "/feedback")
+        approval = request.method == "POST" and principal.can_approve and principal.role == "reviewer" and (
+            suffix == "/approve" or bool(suffix and re.fullmatch(r"/releases/[^/]+/approve", suffix))
+        )
+        if not (allowed or approval):
+            return JSONResponse({"detail": "This operation requires an authorized admin."}, status_code=403)
+    response = await call_next(request)
+    if request.method in {"POST", "PUT", "PATCH", "DELETE"} and response.status_code < 400 and principal is not privacy.LOCAL:
+        RUNS.mkdir(parents=True, exist_ok=True)
+        entry = {"at": now(), "workspace": principal.workspace, "actor": principal.name,
+                 "method": request.method, "route": path, "status": response.status_code}
+        with LOCK, (RUNS / ".audit.jsonl").open("a", encoding="utf-8") as audit:
+            import json
+            audit.write(json.dumps(entry) + "\n")
+    return response
+
+
+@app.get("/api/session")
+def session_info(request: Request):
+    principal = request.state.principal
+    return {"required": principal is not privacy.LOCAL, "authenticated": principal is not None,
+            "role": principal.role if principal else None, "name": principal.name if principal else None}
+
+
+@app.post("/api/session")
+def sign_in(credentials: Login, request: Request, response: Response):
+    try:
+        token = privacy.login(credentials.username, credentials.password, request.client.host if request.client else "local")
+    except (ValueError, OSError, KeyError, TypeError) as exc:
+        raise HTTPException(400, "Authentication is not configured or is invalid.") from exc
+    if not token:
+        raise HTTPException(401, "Sign-in failed. Check credentials or try again later.")
+    response.set_cookie(privacy.COOKIE, token, max_age=privacy.SESSION_SECONDS, httponly=True, samesite="strict",
+                        secure=os.getenv("FORGE_COOKIE_SECURE") == "1")
+    return {"authenticated": True}
+
+
+@app.delete("/api/session")
+def sign_out(request: Request, response: Response):
+    privacy.logout(request.cookies.get(privacy.COOKIE))
+    response.delete_cookie(privacy.COOKIE)
+    return {"authenticated": False}
+
+
+@app.get("/api/health")
+def health():
+    return {"status": "ok"}
 
 
 class Approval(BaseModel):
@@ -196,7 +305,7 @@ def workspace():
 
 
 @app.get("/api/runs")
-def runs():
+def runs(request: Request):
     entries = [current_state(key) for key in DEMOS if (demo_root(key) / "artifacts" / "run.json").is_file()]
     if RUNS.exists():
         own = []
@@ -204,11 +313,13 @@ def runs():
             if (item / "status.json").is_file():
                 own.append(current_state(item.name))
         entries = sorted(own, key=lambda item: item["created"], reverse=True) + entries
-    return entries
+    principal = request.state.principal
+    return entries if principal is privacy.LOCAL else [entry for entry in entries if can_access(principal, entry["id"])]
 
 
 @app.post("/api/runs", status_code=202)
 async def launch(
+    request: Request,
     brief: str = Form(...),
     iterations: int = Form(3),
     model: bool = Form(True),
@@ -230,6 +341,8 @@ async def launch(
     files = files or []
     if not files and not demo:
         raise HTTPException(422, "Add at least one document or choose a demo")
+    if regression:
+        require_run(request, regression)
     previous = read_json(completed(regression)[0] / "run.json") if regression else {}
     manual_path = demo_root(demo) / "manual-baseline.json" if demo else None
     manual = read_json(manual_path) if manual_path and manual_path.is_file() else None
@@ -258,7 +371,8 @@ async def launch(
         shutil.rmtree(root)
         raise
     (root / "brief.txt").write_text(brief + "\n", encoding="utf-8")
-    meta = {"id": run_id, "status": "queued", "stage": "intake", "detail": "Waiting for the factory",
+    principal = request.state.principal
+    meta = {"id": run_id, "workspace": principal.workspace, "owner": principal.name, "status": "queued", "stage": "intake", "detail": "Waiting for the factory",
             "name": DEMOS[demo]["name"] if demo else "Custom agent", "created": now(), "demo": False}
     with LOCK:
         JOBS[run_id] = {"meta": meta, "event": threading.Event(), "review_submission": {}}
@@ -270,9 +384,9 @@ async def launch(
 
 
 @app.get("/api/runs/{run_id}")
-def show(run_id: str):
+def show(run_id: str, request: Request):
     state = current_state(run_id)
-    if state["status"] == "complete":
+    if state["status"] == "complete" and request.state.principal.staff:
         folder, _ = completed(run_id)
         state["result"] = read_json(folder / "run.json")
     return state
@@ -318,7 +432,8 @@ def download(run_id: str):
 
 
 @app.post("/api/chat")
-def chat(message: Message):
+def chat(message: Message, request: Request):
+    require_run(request, message.run_id)
     folder, documents = completed(message.run_id)
     definition = read_json(folder / "definition.json")
     config = definition["retrieval"]
