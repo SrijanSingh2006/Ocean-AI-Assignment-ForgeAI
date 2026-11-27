@@ -194,7 +194,7 @@ def split_question(question):
 
 
 class Agent:
-    def __init__(self, definition, corpus, model=None, permit_network=True, resolutions=None, translator=None):
+    def __init__(self, definition, corpus, model=None, permit_network=True, resolutions=None, translator=None, embeddings=None):
         if definition.get("schema_version") != 1 or set(definition["tools"]) - REGISTRY.keys():
             raise ValueError("Unsupported agent definition schema or tool key")
         self.definition = definition
@@ -205,6 +205,7 @@ class Agent:
         self.conflicts = numeric_conflicts(corpus)
         self.resolutions = resolutions or {}
         self.translator = translator
+        self.embeddings = embeddings
         self.source_languages = sorted({p.get("language", "en").split("-")[0] for p in corpus.passages})
         flagged = {row["passage_id"] for row in scan_corpus(corpus)}
         self.eligible_ids = set(corpus.by_id) - flagged if definition.get("security", {}).get("exclude_instruction_like_passages", True) else None
@@ -236,7 +237,9 @@ class Agent:
             translated_for = "en" if "en" in self.source_languages else self.source_languages[0]
             query = translate(question, translated_for, self.translator)
             if not query:
-                return self.language_unavailable(target, detected)
+                if not self.embeddings:
+                    return self.language_unavailable(target, detected)
+                query = question
         elif self.translator and len(self.source_languages) > 1:
             hits = self.index.search(query, 1, self.eligible_ids)
             coverage = hits[0][1] if hits else 0
@@ -250,9 +253,9 @@ class Agent:
         if recorder and query != question:
             recorder.event("translated_query", query=query, retrieval_language=translated_for)
         result = self._answer(query, recorder)
-        if target == "en" and detected == "en" and translated_for == "en":
-            return result
         answer_language = detect_language(result["answer"]).split("-")[0]
+        if target == "en" and detected == "en" and translated_for == "en" and answer_language == "en":
+            return result
         if answer_language != target:
             output = translated_answer(result["answer"], answer_language, target, self.translator)
             if not output:
@@ -301,9 +304,15 @@ class Agent:
             valid = [(score, coverage, p) for score, coverage, p in hits if coverage >= options["min_coverage"]]
             if options["require_distinctive_match"] and len(terms(part)) > 2:
                 valid = [hit for hit in valid if hit[1] >= 0.65 or len(set(terms(part)) & set(terms(hit[2]["heading"]))) >= 2]
+            strategy = "BM25"
+            if not valid and self.embeddings:
+                semantic = self.embeddings.search(part, self.corpus, self.eligible_ids, options["top_k"])
+                if semantic:
+                    hits = valid = semantic
+                    strategy = "multilingual_embedding"
             if recorder:
                 eligible = {row[2]["id"] for row in valid}
-                event("retrieval", strategy="BM25", query=part, candidates=[
+                event("retrieval", strategy=strategy, query=part, candidates=[
                     {"passage_id": p["id"], "document": p["document"], "rank_score": round(score, 3),
                      "coverage": round(candidate_coverage, 3), "eligible": p["id"] in eligible,
                      "rejection": None if p["id"] in eligible else "insufficient_coverage"}
