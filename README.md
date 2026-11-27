@@ -16,6 +16,8 @@ The project implements the OceanAI **Agent That Builds Agents** assignment. It p
 - [CLI and configuration](#cli-and-configuration)
 - [Sample packs and measured results](#sample-packs-and-measured-results)
 - [Outputs and API](#outputs-and-api)
+- [Enterprise workflows](#enterprise-workflows)
+- [Studio screenshots](#studio-screenshots)
 - [Repository layout](#repository-layout)
 - [Verification and limitations](#verification-and-limitations)
 
@@ -356,6 +358,111 @@ curl -fsS http://127.0.0.1:8000/api/chat \
   -H 'Content-Type: application/json' \
   -d '{"run_id":"people-ops","question":"What does Leave Handbook document about Annual leave?"}'
 ```
+
+## Enterprise workflows
+
+Run **Blind evaluation** and **Security conformance** from the factory’s **Evaluation and evidence** settings. The ordinary build keeps its 24-case suite. Blind mode generates 32 cases, stratifies by question category, and keeps 24 in development and eight in a held-out suite. The factory selects prompts and repairs on development data, then scores the holdout once and writes separate result files. For an independent project brief and document collection, upload those files and select **New corpus**. The report identifies the corpus origin. The [replay evidence](demos/enterprise-evidence/README.md) includes both paths.
+
+Open **Engineering lab** on a completed run to inspect its workflow reports. **Dashboard** shows metrics from workspace builds, together with pending reviews and feedback. Recorded sample runs are counted separately.
+
+| Workflow | How to use it |
+| --- | --- |
+| Source conflicts | Compare numeric claims for comparable topics. Each claim points to a document and locator. An admin selects the applicable source and records a reason. Chat asks for clarification while the conflict is unresolved. |
+| Execution traces | Open a chat trace to inspect retrieval candidates, selected evidence, tool decisions, verification, and timing. Traces redact recognized patterns for personal data and credentials before storage. Admins can delete traces. |
+| Security checks | Run fixed, offline conformance checks for disabled tools, protected prompt content, input validation, and exclusion of instruction-like passages. |
+| Model comparison | Benchmark server-configured compatible model profiles against the same development cases. The report displays quality, latency, tokens, and cost when usage and pricing are available. A model must contribute to scoring and meet the quality floor to qualify. |
+| Language evaluation | In chat, choose automatic, English, Hindi, or Tamil. Cross-language answers are verified by numeric and identifier checks and a round trip back to the source language. Citations retain the original text. The lab distinguishes scored, unavailable, and unverified cases. |
+| Feedback review | Submit feedback from chat. An admin verifies the expected decision and any cited passages before promoting a case to development or regression. Repair suggestions are scored before anyone applies a change. |
+| Document impact | Compare two runs to see changed sources and affected passages and cases. Inspect verified links, run targeted checks, and optionally rerun the full prior suite. |
+| Releases and export | Create an immutable snapshot, approve it, and activate it. Compare snapshots or roll back to recover both the previous definition and the previous sources. Export the active agent as a standalone ZIP. |
+| Confidence calibration | Supply disjoint labeled training and validation JSON arrays. Each row has an `id`, a numeric `score`, a Boolean `correct`, and a `status` of `answered`, `refused`, or `clarify`. The report shows reliability by band, a Brier score, answer coverage, and error rates. Runtime evidence scores are heuristic. |
+| OCR and source provenance | Enable Tesseract for PNG and JPEG images, scanned PDF pages, and embedded images in DOCX paragraphs. PDF text layers, DOCX paragraphs and tables, and CSV rows retain their native extraction. OCR citations record coordinates and confidence. |
+
+### Enterprise architecture
+
+```mermaid
+flowchart LR
+    Studio["Studio and FastAPI"] --> Access["Session, role and source access"]
+    Access --> Factory["Shared factory"]
+    Access --> Runner["Shared agent runner"]
+    Files["Files and OCR passages"] --> Factory
+    Factory --> Dev["Development cases and repairs"]
+    Dev -->|Final definition| Blind["Held-out evaluation"]
+    Dev --> Runs["Run artifacts"]
+    Blind --> Runs
+    Runs --> Releases["Release snapshots and agent export"]
+    Releases -->|Active definition and frozen sources| Runner
+    Access --> Ops["Engineering workflows"]
+    Runner --> Retrieval["Lexical retrieval, optional embeddings, tools"]
+    Retrieval --> Verify["Source, conflict and evidence checks"]
+    Verify --> Chat["Answer, refuse or clarify"]
+    Verify --> Trace["Redacted execution trace"]
+    Chat --> Feedback["Reviewed feedback cases"]
+    Feedback --> Dev
+    Ops --> Runs
+    Ops --> Releases
+```
+
+Run folders hold source files, scorecards, traces, and exports. SQLite, Python's embedded relational database, stores reviewed feedback and release metadata. Release snapshots include source fingerprints and the extracted passages used during the release. The API and CLI share the same validation and retrieval code. The existing hosted build and this local enterprise branch have separate deployment paths.
+
+### Configuration
+
+| Setting | Purpose |
+| --- | --- |
+| `FORGE_RUN_DIR` | Set the writable root for Studio runs and enterprise workspace data. The default is `.runs/web`. |
+| `FORGE_AUTH_CONFIG` | Enable local sign-in from a JSON user configuration file. With the setting unset, Studio uses the original single-user local mode. |
+| `FORGE_COOKIE_SECURE=1` | Require HTTPS for the session cookie. Configure it when serving through a TLS reverse proxy. |
+| `FORGE_TRACE_RETENTION_DAYS` | Retain traces for 1–365 days, default 30. Expired traces are excluded from reads and cleaned up when new traces are stored for that run. |
+| `FORGE_OCR=1` | Enable OCR. Install Tesseract and, for scanned PDFs, Poppler’s `pdftoppm`. Set `FORGE_OCR_LANGUAGES` to installed Tesseract codes such as `eng+hin+tam`. |
+| `FORGE_LANGUAGE_MODEL_NAME`, `FORGE_LANGUAGE_MODEL_URL`, `FORGE_LANGUAGE_MODEL_API_KEY` | Configure an optional compatible translation model. Keep its credential in the environment. |
+| `FORGE_EMBEDDING_URL`, `FORGE_EMBEDDING_MODEL`, `FORGE_EMBEDDING_API_KEY` | Configure optional semantic retrieval through an OpenAI-compatible embeddings endpoint. Lexical retrieval remains available when the provider is unavailable. |
+| `FORGE_MODEL_PROFILES` | JSON array of up to five entries. Each sets `id`, `url`, and `model`, with optional `api_key_env` and `price_per_million_tokens`. |
+
+For local authorization, copy [access.example.json](docs/access.example.json) to a private path, then generate a fresh salted PBKDF2 password hash for each account.
+
+```bash
+python -c 'from getpass import getpass; from forgeai.privacy import password_hash; print(password_hash(getpass()))'
+export FORGE_AUTH_CONFIG=/absolute/path/to/private-access.json
+python -m forgeai serve --host 127.0.0.1 --port 8000
+```
+
+Replace each placeholder hash in the private configuration. An admin can build and manage agent releases. A reviewer can inspect authorized runs and can approve requirements or releases when `can_approve` is enabled. A user can chat with authorized agents and submit feedback. Optional `agents` and `documents` arrays restrict access by run ID and filename. The API checks the complete collection so answers, citations, reports, and exports share the same source permissions. The local mode uses eight-hour sessions in a single server process and is intended for a trusted host.
+
+### Enterprise API
+
+FastAPI’s [local OpenAPI explorer](http://127.0.0.1:8000/docs) exposes the request and response schemas. With authorization configured, Studio obtains a session cookie before calling protected endpoints. When calling the API directly, keep and reuse the returned cookie.
+
+| Route | Purpose |
+| --- | --- |
+| `GET /api/health` and `GET/POST/DELETE /api/session` | Check startup and inspect, start, or end a session. |
+| `GET /api/dashboard` | Read metrics for permitted workspace builds. |
+| `POST /api/runs` | Build from multipart fields. Optional fields are `blind`, `unseen_corpus`, `security_audit`, and `minimum_confidence`. |
+| `POST /api/chat` | Send `run_id`, `question`, and optionally `language`. The reply includes citations, evidence confidence when applicable, and a trace ID. |
+| `GET /api/runs/{id}/conflicts` and `POST /api/runs/{id}/conflicts/{conflict_id}` | Inspect claims and record an applicable passage and reason. |
+| `GET /api/runs/{id}/traces` and `GET/DELETE /api/runs/{id}/traces/{trace_id}` | List, read, or delete a retained execution trace. |
+| `GET/POST /api/runs/{id}/security`, `/models`, `/languages`, and `/impact` | Read or generate the corresponding analysis. |
+| `GET/POST /api/runs/{id}/feedback` and `POST /api/runs/{id}/feedback/{feedback_id}/review` | Submit trace-linked feedback, inspect the queue, and validate test cases. |
+| `GET/POST /api/runs/{id}/releases`, `POST /api/runs/{id}/releases/{version}/{operation}`, and `GET /api/runs/{id}/release-diff` | List, freeze, approve, activate, roll back, or compare snapshots. |
+| `GET /api/runs/{id}/deployment` | Export the runnable agent and its ready-to-load source index. |
+| `POST /api/confidence/calibration` | Calculate confidence reliability from separate labeled datasets. |
+
+### Deploy a standalone agent
+
+In **Engineering lab → Releases and export**, select **Export runnable agent**. Follow the README inside the ZIP for a fresh Python environment or Docker Compose. The generated service provides `GET /health` and `POST /chat`. Set `FORGE_DEPLOY_TOKEN` to require bearer authentication, and keep the ZIP and token with users authorized to see all bundled sources. The export contains source hashes and indexed evidence, allowing scanned documents to work without an OCR engine at serving time.
+
+### Verification and open items
+
+The [enterprise verification report](docs/enterprise-upgrade.md) records feature status, the full test commands, and the recruiter walkthrough. Qwen 2.5 0.5B passed English in the small language replay. Hindi failed verification and Tamil was unavailable. Reliable multilingual operation requires a compatible provider validated on representative questions. The benchmark had one live model profile, and the measured sample completed through deterministic retrieval. Semantic provider integration was tested with controlled responses.
+
+Conflict detection covers comparable numeric claims. OCR handles source text and provenance. Chart and figure interpretation and complex document layout recognition remain open. Security testing covers the fixed conformance suite and static source scanning. Confidence scores express heuristic evidence quality, with calibration results reported separately on user-supplied labeled data.
+
+## Studio screenshots
+
+The screenshots below were captured from the running branch in Chromium. Open the [blind evaluation](docs/screenshots/blind-results.jpg), [execution trace](docs/screenshots/execution-trace.jpg), [workspace dashboard](docs/screenshots/dashboard.jpg), and [mobile dashboard](docs/screenshots/dashboard-mobile.jpg).
+
+| Light | Dark |
+| --- | --- |
+| ![ForgeAI factory in light mode](docs/screenshots/factory-light.jpg) | ![ForgeAI factory in dark mode](docs/screenshots/factory-dark.jpg) |
 
 ## Repository layout
 

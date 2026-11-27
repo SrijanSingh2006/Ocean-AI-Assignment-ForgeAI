@@ -1,0 +1,277 @@
+{
+  "scorecard": {
+    "iteration": 0,
+    "passed": 8,
+    "total": 8,
+    "score": 100.0,
+    "categories": {
+      "answerable": {
+        "passed": 4,
+        "total": 4
+      },
+      "cross_document": {
+        "passed": 1,
+        "total": 1
+      },
+      "ambiguous": {
+        "passed": 1,
+        "total": 1
+      },
+      "out_of_scope": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "failures": {}
+  },
+  "results": [
+    {
+      "id": "E01",
+      "category": "answerable",
+      "question": "What does Equipment Procedure document about Equipment checkout?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Record the equipment SKU and borrower name in the equipment log. Return borrowed equipment to the north lobby at the end of the shift.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p001c01",
+            "document": "Equipment-Procedure.md",
+            "heading": "Equipment checkout",
+            "locator": "text, block 1",
+            "quote": "Record the equipment SKU and borrower name in the equipment log. Return borrowed equipment to the north lobby at the end of the shift."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "id": "E02",
+      "category": "answerable",
+      "question": "What does Equipment Procedure document about Incident escalation?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Report equipment damage to the shift lead over radio channel 3. Contact the duty supervisor if the shift lead cannot be reached after five minutes.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p002c01",
+            "document": "Equipment-Procedure.md",
+            "heading": "Incident escalation",
+            "locator": "text, block 2",
+            "quote": "Report equipment damage to the shift lead over radio channel 3. Contact the duty supervisor if the shift lead cannot be reached after five minutes."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "id": "E14",
+      "category": "answerable",
+      "question": "In Volunteer Handbook, which details are given for Night shift check-in?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Volunteers sign in at the north lobby 20 minutes before their shift. The shift lead checks the radio battery before granting roof access.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d03p001c01",
+            "document": "Volunteer-Handbook.md",
+            "heading": "Night shift check-in",
+            "locator": "text, block 1",
+            "quote": "Volunteers sign in at the north lobby 20 minutes before their shift. The shift lead checks the radio battery before granting roof access."
+          }
+        ],
+        "confidence": {
+          "score": 0.825,
+          "kind": "heuristic",
+          "coverage": 0.8,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "id": "E16",
+      "category": "answerable",
+      "question": "In Volunteer Handbook, which details are given for Red-light rules?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Use red light on the observation deck. White lights stay off after 19:00 unless an evacuation is in progress.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d03p003c01",
+            "document": "Volunteer-Handbook.md",
+            "heading": "Red-light rules",
+            "locator": "text, block 3",
+            "quote": "Use red light on the observation deck. White lights stay off after 19:00 unless an evacuation is in progress."
+          }
+        ],
+        "confidence": {
+          "score": 0.787,
+          "kind": "heuristic",
+          "coverage": 0.75,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "id": "E20",
+      "category": "cross_document",
+      "question": "For Equipment, what is documented about AST-100 Red torch, and separately, for Volunteer Handbook, what is documented about Night shift check-in?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "SKU: AST-100 · Item: Red torch · Quantity: 8 · Location: North lobby cabinet\n\nVolunteers sign in at the north lobby 20 minutes before their shift. The shift lead checks the radio battery before granting roof access.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p001c01",
+            "document": "Equipment.csv",
+            "heading": "AST-100 Red torch",
+            "locator": "row 2",
+            "quote": "SKU: AST-100 · Item: Red torch · Quantity: 8 · Location: North lobby cabinet"
+          },
+          {
+            "passage_id": "d03p001c01",
+            "document": "Volunteer-Handbook.md",
+            "heading": "Night shift check-in",
+            "locator": "text, block 1",
+            "quote": "Volunteers sign in at the north lobby 20 minutes before their shift. The shift lead checks the radio battery before granting roof access."
+          }
+        ],
+        "confidence": {
+          "score": 1.0,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 2,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "id": "E24",
+      "category": "ambiguous",
+      "question": "Can you explain more?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "clarify",
+      "response": {
+        "status": "clarify",
+        "answer": "Which topic, item, or document should I look for?",
+        "tool": null,
+        "citations": []
+      }
+    },
+    {
+      "id": "E27",
+      "category": "out_of_scope",
+      "question": "What is the documented guidance on requests about employee payroll?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": true
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "refused",
+      "response": {
+        "status": "refused",
+        "answer": "The supplied sources do not establish an answer to that question.",
+        "tool": null,
+        "citations": []
+      }
+    },
+    {
+      "id": "E29",
+      "category": "out_of_scope",
+      "question": "What is the documented guidance on personal medical diagnosis?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": true
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "refused",
+      "response": {
+        "status": "refused",
+        "answer": "The supplied sources do not establish an answer to that question.",
+        "tool": null,
+        "citations": []
+      }
+    }
+  ],
+  "corpus_origin": "user_supplied_unseen"
+}

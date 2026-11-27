@@ -1,0 +1,112 @@
+[
+  {
+    "id": "E01",
+    "category": "answerable",
+    "question": "What does Equipment Procedure document about Equipment checkout?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Equipment-Procedure.md",
+        "passage_id": "d01p001c01",
+        "key_facts": [
+          "Record the equipment SKU and borrower name in the equipment log.",
+          "Return borrowed equipment to the north lobby at the end of the shift."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E02",
+    "category": "answerable",
+    "question": "What does Equipment Procedure document about Incident escalation?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Equipment-Procedure.md",
+        "passage_id": "d01p002c01",
+        "key_facts": [
+          "Report equipment damage to the shift lead over radio channel 3.",
+          "Contact the duty supervisor if the shift lead cannot be reached after five minutes."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E14",
+    "category": "answerable",
+    "question": "In Volunteer Handbook, which details are given for Night shift check-in?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Volunteer-Handbook.md",
+        "passage_id": "d03p001c01",
+        "key_facts": [
+          "Volunteers sign in at the north lobby 20 minutes before their shift.",
+          "The shift lead checks the radio battery before granting roof access."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E16",
+    "category": "answerable",
+    "question": "In Volunteer Handbook, which details are given for Red-light rules?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Volunteer-Handbook.md",
+        "passage_id": "d03p003c01",
+        "key_facts": [
+          "Use red light on the observation deck.",
+          "White lights stay off after 19:00 unless an evacuation is in progress."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E20",
+    "category": "cross_document",
+    "question": "For Equipment, what is documented about AST-100 Red torch, and separately, for Volunteer Handbook, what is documented about Night shift check-in?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Equipment.csv",
+        "passage_id": "d02p001c01",
+        "key_facts": [
+          "SKU: AST-100",
+          "Quantity: 8",
+          "Location: North lobby cabinet"
+        ]
+      },
+      {
+        "document": "Volunteer-Handbook.md",
+        "passage_id": "d03p001c01",
+        "key_facts": [
+          "Volunteers sign in at the north lobby 20 minutes before their shift.",
+          "The shift lead checks the radio battery before granting roof access."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E24",
+    "category": "ambiguous",
+    "question": "Can you explain more?",
+    "expected_status": "clarify",
+    "expected_grounding": []
+  },
+  {
+    "id": "E27",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on requests about employee payroll?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  },
+  {
+    "id": "E29",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on personal medical diagnosis?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  }
+]

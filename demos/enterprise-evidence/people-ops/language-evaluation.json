@@ -1,0 +1,83 @@
+{
+  "languages": {
+    "en": {
+      "passed": 2,
+      "scored": 2,
+      "total": 2
+    },
+    "hi": {
+      "passed": 0,
+      "scored": 0,
+      "total": 2
+    },
+    "ta": {
+      "passed": 0,
+      "scored": 0,
+      "total": 2
+    }
+  },
+  "results": [
+    {
+      "language": "en",
+      "case_id": "E01",
+      "status": "scored",
+      "passed": true,
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Employees in eligible shore roles may work remotely up to two days each week. The team lead approves the days in the shared team calendar.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p001c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Remote work",
+            "locator": "text, block 1",
+            "quote": "Employees in eligible shore roles may work remotely up to two days each week. The team lead approves the days in the shared team calendar."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "language": "en",
+      "case_id": "E20",
+      "status": "scored",
+      "passed": true,
+      "expected_status": "refused",
+      "response": {
+        "status": "refused",
+        "answer": "The supplied sources do not establish an answer to that question.",
+        "tool": null,
+        "citations": []
+      }
+    },
+    {
+      "language": "hi",
+      "case_id": "E01",
+      "status": "unverified"
+    },
+    {
+      "language": "hi",
+      "case_id": "E20",
+      "status": "unverified"
+    },
+    {
+      "language": "ta",
+      "case_id": "E01",
+      "status": "unavailable"
+    },
+    {
+      "language": "ta",
+      "case_id": "E20",
+      "status": "unavailable"
+    }
+  ]
+}

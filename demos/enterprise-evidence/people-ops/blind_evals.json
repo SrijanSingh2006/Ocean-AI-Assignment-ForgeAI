@@ -1,0 +1,111 @@
+[
+  {
+    "id": "E01",
+    "category": "answerable",
+    "question": "What does Hybrid Work Guide document about Remote work?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Hybrid-Work-Guide.md",
+        "passage_id": "d01p001c01",
+        "key_facts": [
+          "Employees in eligible shore roles may work remotely up to two days each week.",
+          "The team lead approves the days in the shared team calendar."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E03",
+    "category": "answerable",
+    "question": "What does Hybrid Work Guide document about Home office equipment?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Hybrid-Work-Guide.md",
+        "passage_id": "d01p003c01",
+        "key_facts": [
+          "The service desk issues a headset and laptop stand on request.",
+          "A manager must preauthorize purchases made outside the equipment catalogue."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E06",
+    "category": "answerable",
+    "question": "What does Leave Handbook document about Annual leave?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Leave-Handbook.md",
+        "passage_id": "d02p001c01",
+        "key_facts": [
+          "Permanent shore employees receive 22 paid annual leave days per calendar year.",
+          "Carryover is capped at five days and expires on 31 March of the next year."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E11",
+    "category": "answerable",
+    "question": "What does Onboarding Checklist document about Onboarding access?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Onboarding-Checklist.docx",
+        "passage_id": "d03p001c01",
+        "key_facts": [
+          "New shore employees submit one onboarding access form through PeopleHub.",
+          "The team coordinator verifies each request within two working days."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E22",
+    "category": "cross_document",
+    "question": "For Hybrid Work Guide, what is documented about Remote access, and separately, for Leave Handbook, what is documented about Public holidays?",
+    "expected_status": "answered",
+    "expected_grounding": [
+      {
+        "document": "Hybrid-Work-Guide.md",
+        "passage_id": "d01p005c01",
+        "key_facts": [
+          "Company files may be accessed only from managed laptops using the approved VPN.",
+          "Report suspected device loss by phone to the service desk immediately."
+        ]
+      },
+      {
+        "document": "Leave-Handbook.md",
+        "passage_id": "d02p005c01",
+        "key_facts": [
+          "The local office calendar determines public holidays for shore employees.",
+          "If a holiday falls during approved annual leave, the holiday does not reduce the annual leave balance."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E24",
+    "category": "ambiguous",
+    "question": "Can you explain more?",
+    "expected_status": "clarify",
+    "expected_grounding": []
+  },
+  {
+    "id": "E27",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on individual salary records?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  },
+  {
+    "id": "E31",
+    "category": "out_of_scope",
+    "question": "What is the documented guidance on home mortgage interest rates?",
+    "expected_status": "refused",
+    "expected_grounding": []
+  }
+]

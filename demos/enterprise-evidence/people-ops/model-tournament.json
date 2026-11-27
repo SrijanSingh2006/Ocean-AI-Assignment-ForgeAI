@@ -1,0 +1,43 @@
+{
+  "minimum_score": 80,
+  "recommended": null,
+  "models": [
+    {
+      "id": "local-qwen",
+      "model": "qwen2.5-0.5b",
+      "status": "scored",
+      "scorecard": {
+        "iteration": 0,
+        "passed": 24,
+        "total": 24,
+        "score": 100.0,
+        "categories": {
+          "answerable": {
+            "passed": 13,
+            "total": 13
+          },
+          "cross_document": {
+            "passed": 4,
+            "total": 4
+          },
+          "ambiguous": {
+            "passed": 2,
+            "total": 2
+          },
+          "out_of_scope": {
+            "passed": 5,
+            "total": 5
+          }
+        },
+        "failures": {}
+      },
+      "tokens": 0,
+      "model_used": false,
+      "qualifies": false,
+      "grounding": 1.0,
+      "correctness": 1.0,
+      "refusal_accuracy": 1.0,
+      "elapsed_seconds": 0.013
+    }
+  ]
+}

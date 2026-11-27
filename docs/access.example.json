@@ -1,0 +1,21 @@
+{
+  "users": {
+    "studio-admin": {
+      "workspace": "demo",
+      "role": "admin",
+      "password_hash": "REPLACE_WITH_A_GENERATED_HASH"
+    },
+    "studio-reviewer": {
+      "workspace": "demo",
+      "role": "reviewer",
+      "can_approve": true,
+      "password_hash": "REPLACE_WITH_A_GENERATED_HASH"
+    },
+    "studio-user": {
+      "workspace": "demo",
+      "role": "user",
+      "agents": ["people-ops"],
+      "password_hash": "REPLACE_WITH_A_GENERATED_HASH"
+    }
+  }
+}
