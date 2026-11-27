@@ -12,6 +12,7 @@ from .confidence import evidence_confidence
 from .conflict_detector import numeric_conflicts, resolve_conflicts
 from .corpus import Corpus, Index, clean, least_duplicate, terms
 from .model import LatencyBudgetExceeded, LocalModel
+from .security import conformance_scorecard, findings, scan_corpus
 from .registry import REGISTRY, dispatch, select_tools
 
 REFUSAL = "The supplied sources do not establish an answer to that question."
@@ -176,6 +177,8 @@ def generate_definition(requirements, model):
                       "top_k": 1, "heading_weight": 0.9, "min_coverage": 0.36, "split_compound": False,
                       "require_distinctive_match": False},
         "policy": {"clarify_vague": False, "verbatim_only": True},
+        "security": {"exclude_instruction_like_passages": True, "tool_allowlist": allowed},
+        "language": {"default": "en", "detect": True},
         "output_contract": {
             "required": ["status", "answer", "citations", "tool"],
             "status_values": ["answered", "refused", "clarify", "error"],
@@ -200,6 +203,8 @@ class Agent:
         self.permit_network = permit_network
         self.conflicts = numeric_conflicts(corpus)
         self.resolutions = resolutions or {}
+        flagged = {row["passage_id"] for row in scan_corpus(corpus)}
+        self.eligible_ids = set(corpus.by_id) - flagged if definition.get("security", {}).get("exclude_instruction_like_passages", True) else None
 
     @staticmethod
     def reply(status, answer, passages=(), tool=None):
@@ -211,18 +216,31 @@ class Agent:
             ],
         }
 
-    def answer(self, question):
+    def answer(self, question, recorder=None):
         question = clean(question)
+        if recorder:
+            recorder.event("normalized", question=question)
+        return self._answer(question, recorder)
+
+    def _answer(self, question, recorder):
+        def event(stage, **details):
+            if recorder:
+                recorder.event(stage, **details)
+
         definition = self.definition
         options = definition["retrieval"]
         if blocked(question, definition["denied_topics"]):
+            event("scope", decision="excluded_topic")
             return self.reply("refused", REFUSAL)
-        result = dispatch(question, definition["tools"], self.index, self.permit_network)
+        suspicious = findings(question)
+        if suspicious:
+            event("security", findings=suspicious)
+            return self.reply("refused", REFUSAL)
+        result = dispatch(question, definition["tools"], self.index, self.permit_network, self.eligible_ids)
         if result:
             tool, answer, passages, status = result
+            event("tool", key=tool, status=status, result=answer)
             return self.reply(status, answer, passages, tool)
-        if re.search(r"\b(?:ignore|disregard|forget|override)\b.{0,40}\b(?:instructions?|prompt|rules?)\b", question, re.I):
-            return self.reply("refused", REFUSAL)
         words = set(terms(question))
         if not words:
             return self.reply("clarify" if definition["policy"]["clarify_vague"] else "refused", CLARIFICATION if definition["policy"]["clarify_vague"] else REFUSAL)
@@ -232,10 +250,18 @@ class Agent:
         for part in queries:
             if not part.strip():
                 continue
-            hits = self.index.search(part, max(4, options["top_k"]))
+            hits = self.index.search(part, max(4, options["top_k"]), self.eligible_ids)
             valid = [(score, coverage, p) for score, coverage, p in hits if coverage >= options["min_coverage"]]
             if options["require_distinctive_match"] and len(terms(part)) > 2:
                 valid = [hit for hit in valid if hit[1] >= 0.65 or len(set(terms(part)) & set(terms(hit[2]["heading"]))) >= 2]
+            if recorder:
+                eligible = {row[2]["id"] for row in valid}
+                event("retrieval", strategy="BM25", query=part, candidates=[
+                    {"passage_id": p["id"], "document": p["document"], "rank_score": round(score, 3),
+                     "coverage": round(candidate_coverage, 3), "eligible": p["id"] in eligible,
+                     "rejection": None if p["id"] in eligible else "insufficient_coverage"}
+                    for score, candidate_coverage, p in hits
+                ])
             if not valid:
                 if definition["policy"]["clarify_vague"] and len(words) <= 1:
                     return self.reply("clarify", CLARIFICATION)
@@ -251,6 +277,10 @@ class Agent:
                 review = self.model.ask("evidence", {"question": question[:550], "candidates": candidates},
                                         max_tokens=65, system=definition["system_prompt"])
                 ids = review.get("ids")
+                if recorder:
+                    last = self.model.calls[-1] if self.model.calls else {}
+                    event("evidence_selection", model=self.model.name, status=last.get("status", "deterministic"),
+                          tokens=last.get("tokens"))
                 if isinstance(ids, list):
                     verified = [p for p in close if p["id"] in ids]
                     if verified:
@@ -269,6 +299,8 @@ class Agent:
         passages = least_duplicate(chosen)[:options["top_k"]]
         passages, conflict = resolve_conflicts(passages, self.corpus, self.conflicts, self.resolutions)
         confidence = evidence_confidence(coverages, passages, self.corpus, conflict=bool(conflict))
+        event("verification", conflict_id=conflict["id"] if conflict else None,
+              selected=[p["id"] for p in passages], confidence=confidence)
         if conflict:
             result = self.reply("clarify", f"The sources disagree about {conflict['topic']}. Ask a reviewer to select the applicable source.")
             return {**result, "confidence": confidence, "conflict_id": conflict["id"]}
@@ -576,6 +608,9 @@ def report_markdown(result):
         lines += ["", "## Blind evaluation", "",
                   f'**{card["passed"]}/{card["total"]}** held-out questions passed on the {corpus_label}.',
                   "These cases were scored after all repairs and did not select the final definition."]
+    if security := result.get("security"):
+        lines += ["", "## Security conformance", "", f'{security["passed"]}/{security["total"]} fixed checks passed.',
+                  f'{len(security["source_findings"])} instruction-like source findings are recorded in security.json.']
     if manual := result.get("manual_baseline"):
         card, differences = manual["scorecard"], manual["changes"]
         lines += ["", "## Factory vs hand-written baseline", "",
@@ -599,7 +634,7 @@ def report_markdown(result):
 
 def run_factory(brief, folder, output, *, model=None, max_iterations=3, interview=None,
                 progress=None, regression_cases=None, prior_results=None, manual_baseline=None,
-                tournament=True, latency_budget=120, blind=False, unseen_corpus=False):
+                tournament=True, latency_budget=120, blind=False, unseen_corpus=False, security_audit=False):
     if not brief.strip() or len(brief) > 4000:
         raise ValueError("Enter a brief between 1 and 4,000 characters")
     if model is not None and model.token_budget < 0:
@@ -771,6 +806,10 @@ def run_factory(brief, folder, output, *, model=None, max_iterations=3, intervie
             write_json(output / "manual_comparison.json", manual)
         except LatencyBudgetExceeded:
             result["budget_notes"].append("The active latency limit prevented a complete hand-written baseline comparison.")
+    if security_audit:
+        progress("scoring", "Checking runtime security conformance")
+        result["security"] = conformance_scorecard(Agent(definition, corpus, permit_network=False))
+        write_json(output / "security.json", result["security"])
     result["model"] = model.summary()
     result["elapsed_seconds"] = round(time.monotonic() - start, 2)
     result["budget"] = {"active_seconds": round(time.monotonic() - start - review_seconds, 2),

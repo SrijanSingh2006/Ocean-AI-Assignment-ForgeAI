@@ -59,7 +59,7 @@ def calculate(expression):
     return evaluate(ast.parse(expression, mode="eval").body)
 
 
-def dispatch(question, enabled, index, permit_network=True):
+def dispatch(question, enabled, index, permit_network=True, accepted_ids=None):
     text = question.strip().rstrip("?")
     if "calculator" in enabled and (match := re.match(r"^(?:calculate|compute|what is)\s+([\d. ()+*/%\-]+)$", text, re.I)):
         try:
@@ -92,6 +92,8 @@ def dispatch(question, enabled, index, permit_network=True):
         if not wanted:
             return "csv_lookup", "Enter a SKU, part number, or searchable product name.", [], "clarify"
         rows = {p["id"] for p in index.corpus.passages if p["cells"]}
+        if accepted_ids is not None:
+            rows &= accepted_ids
         results = index.search(query, 3, rows)
         passages = [p for _, coverage, p in results if coverage == 1]
         if passages:
