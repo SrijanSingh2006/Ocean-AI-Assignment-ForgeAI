@@ -285,6 +285,8 @@ function resultContent(run) {
     const origin = blind.corpus_origin === "user_supplied_unseen" ? "Requester-supplied new corpus" : "Held-out questions from the same corpus";
     return `<section class="card sheet">${section("target", "Blind evaluation", origin)}
       <div class="info"><strong>${card.passed} of ${card.total} passed · ${card.score}%</strong> · Scored after development decisions.</div>
+      <p>Development ${result.scorecard.score}% · Blind ${card.score}% · Gap ${Math.round((result.scorecard.score - card.score) * 10) / 10} percentage points</p>
+      <p>${Object.entries(card.categories).map(([category, stats]) => badge(`${titleFor(category)} ${stats.passed}/${stats.total}`)).join(" ")}</p>
       ${blind.results.map(checkRow).join("")}${download("blind_results.json", "Download blind results")}</section>`;
   }
   if (state.tab === "evaluations") {
@@ -323,6 +325,7 @@ function resultContent(run) {
       ${result.iterations.map((item) => `<div class="info"><strong>Iteration ${item.iteration} · ${esc(item.patch.replaceAll("_", " "))}</strong> ${badge(item.accepted ? "Accepted" : "Reverted", item.accepted ? "good" : "warn")}
         <p>${esc(item.why)} ${item.score_after === null ? `Scoring stopped at the latency limit after the ${item.score_before}% baseline.`
           : `${item.score_before}% to ${item.score_after}%.`}</p>
+        ${typeof item.points_per_second === "number" ? `<p>${item.score_point_gain} score points in ${item.elapsed_seconds}s · ${item.points_per_second} points per second${item.observed_provider_tokens == null ? "" : ` · ${item.points_per_1000_provider_tokens} points per 1,000 reported tokens`}</p>` : ""}
         <p>Addressed ${esc(item.addressed_cases.join(", ") || "none")} · Resolved ${esc(item.resolved_cases.join(", ") || "none")} · Regressed ${esc(item.regressed_cases.join(", ") || "none")}</p></div>`).join("") || '<p class="muted">No repairs were applied.</p>'}
       <div class="actions">${download("iterations.json", "Change log")} ${download("model_trace.json", "Model trace")}</div></section>
       <section class="card sheet">${section("cpu", "Model activity", `${result.model.name} · ${result.model.tokens} tokens · ${result.elapsed_seconds}s`)}
@@ -412,8 +415,10 @@ function chatResponse(item) {
 
 function chatScreen() {
   const complete = state.runs.filter((item) => item.status === "complete");
-  if (!complete.some((item) => item.id === state.chatId)) state.chatId = complete[0]?.id || "";
-  const agent = complete.find((item) => item.id === state.chatId);
+  const [view, linked] = window.location.hash.slice(1).split("/");
+  const preferred = view === "chat" && linked ? linked : state.chatId;
+  const agent = complete.find((item) => item.id === preferred) || complete[0];
+  state.chatId = agent?.id || "";
   const demo = state.workspace.demos.find((item) => item.id === state.chatId);
   const messages = state.chats[state.chatId] || [];
   return `<div class="screen"><div class="page-heading"><div><h1>Agent chat</h1><p>Ask a generated agent a question and inspect the supporting sources.</p></div></div>

@@ -22,6 +22,8 @@ class LocalModel:
         self.url = (url or os.getenv("FORGE_MODEL_URL", DEFAULT_URL)).rstrip("/")
         self.name = name or os.getenv("FORGE_MODEL_NAME", DEFAULT_MODEL)
         self.headers = {"Content-Type": "application/json"}
+        if api_key is None and url is None:
+            api_key = os.getenv("FORGE_MODEL_API_KEY")
         if api_key:
             self.headers["Authorization"] = f"Bearer {api_key}"
         self.token_budget = token_budget

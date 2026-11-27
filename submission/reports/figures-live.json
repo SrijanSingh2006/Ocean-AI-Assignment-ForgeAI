@@ -1,0 +1,214 @@
+{
+  "results": [
+    {
+      "question": "Which region has the highest shipments?",
+      "reply": {
+        "status": "answered",
+        "answer": "Labeled vertical bar chart. East: 20 · West: 40 · North: 30. Highest (maximum): West at 40. Lowest (minimum): East at 20. Left-to-right trend: the final value increased by 10 from East to North.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p001c01",
+            "document": "Regional Shipments.pdf",
+            "heading": "Regional Shipments chart",
+            "locator": "page 1, figure 1",
+            "quote": "Labeled vertical bar chart. East: 20 · West: 40 · North: 30. Highest (maximum): West at 40. Lowest (minimum): East at 20. Left-to-right trend: the final value increased by 10 from East to North.",
+            "extraction": {
+              "method": "shape_and_ocr",
+              "kind": "bar_chart",
+              "confidence": 0.9,
+              "values": [
+                {
+                  "label": "East",
+                  "value": 20.0
+                },
+                {
+                  "label": "West",
+                  "value": 40.0
+                },
+                {
+                  "label": "North",
+                  "value": 30.0
+                }
+              ],
+              "boxes": [
+                [
+                  208,
+                  280,
+                  292,
+                  399
+                ],
+                [
+                  438,
+                  160,
+                  522,
+                  399
+                ],
+                [
+                  668,
+                  220,
+                  752,
+                  399
+                ]
+              ],
+              "coordinate_unit": "analysis pixels",
+              "analysis_size": [
+                960,
+                520
+              ],
+              "verification": "Printed values agreed with relative bar heights and a common baseline."
+            }
+          }
+        ],
+        "confidence": {
+          "score": 0.725,
+          "kind": "heuristic",
+          "coverage": 0.667,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "question": "Which region has the lowest shipments?",
+      "reply": {
+        "status": "answered",
+        "answer": "Labeled vertical bar chart. East: 20 · West: 40 · North: 30. Highest (maximum): West at 40. Lowest (minimum): East at 20. Left-to-right trend: the final value increased by 10 from East to North.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p001c01",
+            "document": "Regional Shipments.pdf",
+            "heading": "Regional Shipments chart",
+            "locator": "page 1, figure 1",
+            "quote": "Labeled vertical bar chart. East: 20 · West: 40 · North: 30. Highest (maximum): West at 40. Lowest (minimum): East at 20. Left-to-right trend: the final value increased by 10 from East to North.",
+            "extraction": {
+              "method": "shape_and_ocr",
+              "kind": "bar_chart",
+              "confidence": 0.9,
+              "values": [
+                {
+                  "label": "East",
+                  "value": 20.0
+                },
+                {
+                  "label": "West",
+                  "value": 40.0
+                },
+                {
+                  "label": "North",
+                  "value": 30.0
+                }
+              ],
+              "boxes": [
+                [
+                  208,
+                  280,
+                  292,
+                  399
+                ],
+                [
+                  438,
+                  160,
+                  522,
+                  399
+                ],
+                [
+                  668,
+                  220,
+                  752,
+                  399
+                ]
+              ],
+              "coordinate_unit": "analysis pixels",
+              "analysis_size": [
+                960,
+                520
+              ],
+              "verification": "Printed values agreed with relative bar heights and a common baseline."
+            }
+          }
+        ],
+        "confidence": {
+          "score": 0.725,
+          "kind": "heuristic",
+          "coverage": 0.667,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "question": "What is the shipment trend in the chart?",
+      "reply": {
+        "status": "answered",
+        "answer": "Labeled vertical bar chart. East: 20 · West: 40 · North: 30. Highest (maximum): West at 40. Lowest (minimum): East at 20. Left-to-right trend: the final value increased by 10 from East to North.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p001c01",
+            "document": "Regional Shipments.pdf",
+            "heading": "Regional Shipments chart",
+            "locator": "page 1, figure 1",
+            "quote": "Labeled vertical bar chart. East: 20 · West: 40 · North: 30. Highest (maximum): West at 40. Lowest (minimum): East at 20. Left-to-right trend: the final value increased by 10 from East to North.",
+            "extraction": {
+              "method": "shape_and_ocr",
+              "kind": "bar_chart",
+              "confidence": 0.9,
+              "values": [
+                {
+                  "label": "East",
+                  "value": 20.0
+                },
+                {
+                  "label": "West",
+                  "value": 40.0
+                },
+                {
+                  "label": "North",
+                  "value": 30.0
+                }
+              ],
+              "boxes": [
+                [
+                  208,
+                  280,
+                  292,
+                  399
+                ],
+                [
+                  438,
+                  160,
+                  522,
+                  399
+                ],
+                [
+                  668,
+                  220,
+                  752,
+                  399
+                ]
+              ],
+              "coordinate_unit": "analysis pixels",
+              "analysis_size": [
+                960,
+                520
+              ],
+              "verification": "Printed values agreed with relative bar heights and a common baseline."
+            }
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    }
+  ]
+}

@@ -41,3 +41,15 @@ class MultilingualTests(unittest.TestCase):
             self.assertEqual(reply["translation_status"], "verified_roundtrip")
             self.assertEqual(reply["citations"][0]["quote"], source)
             self.assertEqual(Agent(definition, corpus).answer("वार्षिक छुट्टी कितनी है?")["status"], "clarify")
+
+
+class LocalTranslationIntegrityTests(unittest.TestCase):
+    def test_semantic_round_trip_preserves_negation_and_temporal_conditions(self):
+        from unittest.mock import Mock
+        from forgeai.local_language import LocalTranslation
+
+        model = LocalTranslation("/unused", Mock())
+        model.embeddings.similarity.return_value = 0.97
+        self.assertTrue(model.equivalent("Employees must file before Friday.", "Employees are required to file prior to Friday."))
+        self.assertFalse(model.equivalent("Employees must not file before Friday.", "Employees must file before Friday."))
+        self.assertFalse(model.equivalent("Employees must file before Friday.", "Employees must file after Friday."))

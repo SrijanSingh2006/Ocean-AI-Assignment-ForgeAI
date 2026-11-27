@@ -279,7 +279,7 @@ def homepage():
 @app.get("/project-download", include_in_schema=False)
 def project_download():
     archive = io.BytesIO()
-    paths = [ROOT / name for name in ("forgeai", "prompts", "static", "demos", "docs", "hosting", "scripts", "tests")]
+    paths = [ROOT / name for name in ("forgeai", "prompts", "static", "demos", "docs", "hosting", "scripts", "submission", "tests")]
     paths.extend(ROOT / name for name in ("README.md", "launch.py", "pyproject.toml", "package.json", ".gitignore", ".gitattributes"))
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as package:
         for source in paths:

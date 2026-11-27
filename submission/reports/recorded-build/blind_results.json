@@ -1,0 +1,277 @@
+{
+  "scorecard": {
+    "iteration": 0,
+    "passed": 8,
+    "total": 8,
+    "score": 100.0,
+    "categories": {
+      "answerable": {
+        "passed": 4,
+        "total": 4
+      },
+      "cross_document": {
+        "passed": 1,
+        "total": 1
+      },
+      "ambiguous": {
+        "passed": 1,
+        "total": 1
+      },
+      "out_of_scope": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "failures": {}
+  },
+  "results": [
+    {
+      "id": "E03",
+      "category": "answerable",
+      "question": "What does Hybrid Work Guide document about Home office equipment?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "The service desk issues a headset and laptop stand on request. A manager must preauthorize purchases made outside the equipment catalogue.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p003c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Home office equipment",
+            "locator": "text, block 3",
+            "quote": "The service desk issues a headset and laptop stand on request. A manager must preauthorize purchases made outside the equipment catalogue."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "id": "E06",
+      "category": "answerable",
+      "question": "What does Leave Handbook document about Annual leave?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Permanent shore employees receive 22 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p001c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Annual leave",
+            "locator": "text, block 1",
+            "quote": "Permanent shore employees receive 22 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "id": "E09",
+      "category": "answerable",
+      "question": "What does the Leave Handbook document about Parental leave?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Applications for planned parental leave should reach People Operations at least eight weeks before the expected start. Managers must confirm the handover plan separately.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p004c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Parental leave",
+            "locator": "text, block 4",
+            "quote": "Applications for planned parental leave should reach People Operations at least eight weeks before the expected start. Managers must confirm the handover plan separately."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "id": "E11",
+      "category": "answerable",
+      "question": "What does Onboarding Checklist document about Onboarding access?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "New shore employees submit one onboarding access form through PeopleHub. The team coordinator verifies each request within two working days.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d03p001c01",
+            "document": "Onboarding-Checklist.docx",
+            "heading": "Onboarding access",
+            "locator": "block 2",
+            "quote": "New shore employees submit one onboarding access form through PeopleHub. The team coordinator verifies each request within two working days."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "id": "E22",
+      "category": "cross_document",
+      "question": "For Hybrid Work Guide, what is documented about Remote access, and separately, for Leave Handbook, what is documented about Public holidays?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "answered",
+      "response": {
+        "status": "answered",
+        "answer": "Company files may be accessed only from managed laptops using the approved VPN. Report suspected device loss by phone to the service desk immediately.\n\nThe local office calendar determines public holidays for shore employees. If a holiday falls during approved annual leave, the holiday does not reduce the annual leave balance.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p005c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Remote access",
+            "locator": "text, block 5",
+            "quote": "Company files may be accessed only from managed laptops using the approved VPN. Report suspected device loss by phone to the service desk immediately."
+          },
+          {
+            "passage_id": "d02p005c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Public holidays",
+            "locator": "text, block 5",
+            "quote": "The local office calendar determines public holidays for shore employees. If a holiday falls during approved annual leave, the holiday does not reduce the annual leave balance."
+          }
+        ],
+        "confidence": {
+          "score": 1.0,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 2,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "id": "E24",
+      "category": "ambiguous",
+      "question": "Can you explain more?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": null
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "clarify",
+      "response": {
+        "status": "clarify",
+        "answer": "Which topic, item, or document should I look for?",
+        "tool": null,
+        "citations": []
+      }
+    },
+    {
+      "id": "E26",
+      "category": "out_of_scope",
+      "question": "What is the documented guidance on individual salary records?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": true
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "refused",
+      "response": {
+        "status": "refused",
+        "answer": "The supplied sources do not establish an answer to that question.",
+        "tool": null,
+        "citations": []
+      }
+    },
+    {
+      "id": "E29",
+      "category": "out_of_scope",
+      "question": "What is the documented guidance on personal medical diagnosis?",
+      "passed": true,
+      "checks": {
+        "grounded": true,
+        "correct": true,
+        "refused_when_expected": true
+      },
+      "failure": null,
+      "missing_facts": [],
+      "expected_status": "refused",
+      "response": {
+        "status": "refused",
+        "answer": "The supplied sources do not establish an answer to that question.",
+        "tool": null,
+        "citations": []
+      }
+    }
+  ],
+  "corpus_origin": "same_corpus"
+}

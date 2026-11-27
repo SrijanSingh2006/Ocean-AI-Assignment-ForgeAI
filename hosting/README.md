@@ -31,3 +31,20 @@ Both processes need to stay active for builds, chat, evaluation, and agent expor
 Open Studio using the Site owner's account. Check that the dashboard loads, ask the People Operations demo about annual leave, and open the answer's citation and execution trace. In the Engineering lab, **Releases and export** downloads the runnable agent ZIP. An HTTP 401 on the private URL indicates that the browser needs the owner's Site session.
 
 Standalone agent deployments use the runner and Docker files in the exported ZIP. [Application README](../README.md#deploy-a-standalone-agent)
+
+## Reviewer staging
+
+Build with the reviewer variant to limit requests to sample reports, exports and bounded chat. Start the backend in a separate workspace with FORGE_REVIEW_DEMO=1. Set the Site's FORGE_RELAY_KEY as a secret and give that credential to the connector through its prompt.
+
+```bash
+python hosting/build.py --project-id YOUR_REVIEWER_PROJECT_ID --review-demo
+FORGE_REVIEW_DEMO=1 python -m forgeai serve --host 127.0.0.1 --port 8878
+```
+
+In another terminal, connect the approved reviewer Site. Add --site-auth for owner-private staging and enter its service credential at the second prompt.
+
+```bash
+python hosting/connect.py https://YOUR_REVIEWER_SITE.chatgpt.site --port 8878 --review-demo
+```
+
+Review the published sample and access boundaries before changing its audience. [Deployment verification](../submission/DEPLOYMENT_REPORT.md)

@@ -405,7 +405,7 @@ def evaluate_cases(requirements, corpus, model, size=EXPECTED_CASES):
     def add(kind, question, expected="answered", anchors=()):
         cases.append({
             "id": f"E{len(cases) + 1:02}", "category": kind, "question": question,
-            "expected_status": expected,
+            "language": detect_language(question), "expected_status": expected,
             "expected_grounding": [
                 {"document": p["document"], "passage_id": p["id"], "key_facts": fact_for(p)}
                 for p in anchors
@@ -523,7 +523,7 @@ def judge(case, response, corpus):
         failure = None
     return {
         "id": case["id"], "category": case["category"], "question": case["question"],
-        "passed": grounding and correct and failure is None, "checks": {
+        "language": case.get("language", detect_language(case["question"])), "passed": grounding and correct and failure is None, "checks": {
             "grounded": grounding, "correct": correct,
             "refused_when_expected": actual == "refused" if expected == "refused" else None,
         },
@@ -788,7 +788,7 @@ def run_factory(brief, folder, output, *, model=None, max_iterations=3, intervie
         if best["scorecard"]["passed"] == len(cases):
             stop = "All generated cases passed."
             break
-        iteration_start, iteration_tokens = time.monotonic(), model.tokens
+        iteration_start, iteration_tokens, iteration_calls = time.monotonic(), model.tokens, len(model.calls)
         failures = [row for row in best["results"] if not row["passed"]]
         try:
             options, suggestion = suggest_patches(failures, model)
@@ -819,16 +819,28 @@ def run_factory(brief, folder, output, *, model=None, max_iterations=3, intervie
             attempt = score_agent(candidate, corpus, cases, model, iteration)
         except LatencyBudgetExceeded:
             changes.append({**entry, "status": "latency_limit", "accepted": False, "score_after": None,
-                            "resolved_cases": [], "regressed_cases": []})
+                            "resolved_cases": [], "regressed_cases": [],
+                            "elapsed_seconds": round(time.monotonic() - iteration_start, 3),
+                            "tokens": model.tokens - iteration_tokens, "observed_provider_tokens": None})
             stop = stop_for_time
             break
         attempts.append(attempt)
         accepted = attempt["scorecard"]["passed"] > best["scorecard"]["passed"]
         changed = comparison_rows(attempt["results"], best["results"])
+        elapsed = time.monotonic() - iteration_start
+        gain = attempt["scorecard"]["score"] - entry["score_before"]
+        recorded = [call for call in model.calls[iteration_calls:] if call["status"] != "budget_skipped"]
+        observed_tokens = (
+            sum(call["tokens"] for call in recorded)
+            if recorded and all(call["status"] == "ok" and call.get("tokens", 0) > 0 for call in recorded) else None
+        )
         changes.append({
             **entry, "status": "scored", "resolved_cases": changed["gained"], "regressed_cases": changed["lost"],
             "score_after": attempt["scorecard"]["score"], "accepted": accepted,
-            "elapsed_seconds": round(time.monotonic() - iteration_start, 3), "tokens": model.tokens - iteration_tokens,
+            "elapsed_seconds": round(elapsed, 3), "tokens": model.tokens - iteration_tokens,
+            "observed_provider_tokens": observed_tokens, "score_point_gain": round(gain, 1),
+            "points_per_second": round(gain / elapsed, 3) if elapsed else None,
+            "points_per_1000_provider_tokens": round(1000 * gain / observed_tokens, 2) if observed_tokens else None,
         })
         if not accepted:
             stop = "Stopped after a repair produced no net improvement."

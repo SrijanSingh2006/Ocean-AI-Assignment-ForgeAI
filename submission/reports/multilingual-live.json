@@ -1,0 +1,316 @@
+{
+  "provider": "NLLB 600M int8 with multilingual E5-small ONNX",
+  "review": "automated checks and English source comparison; independent native review pending",
+  "cases": [
+    {
+      "language": "en",
+      "topic": "remote",
+      "question": "What does the policy say about remote work?",
+      "expected_document": "Hybrid-Work-Guide.md",
+      "cited_expected_document": true,
+      "direct_e5_top_3": [
+        {
+          "id": "d01p002c01",
+          "heading": "Core availability",
+          "document": "Hybrid-Work-Guide.md",
+          "score": 0.8252
+        },
+        {
+          "id": "d01p001c01",
+          "heading": "Remote work",
+          "document": "Hybrid-Work-Guide.md",
+          "score": 0.8154
+        },
+        {
+          "id": "d02p002c01",
+          "heading": "Leave notice",
+          "document": "Leave-Handbook.md",
+          "score": 0.7813
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "answer": "Employees in eligible shore roles may work remotely up to two days each week. The team lead approves the days in the shared team calendar.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p001c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Remote work",
+            "locator": "text, block 1",
+            "quote": "Employees in eligible shore roles may work remotely up to two days each week. The team lead approves the days in the shared team calendar."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "language": "hi",
+      "topic": "remote",
+      "question": "दूर से काम करने की नीति क्या है?",
+      "expected_document": "Hybrid-Work-Guide.md",
+      "cited_expected_document": true,
+      "direct_e5_top_3": [
+        {
+          "id": "d01p002c01",
+          "heading": "Core availability",
+          "document": "Hybrid-Work-Guide.md",
+          "score": 0.7813
+        },
+        {
+          "id": "d02p002c01",
+          "heading": "Leave notice",
+          "document": "Leave-Handbook.md",
+          "score": 0.7731
+        },
+        {
+          "id": "d01p001c01",
+          "heading": "Remote work",
+          "document": "Hybrid-Work-Guide.md",
+          "score": 0.7675
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "answer": "पात्र किनारे भूमिकाओं में कर्मचारी प्रति सप्ताह दो दिनों तक दूरस्थ रूप से काम कर सकते हैं। टीम लीड साझा टीम कैलेंडर में दिनों को मंजूरी देता है।",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p001c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Remote work",
+            "locator": "text, block 1",
+            "quote": "Employees in eligible shore roles may work remotely up to two days each week. The team lead approves the days in the shared team calendar."
+          }
+        ],
+        "confidence": {
+          "score": 0.6,
+          "kind": "heuristic",
+          "coverage": 0.5,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "verified_roundtrip",
+        "language": "hi",
+        "detected_language": "hi"
+      }
+    },
+    {
+      "language": "ta",
+      "topic": "remote",
+      "question": "தொலைதூர வேலைக் கொள்கை என்ன?",
+      "expected_document": "Hybrid-Work-Guide.md",
+      "cited_expected_document": true,
+      "direct_e5_top_3": [
+        {
+          "id": "d01p002c01",
+          "heading": "Core availability",
+          "document": "Hybrid-Work-Guide.md",
+          "score": 0.7827
+        },
+        {
+          "id": "d02p002c01",
+          "heading": "Leave notice",
+          "document": "Leave-Handbook.md",
+          "score": 0.7731
+        },
+        {
+          "id": "d02p006c01",
+          "heading": "Compassionate leave",
+          "document": "Leave-Handbook.md",
+          "score": 0.7726
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "answer": "தகுதிவாய்ந்த கரையில் பணிபுரியும் பணியாளர்கள் வாரத்திற்கு இரண்டு நாட்கள் வரை தொலைதூரமாக வேலை செய்யலாம். பகிரப்பட்ட குழு காலண்டரில் உள்ள நாட்களை குழுத் தலைவர் ஒப்புக்கொள்கிறார்.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d01p001c01",
+            "document": "Hybrid-Work-Guide.md",
+            "heading": "Remote work",
+            "locator": "text, block 1",
+            "quote": "Employees in eligible shore roles may work remotely up to two days each week. The team lead approves the days in the shared team calendar."
+          }
+        ],
+        "confidence": {
+          "score": 0.975,
+          "kind": "heuristic",
+          "coverage": 1.0,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        },
+        "translation_status": "verified_roundtrip",
+        "language": "ta",
+        "detected_language": "ta"
+      }
+    },
+    {
+      "language": "en",
+      "topic": "leave",
+      "question": "How many annual leave days do employees who work on shore receive?",
+      "expected_document": "Leave-Handbook.md",
+      "cited_expected_document": true,
+      "direct_e5_top_3": [
+        {
+          "id": "d02p001c01",
+          "heading": "Annual leave",
+          "document": "Leave-Handbook.md",
+          "score": 0.8832
+        },
+        {
+          "id": "d01p001c01",
+          "heading": "Remote work",
+          "document": "Hybrid-Work-Guide.md",
+          "score": 0.8633
+        },
+        {
+          "id": "d02p005c01",
+          "heading": "Public holidays",
+          "document": "Leave-Handbook.md",
+          "score": 0.8598
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "answer": "Permanent shore employees receive 22 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year.",
+        "tool": null,
+        "citations": [
+          {
+            "passage_id": "d02p001c01",
+            "document": "Leave-Handbook.md",
+            "heading": "Annual leave",
+            "locator": "text, block 1",
+            "quote": "Permanent shore employees receive 22 paid annual leave days per calendar year. Carryover is capped at five days and expires on 31 March of the next year."
+          }
+        ],
+        "confidence": {
+          "score": 0.787,
+          "kind": "heuristic",
+          "coverage": 0.75,
+          "verified_passages": true,
+          "source_count": 1,
+          "conflict": false
+        }
+      }
+    },
+    {
+      "language": "hi",
+      "topic": "leave",
+      "question": "तट पर काम करने वाले कर्मचारियों को कितने दिनों का वार्षिक अवकाश मिलता है?",
+      "expected_document": "Leave-Handbook.md",
+      "cited_expected_document": false,
+      "direct_e5_top_3": [
+        {
+          "id": "d02p001c01",
+          "heading": "Annual leave",
+          "document": "Leave-Handbook.md",
+          "score": 0.8418
+        },
+        {
+          "id": "d02p005c01",
+          "heading": "Public holidays",
+          "document": "Leave-Handbook.md",
+          "score": 0.8147
+        },
+        {
+          "id": "d01p001c01",
+          "heading": "Remote work",
+          "document": "Hybrid-Work-Guide.md",
+          "score": 0.8119
+        }
+      ],
+      "answer": {
+        "status": "clarify",
+        "answer": "I could not verify this request in Hindi. Try a language used in the sources.",
+        "tool": null,
+        "citations": [],
+        "language": "en",
+        "detected_language": "hi",
+        "translation_status": "unverified"
+      }
+    },
+    {
+      "language": "ta",
+      "topic": "leave",
+      "question": "கரையில் பணிபுரியும் ஊழியர்களுக்கு எத்தனை நாட்கள் வருடாந்திர விடுப்பு கிடைக்கும்?",
+      "expected_document": "Leave-Handbook.md",
+      "cited_expected_document": false,
+      "direct_e5_top_3": [
+        {
+          "id": "d02p001c01",
+          "heading": "Annual leave",
+          "document": "Leave-Handbook.md",
+          "score": 0.8583
+        },
+        {
+          "id": "d01p001c01",
+          "heading": "Remote work",
+          "document": "Hybrid-Work-Guide.md",
+          "score": 0.825
+        },
+        {
+          "id": "d02p005c01",
+          "heading": "Public holidays",
+          "document": "Leave-Handbook.md",
+          "score": 0.8221
+        }
+      ],
+      "answer": {
+        "status": "clarify",
+        "answer": "I could not verify this request in Tamil. Try a language used in the sources.",
+        "tool": null,
+        "citations": [],
+        "language": "en",
+        "detected_language": "ta",
+        "translation_status": "unverified"
+      }
+    },
+    {
+      "language": "hi",
+      "topic": "romanized leave",
+      "question": "Annual leave kitne din hai?",
+      "expected_document": "Leave-Handbook.md",
+      "cited_expected_document": false,
+      "direct_e5_top_3": [
+        {
+          "id": "d02p005c01",
+          "heading": "Public holidays",
+          "document": "Leave-Handbook.md",
+          "score": 0.8274
+        },
+        {
+          "id": "d02p001c01",
+          "heading": "Annual leave",
+          "document": "Leave-Handbook.md",
+          "score": 0.8122
+        },
+        {
+          "id": "d02p002c01",
+          "heading": "Leave notice",
+          "document": "Leave-Handbook.md",
+          "score": 0.8078
+        }
+      ],
+      "answer": {
+        "status": "clarify",
+        "answer": "I could not verify this request in Hindi. Try a language used in the sources.",
+        "tool": null,
+        "citations": [],
+        "language": "en",
+        "detected_language": "hi-Latn",
+        "translation_status": "unverified"
+      }
+    }
+  ]
+}

@@ -37,7 +37,7 @@ class Embeddings:
         if not passages or len(passages) > 128:
             return []
         try:
-            vectors = self.encode([query] + [p["text"][:1400] for p in passages])
+            vectors = self.encode([query] + [f"{p['heading']}\n{p['text']}"[:1400] for p in passages])
         except (OSError, ValueError, KeyError, TypeError, OverflowError, RuntimeError):
             return []
         match = [(similarity, similarity, passage) for vector, passage in zip(vectors[1:], passages)

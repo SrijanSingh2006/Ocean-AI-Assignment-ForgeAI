@@ -98,9 +98,11 @@ def resolve(origin, local, key, id_):
     raise RuntimeError("The workspace response could not be delivered")
 
 
-def run(origin, local, token, review_demo=False):
+def run(origin, local, token, review_demo=False, site_credential=None):
     credential = {"x-forge-relay-key": token} if review_demo else {"OAI-Sites-Authorization": "Bearer " + token}
     auth = {**credential, "x-forge-runtime": "1"}
+    if review_demo and site_credential:
+        auth["OAI-Sites-Authorization"] = "Bearer " + site_credential
     previous = {}
     active = {}
     online = False
@@ -148,15 +150,21 @@ def main():
     parser.add_argument("site")
     parser.add_argument("--port", type=int, default=8765, choices=range(1, 65536), metavar="1–65535")
     parser.add_argument("--review-demo", action="store_true", help="Connect the isolated sample workspace")
+    parser.add_argument("--site-auth", action="store_true", help="Use an owner-private Site credential for reviewer staging")
     args = parser.parse_args()
+    if args.site_auth and not args.review_demo:
+        parser.error("--site-auth is only needed for owner-private reviewer staging.")
     url = urllib.parse.urlsplit(args.site)
     if url.scheme != "https" or not url.hostname or not url.hostname.endswith(".chatgpt.site") or url.netloc != url.hostname:
         parser.error("Use the HTTPS origin of the private ChatGPT Site.")
     token = getpass.getpass("Reviewer relay key: " if args.review_demo else "Site service credential: ")
     if not token:
         parser.error("The Site service credential is required.")
+    site_credential = getpass.getpass("Site service credential: ") if args.site_auth else None
+    if args.site_auth and not site_credential:
+        parser.error("The staging Site service credential is required.")
     try:
-        run(f"https://{url.hostname}", f"http://127.0.0.1:{args.port}", token, args.review_demo)
+        run(f"https://{url.hostname}", f"http://127.0.0.1:{args.port}", token, args.review_demo, site_credential)
     except KeyboardInterrupt:
         pass
 

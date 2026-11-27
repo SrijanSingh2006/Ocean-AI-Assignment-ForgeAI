@@ -1,0 +1,138 @@
+{
+  "name": "qwen2.5-0.5b",
+  "mode": "local_model",
+  "tokens": 3481,
+  "budget": 12000,
+  "calls": [
+    {
+      "stage": "intake",
+      "status": "ok",
+      "tokens": 408,
+      "output": {
+        "audience": "shore-based operations staff",
+        "tone": "professional",
+        "questions": [
+          "What are the annual leave policies?",
+          "What are the sick leave policies?",
+          "What are the remote work policies?",
+          "What are the travel reimbursements policies?",
+          "What are the live vessel tracking coordinates policies?"
+        ]
+      }
+    },
+    {
+      "stage": "intake",
+      "status": "ok",
+      "tokens": 408,
+      "output": {
+        "audience": "shore-based operations staff",
+        "tone": "professional",
+        "questions": [
+          "What are the annual leave policies?",
+          "What are the sick leave policies?",
+          "What are the remote work policies?",
+          "What are the travel reimbursements policies?",
+          "What are the live vessel tracking coordinates policies?"
+        ]
+      }
+    },
+    {
+      "stage": "definition",
+      "status": "ok",
+      "tokens": 201,
+      "output": {
+        "name": "Hybrid-Work-Guide",
+        "role": "shore-based operations staff"
+      }
+    },
+    {
+      "stage": "eval_generation",
+      "status": "ok",
+      "tokens": 154,
+      "output": {
+        "topic": "Remote work",
+        "document": "Hybrid Work Guide",
+        "question": "What does the Hybrid Work Guide document about remote work?"
+      }
+    },
+    {
+      "stage": "eval_generation",
+      "status": "ok",
+      "tokens": 136,
+      "output": {
+        "question": "What does the Leave Handbook document about Parental leave?"
+      }
+    },
+    {
+      "stage": "evidence",
+      "status": "ok",
+      "tokens": 415,
+      "output": {
+        "ids": [
+          "d02p001c01",
+          "d02p005c01",
+          "d01p001c01"
+        ]
+      }
+    },
+    {
+      "stage": "prompt_tournament",
+      "status": "ok",
+      "tokens": 151,
+      "output": {
+        "instruction": "instruction",
+        "sentence": "The passage should directly contain the specific fact requested."
+      }
+    },
+    {
+      "stage": "evidence",
+      "status": "ok",
+      "tokens": 429,
+      "output": {
+        "ids": [
+          "d02p001c01",
+          "d02p005c01",
+          "d01p001c01"
+        ]
+      }
+    },
+    {
+      "stage": "prompt_tournament",
+      "status": "ok",
+      "tokens": 174,
+      "output": {
+        "instruction": "Select passages that cover all parts of the question and retain units and exceptions."
+      }
+    },
+    {
+      "stage": "evidence",
+      "status": "ok",
+      "tokens": 434,
+      "output": {
+        "ids": [
+          "d02p001c01",
+          "d02p005c01",
+          "d01p001c01"
+        ]
+      }
+    },
+    {
+      "stage": "critic",
+      "status": "ok",
+      "tokens": 343,
+      "output": {
+        "patch": "E25",
+        "reason": "prompt defect"
+      }
+    },
+    {
+      "stage": "critic",
+      "status": "ok",
+      "tokens": 228,
+      "output": {
+        "patch": "clarify_vague",
+        "reason": "The patch 'clarify_vague' addresses the prompt defect 'prompt defect' by clarifying the query and providing a topic when the query is vague or names a document without enough detail."
+      }
+    }
+  ]
+}

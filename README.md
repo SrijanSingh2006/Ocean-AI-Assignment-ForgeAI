@@ -4,6 +4,12 @@ ForgeAI Studio turns a short brief and a folder of documents into a runnable que
 
 The project implements the OceanAI **Agent That Builds Agents** assignment. It provides a browser workspace, a command-line interface, four recorded sample packs, and a separate observatory replay. Studio adds blind evaluation, source conflict review, execution traces, feedback, and versioned exports to the original agent factory.
 
+## Submission
+
+[Submission dossier](submission/README.md) · [Recorded demo](submission/DEMO_VIDEO_URL.md) · [Hosted application status](submission/HOSTED_APP_URL.md)
+
+The dossier records the OceanAI requirements, measured results, verified workflows and open acceptance gates. The reviewer build uses fictional sample data with live chat and exports. Its staging link requires the Site owner's ChatGPT session.
+
 ## Contents
 
 - [Problem and solution](#problem-and-solution)
@@ -413,6 +419,8 @@ Run folders hold source files, scorecards, traces, and exports. SQLite, Python's
 | `FORGE_AUTH_CONFIG` | Enable local sign-in from a JSON user configuration file. With the setting unset, Studio uses the original single-user local mode. |
 | `FORGE_COOKIE_SECURE=1` | Require HTTPS for the session cookie. Configure it when serving through a TLS reverse proxy. |
 | `FORGE_TRACE_RETENTION_DAYS` | Retain traces for 1–365 days, default 30. Expired traces are excluded from reads and cleaned up when new traces are stored for that run. |
+| `FORGE_FIGURES=1` | Check labeled vertical bar charts in embedded PDF images. Values must agree with printed labels and bar geometry. Requires Pillow and Tesseract. |
+| `FORGE_NLLB_PATH` and `FORGE_E5_PATH` | Optional local CPU models for translation and semantic retrieval. Install the languages dependency group and compatible model files separately. |
 | `FORGE_OCR=1` | Enable OCR. Install Tesseract and, for scanned PDFs, Poppler’s `pdftoppm`. Set `FORGE_OCR_LANGUAGES` to installed Tesseract codes such as `eng+hin+tam`. |
 | `FORGE_LANGUAGE_MODEL_NAME`, `FORGE_LANGUAGE_MODEL_URL`, `FORGE_LANGUAGE_MODEL_API_KEY` | Configure an optional compatible translation model. Keep its credential in the environment. |
 | `FORGE_EMBEDDING_URL`, `FORGE_EMBEDDING_MODEL`, `FORGE_EMBEDDING_API_KEY` | Configure optional semantic retrieval through an OpenAI-compatible embeddings endpoint. Lexical retrieval remains available when the provider is unavailable. |
@@ -452,9 +460,9 @@ In **Engineering lab → Releases and export**, select **Export runnable agent**
 
 ### Verification and open items
 
-The [enterprise verification report](docs/enterprise-upgrade.md) records feature status, the full test commands, and the recruiter walkthrough. Qwen 2.5 0.5B passed English in the small language replay. Hindi failed verification and Tamil was unavailable. Reliable multilingual operation requires a compatible provider validated on representative questions. The benchmark had one live model profile, and the measured sample completed through deterministic retrieval. Semantic provider integration was tested with controlled responses.
+The [enterprise verification report](docs/enterprise-upgrade.md) records feature status, the full test commands, and the recruiter walkthrough. The local NLLB and multilingual E5 tests produced verified Hindi and Tamil remote-work answers with the original citations. The system abstained on several annual-leave cases. Independent native-language review remains pending. The benchmark had one live model profile, and the measured sample completed through deterministic retrieval. Direct E5 retrieval was also measured on the English, Hindi, Tamil and Romanized queries.
 
-Conflict detection covers comparable numeric claims. OCR handles source text and provenance. Chart and figure interpretation and complex document layout recognition remain open. Security testing covers the fixed conformance suite and static source scanning. Confidence scores express heuristic evidence quality, with calibration results reported separately on user-supplied labeled data.
+Conflict detection covers comparable numeric, date, and scoped policy claims. Verified labeled PDF bar charts can answer maximum, minimum and trend questions from the extracted figure. Other chart types and complex document layout remain open. Security testing covers the fixed conformance suite and static source scanning. Confidence scores express heuristic evidence quality, with calibration results reported separately on user-supplied labeled data.
 
 ## Studio screenshots
 
@@ -501,7 +509,7 @@ node --check static/theme.js
 node --check static/enterprise.js
 ```
 
-The verified suite passed **32 tests**, with OCR dependencies installed. The checks cover file extraction, citation integrity, budgets, contracts for held-out evaluation, workspace access, trace redaction, feedback, rollback, and the upload-to-export workflow. The four original sample builds replayed with local Qwen. The People Operations and observatory replays both recorded 24/24 development and 8/8 blind cases. [Verification report](docs/enterprise-upgrade.md) · [Sample guide](demos/SAMPLE_GUIDE.md)
+The verified submission suite passed **36 tests**, with OCR dependencies installed. The checks cover file extraction, citation integrity, budgets, contracts for held-out evaluation, workspace access, trace redaction, feedback, rollback, and the upload-to-export workflow. The four original sample builds replayed with local Qwen. The People Operations and observatory replays both recorded 24/24 development and 8/8 blind cases. [Verification report](docs/enterprise-upgrade.md) · [Sample guide](demos/SAMPLE_GUIDE.md)
 
 | Area | Current boundary |
 | --- | --- |
