@@ -195,7 +195,7 @@ class DeploymentTests(ServiceTests):
         with zipfile.ZipFile(package) as archive:
             self.assertTrue({"runner.py", "Dockerfile", "compose.yaml", ".env.example",
                              "requirements.txt", "reports/evals.json", "reports/report.md",
-                             "documents/policy.md", "definition.json", "manifest.json", "tools.json"}
+                             "documents/policy.md", "definition.json", "manifest.json", "tools.json", "indexed-corpus.json"}
                             <= set(archive.namelist()))
             self.assertNotIn(".env", archive.namelist())
             self.assertNotIn("documents/.env", archive.namelist())
@@ -209,6 +209,14 @@ class DeploymentTests(ServiceTests):
         self.assertEqual(response["status"], "answered")
         self.assertIn("two days", response["answer"])
         self.assertEqual(response["citations"][0]["document"], "policy.md")
+        index_path = target / "indexed-corpus.json"
+        originals = index_path.read_bytes()
+        index_path.write_bytes(b"{}")
+        broken = subprocess.run([sys.executable, "runner.py", "--ask", self.question],
+                                cwd=target, env=environment, capture_output=True, text=True, timeout=20)
+        self.assertNotEqual(broken.returncode, 0)
+        self.assertIn("index fingerprint does not match", broken.stderr)
+        index_path.write_bytes(originals)
         (target / "documents" / "policy.md").write_text("Changed")
         broken = subprocess.run([sys.executable, "runner.py", "--ask", self.question],
                                 cwd=target, env=environment, capture_output=True, text=True, timeout=20)

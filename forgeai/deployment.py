@@ -1,5 +1,6 @@
 """Export an authorized agent snapshot with its sources and an isolated API runner."""
 
+import hashlib
 import io
 import json
 import zipfile
@@ -24,7 +25,9 @@ python-docx>=1.1,<2
 DOCKERFILE = """FROM python:3.12-slim
 WORKDIR /app
 COPY requirements.txt .
-RUN python -m pip install --no-cache-dir -r requirements.txt
+RUN --mount=type=secret,id=pip_ca \
+    if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi; \
+    python -m pip install --no-cache-dir -r requirements.txt
 COPY . .
 USER 10001
 EXPOSE 8000
@@ -78,6 +81,14 @@ Run `docker compose up --build` and visit http://127.0.0.1:8000/docs.
 The Compose port maps to loopback. A model server in a different container or
 on the host needs a reachable model URL.
 
+If dependency downloads require a custom certificate authority, supply the
+trusted CA bundle as a transient BuildKit secret during the image build.
+
+```sh
+docker build --secret id=pip_ca,src=/path/to/ca-bundle.pem -t forgeai-agent .
+docker run --rm -p 127.0.0.1:8000:8000 forgeai-agent
+```
+
 ## Runtime configuration
 
 Set environment variables directly or through your deployment's secret
@@ -98,12 +109,14 @@ the deployment can share the data that service needs.
 
 Consult `reports/` for the committed evaluation dataset, available results and
 scorecards, and security assessment status. The package verifies source hashes
-before it accepts questions. This single-agent service serves a fixed snapshot.
-Scanned sources may require the OCR dependencies of the original Studio build.
+and the index hash before it accepts questions. An OCR-based build carries its
+extracted passages and coordinates, so the fixed snapshot can answer from
+that evidence in a runtime without OCR binaries.
 """
 RUNNER = '''"""Serve a single ForgeAI deployment snapshot."""
 
 import argparse
+import hashlib
 import hmac
 import json
 import os
@@ -127,8 +140,11 @@ if fingerprints(documents) != manifest["sources"]:
     raise RuntimeError("Deployment source fingerprints do not match the manifest")
 if sorted(definition["tools"]) != sorted(tools):
     raise RuntimeError("Deployment tool configuration does not match the definition")
-retrieval = definition["retrieval"]
-corpus = Corpus.load(documents, retrieval["chunk_words"], retrieval["overlap_words"])
+index_data = (ROOT / configuration["index"]).read_bytes()
+if hashlib.sha256(index_data).hexdigest() != manifest["index_sha256"]:
+    raise RuntimeError("Deployment index fingerprint does not match the manifest")
+frozen = json.loads(index_data)
+corpus = Corpus(frozen["passages"], frozen["documents"], frozen["warnings"])
 app = FastAPI(title=definition["name"])
 
 
@@ -202,14 +218,21 @@ def build_deployment(artifacts, documents, *, allowed_documents=None, source_roo
     corpus = Corpus.load(documents, retrieval["chunk_words"], retrieval["overlap_words"])
     Agent(definition, corpus)
     source_hashes = fingerprints(documents)
+    index_data = json.dumps(
+        {"passages": corpus.passages, "documents": corpus.documents, "warnings": corpus.warnings},
+        separators=(",", ":"), ensure_ascii=False,
+    ).encode()
 
     output = io.BytesIO()
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
         _json(archive, "definition.json", definition)
         _json(archive, "tools.json", {tool: REGISTRY[tool] for tool in definition["tools"]})
-        _json(archive, "manifest.json", {"schema_version": 1, "agent": definition["name"], "sources": source_hashes})
+        _json(archive, "manifest.json", {"schema_version": 1, "agent": definition["name"], "sources": source_hashes,
+                                         "index_sha256": hashlib.sha256(index_data).hexdigest()})
         _json(archive, "runner-config.json", {"definition": "definition.json", "documents": "documents",
-                                              "tools": "tools.json", "manifest": "manifest.json"})
+                                              "tools": "tools.json", "manifest": "manifest.json",
+                                              "index": "indexed-corpus.json"})
+        archive.writestr("indexed-corpus.json", index_data)
         for name, path in sources.items():
             archive.write(path, "documents/" + name)
         models = [(source_root / "forgeai", "*.py"), (source_root / "prompts", "*.txt")]
