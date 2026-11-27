@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .corpus import MAX_FILE_BYTES, Corpus
-from .factory import Agent, read_json
+from .factory import Agent, read_json, write_json
 from .impact import fingerprints, source_files
 
 RELEASE_ARTIFACTS = (
@@ -22,7 +22,7 @@ RELEASE_ARTIFACTS = (
     "tournament.json", "regression.json", "manual_comparison.json", "report.md", "run.json",
     "blind_evals.json", "blind_cases.json", "blind_results.json", "security.json",
     "security_scorecard.json", "multilingual.json", "multilingual_results.json",
-    "conflicts.json", "model_tournament.json",
+    "conflicts.json", "model_tournament.json", "indexed-corpus.json",
 )
 
 
@@ -164,6 +164,9 @@ def create_release(store, agent_id, artifacts, documents, *, actor="local"):
         retrieval = definition["retrieval"]
         corpus = Corpus.load(staged_documents, retrieval["chunk_words"], retrieval["overlap_words"])
         Agent(definition, corpus)
+        write_json(staged_artifacts / "indexed-corpus.json", {
+            "passages": corpus.passages, "documents": corpus.documents, "warnings": corpus.warnings,
+        })
         metadata = {
             "id": version, "agent_id": agent, "created": _time(), "created_by": actor,
             "sources": fingerprints(staged_documents), "artifacts": _artifact_fingerprints(staged_artifacts),
@@ -261,6 +264,18 @@ def release_paths(store, agent_id, version_id=None):
     with closing(_connect(store)) as db:
         row = _lookup(db, agent, version_id if version_id is not None else _active(db, agent))
     return _paths(store, agent, row)
+
+
+def load_snapshot_corpus(artifacts, documents, definition):
+    """Use an extracted index from an already-verified release or parse ordinary run sources."""
+    index = Path(artifacts) / "indexed-corpus.json"
+    if index.is_symlink():
+        raise ValueError("Release indexes cannot contain symbolic links")
+    if index.is_file():
+        frozen = read_json(index)
+        return Corpus(frozen["passages"], frozen["documents"], frozen["warnings"])
+    retrieval = definition["retrieval"]
+    return Corpus.load(documents, retrieval["chunk_words"], retrieval["overlap_words"])
 
 
 def compare_releases(store, agent_id, before_id, after_id):

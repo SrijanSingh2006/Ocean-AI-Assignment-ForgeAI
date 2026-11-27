@@ -126,10 +126,12 @@ class ReleaseTests(ServiceTests):
         (self.artifacts / ".env").write_text("AN_EXAMPLE_SECRET=outside-snapshot")
 
     def test_release_approval_snapshot_and_rollback(self):
+        from unittest.mock import patch
+
         from forgeai.factory import read_json, write_json
         from forgeai.versioning import (
             activate_release, approve_release, compare_releases, create_release,
-            list_releases, release_history, release_paths, rollback_release,
+            list_releases, load_snapshot_corpus, release_history, release_paths, rollback_release,
         )
 
         first = create_release(self.store, "agent", self.artifacts, self.root / "documents", actor="owner")
@@ -154,7 +156,10 @@ class ReleaseTests(ServiceTests):
         rollback_release(self.store, "agent", first["id"], actor="owner")
         artifacts, docs = release_paths(self.store, "agent")
         self.assertEqual(read_json(artifacts / "definition.json"), self.definition)
-        self.assertIn("two days", Agent(self.definition, Corpus.load(docs)).answer(self.question)["answer"])
+        # Restoring prior extraction cannot depend on the availability of its original parser.
+        with patch.object(Corpus, "load", side_effect=AssertionError("Release should use frozen evidence")):
+            corpus = load_snapshot_corpus(artifacts, docs, self.definition)
+        self.assertIn("two days", Agent(self.definition, corpus).answer(self.question)["answer"])
         self.assertFalse((artifacts / ".env").exists())
         self.assertEqual(release_history(self.store, "agent")[-1]["previous_id"], second["id"])
 

@@ -6,11 +6,12 @@ import json
 import zipfile
 from pathlib import Path
 
-from .corpus import MAX_FILE_BYTES, Corpus
+from .corpus import MAX_FILE_BYTES
 from .factory import Agent, read_json
 from .impact import fingerprints, source_files
 from .model import ROOT
 from .registry import REGISTRY
+from .versioning import load_snapshot_corpus
 
 EVIDENCE_FILES = (
     "evals.json", "eval_results.json", "scorecards.json", "iterations.json", "report.md",
@@ -214,8 +215,7 @@ def build_deployment(artifacts, documents, *, allowed_documents=None, source_roo
     if not definition_path.is_file() or definition_path.is_symlink():
         raise ValueError("A completed regular definition file is required")
     definition = read_json(definition_path)
-    retrieval = definition["retrieval"]
-    corpus = Corpus.load(documents, retrieval["chunk_words"], retrieval["overlap_words"])
+    corpus = load_snapshot_corpus(artifacts, documents, definition)
     Agent(definition, corpus)
     source_hashes = fingerprints(documents)
     index_data = json.dumps(
