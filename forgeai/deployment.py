@@ -28,7 +28,7 @@ COPY requirements.txt .
 RUN --mount=type=secret,id=pip_ca \
     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi; \
     python -m pip install --no-cache-dir -r requirements.txt
-COPY . .
+COPY --chown=10001:10001 . .
 USER 10001
 EXPOSE 8000
 CMD ["python", "runner.py", "--host", "0.0.0.0"]
