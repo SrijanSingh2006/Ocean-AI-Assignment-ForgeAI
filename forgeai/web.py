@@ -372,7 +372,9 @@ async def launch(
     if regression:
         store = enterprise_api.feature_folder(request, regression)
         reviewed = feedback.approved_cases(store, regression)
-        previous["evals"] = previous["evals"] + reviewed
+        resolution = enterprise_api.optional_json(store / "conflict-resolutions.json", {})
+        verified = [record["case"] for record in resolution.get("regression_cases", {}).values() if record["verified"]]
+        previous["evals"] = previous["evals"] + reviewed + verified
         extra_cases = feedback.approved_cases(store, regression, suite="development")
     manual_path = demo_root(demo) / "manual-baseline.json" if demo else None
     manual = read_json(manual_path) if manual_path and manual_path.is_file() else None

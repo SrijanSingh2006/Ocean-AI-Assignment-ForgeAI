@@ -108,7 +108,9 @@ const engineering = (() => {
     if (!data.conflicts.length) return empty("No comparable policy disagreements were detected.");
     return data.conflicts.map((entry) => {
       const selection = data.selections[entry.id];
+      const regression = data.regression_cases?.[entry.id];
       return `<article class="lab-card"><h3>${esc(entry.topic)} ${badge(selection ? "Resolved" : "Needs review", selection ? "good" : "warn")}</h3>
+        ${regression ? badge(regression.verified ? "Verified regression case" : "Regression case needs review") : ""}
         <p class="muted">${esc(entry.type.replaceAll("_", " "))}${entry.basis ? " · " + esc(entry.basis) : ""}</p>
         <div class="lab-claims">${entry.claims.map((claim) => `<div><strong>${esc(claim.document)}</strong>
           <p>${esc(claim.statement)}</p><small>${esc(claim.locator)} ${claim.version_hint ? " · " + esc(claim.version_hint) : ""}</small></div>`).join("")}</div>
@@ -166,8 +168,9 @@ const engineering = (() => {
     const versions = data.versions;
     const canApprove = canEdit() || state.session.can_approve;
     return `<div class="actions"><a class="btn primary small" href="${path(runId, "deployment")}">Export runnable agent</a></div>
-      ${canEdit() ? form("release", input("source_run_id", "Source run ID", 'placeholder="Current run"'), "Create release snapshot") : ""}
-      ${versions.length ? versions.map((item) => `<div class="lab-row"><div><strong>Version ${esc(item.number)}</strong>
+      ${canEdit() ? form("release", input("source_run_id", "Source run ID", 'placeholder="Current run"') +
+        input("label", "Release name", 'placeholder="Optional" maxlength="80"'), "Create release snapshot") : ""}
+      ${versions.length ? versions.map((item) => `<div class="lab-row"><div><strong>${item.label ? esc(item.label) + " · " : ""}Version ${esc(item.number)}</strong>
         <p class="muted">${esc(item.id)} · ${esc(item.state)} ${item.active ? "· Active" : ""}</p></div>
         ${item.state === "pending" && canApprove ? `<button class="btn small" data-release-op="approve" data-id="${esc(item.id)}">Approve</button>` : ""}
         ${canEdit() && item.state === "approved" && !item.active ? `<button class="btn small" data-release-op="activate" data-id="${esc(item.id)}">Activate</button>
@@ -302,7 +305,8 @@ const engineering = (() => {
         approve: values.get("approve") === "true", expected_status: values.get("expected_status"),
         anchors: values.get("anchors").split(",").map((value) => value.trim()).filter(Boolean), suite: values.get("suite"),
       }));
-      else if (op === "release") await mutate(id, "releases", {source_run_id: values.get("source_run_id") || null});
+      else if (op === "release") await mutate(id, "releases", {source_run_id: values.get("source_run_id") || null,
+        label: values.get("label").trim() || null});
       else if (op === "release-diff") setExtra(await api(path(id, "release-diff?" + new URLSearchParams(values))));
       else if (op === "impact") await mutate(id, "impact", {
         previous_run_id: values.get("previous_run_id"), full_regression: values.get("full_regression") !== null,

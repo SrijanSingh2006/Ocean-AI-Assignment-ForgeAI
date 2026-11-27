@@ -7,7 +7,7 @@
 | Scope | Four bundled sample runs. Mutations, private run identifiers and execution trace downloads are blocked. Guest questions do not enter persistent trace storage. |
 | Health | GET /api/health works in the reviewer API and container. |
 | Model | Local Qwen supports the owner factory. Local NLLB and E5 support compatible multilingual workflows. |
-| Persistence | Workspace files and SQLite metadata. Container runs use a /data mount. The four bundled recorded runs remained accessible after restart. |
+| Persistence | Workspace files and SQLite metadata. Container runs use a /data mount. The container kept a verified owner build after restart and required the user to sign in again. |
 | Authentication | Site sign-in protects owner and staging access. The reviewer relay requires its own secret. Standalone Docker owner mode requires an authorization configuration. |
 | Transport | Site HTTPS with same-origin requests. The cloud runtime binds to loopback behind the relay. |
 | Public access | Automatic review rejected changing this Site to public. Owner authorization and unauthenticated tests remain necessary. |

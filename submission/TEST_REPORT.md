@@ -26,6 +26,7 @@ Install Tesseract and Poppler for OCR tests. Add the optional languages extra an
 | Python baseline | 32 passed, zero failures, zero skips |
 | Python final | 36 passed, zero failures, zero skips |
 | Chromium workflow | Build, theme switching and persistence, blind score, defensive checks, chat and citations, feedback, release approval and activation, traces, ZIP export, dashboard, keyboard and responsive navigation |
+| Resolutions and release names | Approved conflict generated a verified regression case. Named release, activation and rollback passed the API workflow |
 | Direct chat routes | The Marine Procurement link retained its requested agent after the page and run list loaded |
 | Recorded build | 18/24 baseline, 22/24 after the first repair, 24/24 final, and 8/8 on the held-out cases |
 | Recorded browser errors | No uncaught page errors. The final video uses individually verified Hindi and Tamil clips |

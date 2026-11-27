@@ -46,6 +46,9 @@ class EnterpriseAPIWorkflowTests(unittest.TestCase):
             self.assertEqual(client.post(base + f"/conflicts/{conflict['id']}", json={
                 "passage_id": chosen["passage_id"], "reason": "Verified against the fixture authority.",
             }).status_code, 200)
+            resolved = client.get(base + "/conflicts").json()["regression_cases"][conflict["id"]]
+            self.assertTrue(resolved["verified"])
+            self.assertEqual(resolved["case"]["expected_grounding"][0]["passage_id"], chosen["passage_id"])
             reply = client.post("/api/chat", json={"run_id": original, "question": "What is annual leave?"}).json()
             self.assertEqual(reply["status"], "answered")
             self.assertIn("18", reply["answer"])
@@ -60,7 +63,9 @@ class EnterpriseAPIWorkflowTests(unittest.TestCase):
             self.assertEqual(review.status_code, 200, review.text)
             self.assertEqual(client.get(base + "/feedback").json()[0]["state"], "approved")
 
-            older = client.post(base + "/releases", json={}).json()["id"]
+            older_release = client.post(base + "/releases", json={"label": "Original leave policy"}).json()
+            self.assertEqual(older_release["label"], "Original leave policy")
+            older = older_release["id"]
             self.assertEqual(client.post(base + f"/releases/{older}/approve").status_code, 200)
             self.assertEqual(client.post(base + f"/releases/{older}/activate").status_code, 200)
             revised, _ = self.submit(client, 20, 20)

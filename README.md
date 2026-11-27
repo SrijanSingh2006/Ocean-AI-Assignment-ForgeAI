@@ -6,7 +6,7 @@ The project implements the OceanAI **Agent That Builds Agents** assignment. It p
 
 ## Submission
 
-[Submission dossier](submission/README.md) · [Recorded demo](submission/DEMO_VIDEO_URL.md) · [Hosted application status](submission/HOSTED_APP_URL.md)
+[Submission dossier](submission/README.md) · [Recorded demo MP4 · 5:20](https://raw.githubusercontent.com/SrijanSingh2006/Ocean-AI-Assignment-ForgeAI/5c3e9954980dc7294620d44df8ec7b36b08bb196/ForgeAI-Studio-Demo.mp4) · [Hosted application status](submission/HOSTED_APP_URL.md)
 
 The dossier records the OceanAI requirements, measured results, verified workflows and open acceptance gates. The reviewer build uses fictional sample data with live chat and exports. Its staging link requires the Site owner's ChatGPT session.
 

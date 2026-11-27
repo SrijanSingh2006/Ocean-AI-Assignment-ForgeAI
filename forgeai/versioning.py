@@ -133,9 +133,13 @@ def _export_metadata(folder, definition):
     }
 
 
-def create_release(store, agent_id, artifacts, documents, *, actor="local"):
+def create_release(store, agent_id, artifacts, documents, *, actor="local", label=None):
     """Copy the definition, source files and measured artifacts into a new pending release."""
     agent, actor = _agent_id(agent_id), _actor(actor)
+    if label is not None:
+        if not isinstance(label, str) or not 1 <= len(label.strip()) <= 80:
+            raise ValueError("Release names must contain 1 to 80 characters.")
+        label = label.strip()
     artifacts = Path(artifacts)
     documents = source_files(documents)
     if not artifacts.is_dir() or artifacts.is_symlink() or not documents:
@@ -168,7 +172,7 @@ def create_release(store, agent_id, artifacts, documents, *, actor="local"):
             "passages": corpus.passages, "documents": corpus.documents, "warnings": corpus.warnings,
         })
         metadata = {
-            "id": version, "agent_id": agent, "created": _time(), "created_by": actor,
+            "id": version, "agent_id": agent, "created": _time(), "created_by": actor, "label": label,
             "sources": fingerprints(staged_documents), "artifacts": _artifact_fingerprints(staged_artifacts),
             **_export_metadata(staged_artifacts, definition),
         }

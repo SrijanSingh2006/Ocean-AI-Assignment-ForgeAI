@@ -14,7 +14,7 @@ from . import deployment, feedback, versioning, web
 from .confidence import calibration_report
 from .conflict_detector import document_conflicts
 from .embeddings import configured_embeddings
-from .factory import Agent, read_json, write_json
+from .factory import Agent, judge, read_json, write_json
 from .flight_recorder import list_traces, read_trace as read_trace_file, redact, trace_path, trace_retention
 from .impact import analyze_impact
 from .model import LocalModel
@@ -50,6 +50,7 @@ class ImpactRequest(BaseModel):
 
 class ReleaseRequest(BaseModel):
     source_run_id: str | None = None
+    label: str | None = Field(default=None, min_length=1, max_length=80)
 
 
 class ModelComparison(BaseModel):
@@ -189,6 +190,17 @@ def resolve(run_id: str, conflict_id: str, review: ConflictResolution, request: 
         state["selections"][conflict_id] = review.passage_id
         state["history"].append({"conflict_id": conflict_id, "previous": previous, "passage_id": review.passage_id,
                                  "reason": redact(review.reason), "actor": request.state.principal.name, "at": web.now()})
+        _, active, _, _ = runtime(request, run_id, use_model=False)
+        claim = next(item for item in conflict["claims"] if item["passage_id"] == review.passage_id)
+        case = {
+            "id": f"C-{conflict_id}", "category": "conflict_resolution",
+            "question": f"What does the policy say about {conflict['topic']}?", "expected_status": "answered",
+            "expected_grounding": [{"document": claim["document"], "passage_id": claim["passage_id"],
+                                    "key_facts": [claim["statement"]]}],
+        }
+        checker = Agent(active.definition, active.corpus, permit_network=False, resolutions=state["selections"])
+        result = judge(case, checker.answer(case["question"]), active.corpus)
+        state.setdefault("regression_cases", {})[conflict_id] = {"case": case, "verified": result["passed"]}
         return save_result(request, run_id, "conflict-resolutions.json", state)
 
 
@@ -346,7 +358,8 @@ def create_release(run_id: str, payload: ReleaseRequest, request: Request):
     try:
         with snapshot_artifacts(request, source_id, artifacts, version) as snapshot:
             return versioning.create_release(feature_folder(request, run_id), run_id, snapshot, documents,
-                                             actor=request.state.principal.name)
+                                             actor=request.state.principal.name,
+                                             label=redact(payload.label) if payload.label is not None else None)
     except (ValueError, LookupError) as exc:
         raise operation_error(exc) from exc
 
