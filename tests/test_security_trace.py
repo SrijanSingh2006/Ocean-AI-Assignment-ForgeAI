@@ -1,11 +1,13 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import json
+import os
+import time
 import unittest
 
 from forgeai.corpus import Corpus
 from forgeai.factory import Agent, generate_definition, ingest_requirements
-from forgeai.flight_recorder import FlightRecorder, list_traces, store_trace
+from forgeai.flight_recorder import FlightRecorder, list_traces, read_trace, store_trace, trace_path
 from forgeai.model import LocalModel
 from forgeai.security import conformance_scorecard, scan_corpus
 
@@ -45,3 +47,16 @@ class SecurityTraceTests(unittest.TestCase):
             self.assertIn("[redacted email]", serial)
             self.assertIn("retrieval", serial)
             self.assertNotIn("system_prompt", serial)
+
+    def test_trace_retention_applies_to_reads_and_compact_credentials_are_redacted(self):
+        with TemporaryDirectory() as folder:
+            recorder = FlightRecorder("I entered token=sample-value-for-testing")
+            record = recorder.finish(Agent.reply("refused", "Restricted request."))
+            self.assertNotIn("sample-value-for-testing", record["question"])
+            store_trace(folder, record)
+            path = trace_path(folder, recorder.id)
+            expired = time.time() - 2 * 24 * 3600
+            os.utime(path, (expired, expired))
+            self.assertEqual(list_traces(folder, retention_days=1), [])
+            with self.assertRaises(FileNotFoundError):
+                read_trace(folder, recorder.id, retention_days=1)

@@ -2,6 +2,7 @@
 
 from datetime import datetime, timedelta, timezone
 import json
+import os
 from pathlib import Path
 import re
 import time
@@ -12,7 +13,7 @@ PII = (
     ("email", re.compile(r"\b[\w.%+-]+@[\w.-]+\.[a-z]{2,}\b", re.I)),
     ("national_id", re.compile(r"\b\d{3}-\d{2}-\d{4}\b")),
     ("phone", re.compile(r"(?<!\w)(?:\+\d{1,3}[ .-]?)?(?:\(\d{3}\)|\d{3})[ .-]\d{3}[ .-]\d{4}(?!\w)")),
-    ("credential", re.compile(r"\b(?:bearer\s+|(?:password|api[-_ ]?key|token)\s*[:=]\s+)[A-Za-z0-9_.+/=-]{6,}", re.I)),
+    ("credential", re.compile(r"\b(?:bearer\s+|(?:password|api[-_ ]?key|token)\s*[:=]\s*)[A-Za-z0-9_.+/=-]{6,}", re.I)),
 )
 
 
@@ -63,10 +64,28 @@ def trace_path(folder, identifier):
     return Path(folder) / f"{identifier}.json"
 
 
+def trace_retention():
+    days = int(os.getenv("FORGE_TRACE_RETENTION_DAYS", "30"))
+    if not 1 <= days <= 365:
+        raise ValueError("Invalid trace retention window.")
+    return days
+
+
+def cutoff_time(retention_days):
+    return time.time() - timedelta(days=retention_days).total_seconds()
+
+
+def read_trace(folder, identifier, retention_days=30):
+    path = trace_path(folder, identifier)
+    if path.stat().st_mtime < cutoff_time(retention_days):
+        raise FileNotFoundError(path)
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def store_trace(folder, record, retention_days=30):
     folder = Path(folder)
     folder.mkdir(parents=True, exist_ok=True)
-    cutoff = time.time() - timedelta(days=retention_days).total_seconds()
+    cutoff = cutoff_time(retention_days)
     for path in folder.glob("*.json"):
         try:
             if path.stat().st_mtime < cutoff:
@@ -79,9 +98,23 @@ def store_trace(folder, record, retention_days=30):
     temporary.replace(target)
 
 
-def list_traces(folder, limit=100):
-    paths = sorted(Path(folder).glob("*.json"), key=lambda item: item.stat().st_mtime, reverse=True)
-    return [
-        {key: record[key] for key in ("id", "at", "actor", "question", "status")}
-        for path in paths[:limit] if (record := json.loads(path.read_text(encoding="utf-8")))
-    ]
+def list_traces(folder, limit=100, retention_days=30):
+    cutoff = cutoff_time(retention_days)
+    dated = []
+    for path in Path(folder).glob("*.json"):
+        try:
+            modified = path.stat().st_mtime
+        except FileNotFoundError:
+            continue
+        if modified >= cutoff:
+            dated.append((modified, path))
+    rows = []
+    for _, path in sorted(dated, reverse=True):
+        try:
+            record = json.loads(path.read_text(encoding="utf-8"))
+        except FileNotFoundError:
+            continue
+        rows.append({key: record[key] for key in ("id", "at", "actor", "question", "status")})
+        if len(rows) >= limit:
+            break
+    return rows

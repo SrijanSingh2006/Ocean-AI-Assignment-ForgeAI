@@ -22,7 +22,7 @@ from .factory import Agent, read_json, run_factory, write_json
 from .model import LocalModel, ROOT
 from .registry import REGISTRY
 from . import feedback, ocr, privacy
-from .flight_recorder import FlightRecorder, store_trace
+from .flight_recorder import FlightRecorder, store_trace, trace_retention
 
 app = FastAPI(title="ForgeAI", description="Local agent factory and evidence workspace")
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
@@ -463,10 +463,7 @@ def chat(message: Message, request: Request):
     record = recorder.finish(response)
     record["agent_version"] = version
     try:
-        retention = int(os.getenv("FORGE_TRACE_RETENTION_DAYS", "30"))
-        if not 1 <= retention <= 365:
-            raise ValueError("Invalid trace retention window.")
-        store_trace(enterprise_api.feature_folder(request, message.run_id) / "traces", record, retention)
+        store_trace(enterprise_api.feature_folder(request, message.run_id) / "traces", record, trace_retention())
     except (OSError, ValueError):
         return {**response, "trace_status": "unavailable"}
     return {**response, "trace_id": record["id"], "agent_version": version}

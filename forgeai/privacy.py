@@ -75,7 +75,8 @@ def users():
 
 
 def user_principal(name, row):
-    if not ID.fullmatch(name) or not ID.fullmatch(row["workspace"]) or row["role"] not in ROLES:
+    identifiers = (name, row["workspace"])
+    if any(not ID.fullmatch(value) or value in {".", ".."} for value in identifiers) or row["role"] not in ROLES:
         raise ValueError("Invalid user, workspace, or role in authorization configuration.")
     agents = row.get("agents")
     documents = row.get("documents")

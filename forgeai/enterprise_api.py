@@ -15,7 +15,7 @@ from .confidence import calibration_report
 from .conflict_detector import numeric_conflicts
 from .embeddings import configured_embeddings
 from .factory import Agent, read_json, write_json
-from .flight_recorder import list_traces, redact, trace_path
+from .flight_recorder import list_traces, read_trace as read_trace_file, redact, trace_path, trace_retention
 from .impact import analyze_impact
 from .model import LocalModel
 from .model_tournament import compare_languages, compare_models, configured_profiles
@@ -194,12 +194,16 @@ def resolve(run_id: str, conflict_id: str, review: ConflictResolution, request: 
 
 @router.get("/runs/{run_id}/traces")
 def traces(run_id: str, request: Request):
-    return list_traces(feature_folder(request, run_id) / "traces")
+    try:
+        retention_days = trace_retention()
+    except ValueError as exc:
+        raise HTTPException(503, "Trace retention settings are invalid.") from exc
+    return list_traces(feature_folder(request, run_id) / "traces", retention_days=retention_days)
 
 
 def read_trace(request, run_id, trace_id):
     try:
-        return read_json(trace_path(feature_folder(request, run_id) / "traces", trace_id))
+        return read_trace_file(feature_folder(request, run_id) / "traces", trace_id, trace_retention())
     except (ValueError, FileNotFoundError) as exc:
         raise HTTPException(404, "Trace not found") from exc
 
