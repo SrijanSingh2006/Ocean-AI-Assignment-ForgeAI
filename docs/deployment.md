@@ -4,6 +4,8 @@
 
 The public reviewer profile serves the four bundled fictional runs, their evaluation reports, live cited chat and agent ZIPs. The owner profile adds authenticated uploads, agent builds, requirements review, feedback and release management. A single Docker service serves both its static frontend and FastAPI endpoints from the same origin.
 
+The reviewer service is deployed on Render's free plan. It opens without sign-in. The first request after inactivity can take longer while the service starts. [Live reviewer app](https://forgeai-reviewer.onrender.com/)
+
 ## Docker
 
 Build the same image used by the Render Blueprint. Run reviewer mode against the published fictional corpus.

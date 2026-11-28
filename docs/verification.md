@@ -33,6 +33,7 @@ The checks below document measured behavior for the application and its fictiona
 | English PDF upload | Eight questions passed across two policies and four forms of input. Responses retained the same source PDF page. |
 | Browser | Validated build and review screens, light and dark themes, mobile navigation, blind evaluation, chat and original citations, feedback, trace viewing, and export. |
 | Docker | Verified sample access, the platform port, protected owner builds, ZIP export, and workspace persistence across restart. |
+| Public Render service | Verified four sample runs without sign-in, original citations for the English, Hindi and Tamil annual-leave replies, CSV lookup, download integrity, restricted writes, and the language report filter in Chromium. [Live reviewer app](https://forgeai-reviewer.onrender.com/) |
 | Runtime tools | Exercised CSV lookup, arithmetic, the host date, and Open-Meteo weather with network enabled. |
 
 [Unseen-corpus evidence](evidence/unseen-audit.json) · [Multilingual results](../demos/people-ops/artifacts/multilingual_results.json) · [Chart fixture](evidence/Regional%20Shipments.pdf) · [Chart results](evidence/figures-live.json) · [Model comparison evidence](evidence/model-live.json) · [UI screenshots](screenshots/)

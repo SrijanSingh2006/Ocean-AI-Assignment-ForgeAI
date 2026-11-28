@@ -2,7 +2,7 @@
 
 ForgeAI turns a short brief and a document collection into a runnable, tested question-answering agent. It identifies what the sources can support, builds an agent definition, generates evidence-based evaluations, and applies targeted repairs. Each build preserves the definition, test cases, scorecards, source citations, and unresolved gaps.
 
-[Sample documents and test questions](demos/SAMPLE_GUIDE.md) · [Verification and evidence](docs/verification.md) · [Docker and Render deployment](docs/deployment.md) · [Recorded walkthrough](https://raw.githubusercontent.com/SrijanSingh2006/Ocean-AI-Assignment-ForgeAI/5c3e9954980dc7294620d44df8ec7b36b08bb196/ForgeAI-Studio-Demo.mp4)
+[Live reviewer app](https://forgeai-reviewer.onrender.com/) · [Sample documents and test questions](demos/SAMPLE_GUIDE.md) · [Verification and evidence](docs/verification.md) · [Docker and Render deployment](docs/deployment.md) · [Recorded walkthrough](https://raw.githubusercontent.com/SrijanSingh2006/Ocean-AI-Assignment-ForgeAI/5c3e9954980dc7294620d44df8ec7b36b08bb196/ForgeAI-Studio-Demo.mp4)
 
 ![ForgeAI Studio factory in dark mode](docs/screenshots/factory-dark.jpg)
 
