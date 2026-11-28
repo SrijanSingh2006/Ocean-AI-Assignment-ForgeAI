@@ -8,7 +8,7 @@ ForgeAI turns a short brief and a document collection into a runnable, tested qu
 
 ## Review the live app
 
-The Render link opens the public reviewer app without sign-in. Select **Open run** on any of the four samples to inspect its evaluation, then use **Open chat** to ask a question and expand its original citation. **Export agent** downloads the selected agent and its sources.
+The Render link opens the reviewer dashboard without sign-in. Its totals and scores come from the recorded evaluations of the four sample agents. Select **Open run** to inspect a sample, then use **Open chat** to ask a question and expand its original citation. **Export agent** downloads the selected agent and its sources. **Run history** lists the runs separately.
 
 For uploads, new builds, approvals and release management, run Studio locally or use an authenticated owner deployment. Model-assisted builds and broader translation coverage use configured model endpoints. Live weather requires a network-enabled workspace. [Deployment profiles](docs/deployment.md)
 
@@ -228,7 +228,7 @@ The suite covers the factory, citations, OCR, feedback, releases, downloads and 
 | --- | --- |
 | ![Studio build form in light mode](docs/screenshots/factory-light.jpg) | ![Tamil answer and English PDF evidence](docs/screenshots/reviewer-tamil-chat.jpg) |
 
-[Reviewer home](docs/screenshots/reviewer-home.jpg) · [Language evaluation](docs/screenshots/reviewer-language-evaluation.jpg) · [Blind evaluation](docs/screenshots/blind-results.jpg) · [Execution trace](docs/screenshots/execution-trace.jpg) · [Desktop dashboard](docs/screenshots/dashboard.jpg) · [Mobile dashboard](docs/screenshots/dashboard-mobile.jpg)
+[Reviewer dashboard](docs/screenshots/reviewer-home.jpg) · [Language evaluation](docs/screenshots/reviewer-language-evaluation.jpg) · [Blind evaluation](docs/screenshots/blind-results.jpg) · [Execution trace](docs/screenshots/execution-trace.jpg) · [Desktop dashboard](docs/screenshots/dashboard.jpg) · [Mobile dashboard](docs/screenshots/dashboard-mobile.jpg)
 
 ## Repository layout
 

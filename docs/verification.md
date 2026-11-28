@@ -27,7 +27,7 @@ The checks below document measured behavior for the application and its fictiona
 
 | Check | Result |
 | --- | --- |
-| Python regression and integration tests | 40 passed. Includes auth boundaries, grounded judging, OCR, feedback, releases and snapshot integrity. |
+| Python regression and integration tests | 41 passed. Includes reviewer metrics, auth boundaries, grounded judging, OCR, feedback, releases and snapshot integrity. |
 | Unseen corpus | A fresh aquarium document collection passed 24/24 development and 8/8 holdout cases. Qwen completed 14 calls. |
 | Multilingual reviewer replay | With NLLB and E5 configured, 19 cases passed across English, Hindi, Tamil, Romanized questions and script-English mixes. |
 | English PDF upload | Eight questions passed across two policies and four forms of input. Responses retained the same source PDF page. |

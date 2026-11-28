@@ -213,8 +213,8 @@ function buildScreen() {
   </div>`;
 }
 
-function historyScreen() {
-  const rows = state.runs.map((item) => `<div class="history-row">
+function runHistoryRows(runs) {
+  return runs.map((item) => `<div class="history-row">
     <div><strong>${esc(item.name)}</strong><small>${item.demo ? "Recorded demonstration" : esc(new Date(item.created).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }))}</small></div>
     <div class="history-meta">
       ${badge(titleFor(item.status), item.status === "complete" ? "good" : item.status === "failed" ? "bad" : "warn")}
@@ -222,6 +222,10 @@ function historyScreen() {
     </div>
     <a class="btn small" href="#run/${esc(item.id)}">${icon("file")} Open run</a>
   </div>`).join("");
+}
+
+function historyScreen() {
+  const rows = runHistoryRows(state.runs);
   return `<div class="screen"><div class="page-heading"><div><h1>${state.session?.review_demo ? "Recruiter demo" : "Run history"}</h1><p>${state.session?.review_demo ? "Explore fictional sample agents, read their evaluations, and try live cited answers." : "Open a recorded build, inspect its evidence, or test its agent."}</p></div>
     ${isAdmin() ? `<a class="btn primary" href="#build">${icon("sparkles")} New build</a>` : ""}</div>
     <section class="card sheet">${section("history", "Builds")}${rows || `<div class="empty"><p>Build an agent to see its run here.</p></div>`}</section></div>`;
@@ -529,7 +533,7 @@ function route() {
   cancelPoll();
   const [view, id = ""] = window.location.hash.slice(1).split("/");
   const available = visibleNav().map(([key]) => key);
-  const fallback = state.session?.review_demo ? "history" : isAdmin() ? "build" : isStaff() ? "dashboard" : "chat";
+  const fallback = isAdmin() ? "build" : isStaff() ? "dashboard" : "chat";
   const permitted = available.includes(view) || (isStaff() && view === "run" && id);
   state.location = !state.session?.authenticated ? "login" : permitted ? view : fallback;
   if (state.location === "dashboard") engineering.loadDashboard();

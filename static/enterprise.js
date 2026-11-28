@@ -67,21 +67,31 @@ const engineering = (() => {
     const d = dashboardData;
     if (dashboardError) return `<section class="card sheet info bad" role="alert">${esc(dashboardError)}</section>`;
     if (!d) return '<div class="card sheet"><span class="spinner" aria-hidden="true"></span> Loading workspace metrics</div>';
+    const reviewer = state.session?.review_demo;
     const values = [
-      ["Generated agents", d.generated_agents], ["Evaluation cases", d.evaluation_cases],
-      ["Average score", d.average_score === null ? "—" : `${d.average_score}%`],
-      ["Grounded responses", d.grounding_rate === null ? "—" : `${Math.round(d.grounding_rate * 100)}%`],
+      [reviewer ? "Sample agents" : "Generated agents", d.generated_agents], ["Evaluation cases", d.evaluation_cases],
+      [reviewer ? "Average sample score" : "Average score", d.average_score === null ? "—" : `${d.average_score}%`],
+      [reviewer ? "Grounding checks passed" : "Grounded responses", d.grounding_rate === null ? "—" : `${Math.round(d.grounding_rate * 100)}%`],
+    ];
+    if (!reviewer) values.push(
       ["Security checks", d.security_checks], ["Regression failures", d.regression_failures],
       ["Pending approvals", d.pending_approvals], ["Pending feedback", d.pending_feedback],
-    ];
-    return `<div class="screen"><div class="page-heading"><div><h1>Workspace overview</h1>
-      <p>Metrics from your builds. ${d.recorded_samples} recorded samples are listed separately.</p></div>
+    );
+    const summary = reviewer
+      ? `Scores from the recorded evaluations of ${d.recorded_samples} bundled sample agents.`
+      : `Metrics from your builds. ${d.recorded_samples} recorded samples are listed separately.`;
+    const reports = reviewer
+      ? `<section class="card sheet">${section("history", "Sample runs")}
+        ${runHistoryRows(d.recent) || empty("Sample runs are unavailable.")}</section>`
+      : `<section class="card sheet">${section("history", "Recent builds")}
+        ${d.recent.length ? table(d.recent.map((row) => `<a href="#run/${esc(row.id)}">${esc(row.name)}</a> · ${esc(titleFor(row.status))}`)) : empty("Workspace builds will appear here.")}</section>
+        <section class="card sheet">${section("target", "Recent evaluation failures")}
+        ${d.recent_failures.length ? table(d.recent_failures.map((row) => `${esc(row.case)} · ${esc(row.failure)}`)) : empty("No failed evaluation cases in the recorded workspace builds.")}</section>`;
+    return `<div class="screen"><div class="page-heading"><div><h1>${reviewer ? "Reviewer dashboard" : "Workspace overview"}</h1>
+      <p>${esc(summary)}</p></div>
       ${canEdit() ? '<a class="btn primary" href="#build">New agent</a>' : ""}</div>
       <div class="panel-grid">${values.map(([label, value]) => `<div class="card metric"><small>${label}</small><strong>${esc(value)}</strong></div>`).join("")}</div>
-      <section class="card sheet">${section("history", "Recent builds")}
-      ${d.recent.length ? table(d.recent.map((row) => `<a href="#run/${esc(row.id)}">${esc(row.name)}</a> · ${esc(titleFor(row.status))}`)) : empty("Workspace builds will appear here.")}</section>
-      <section class="card sheet">${section("target", "Recent evaluation failures")}
-      ${d.recent_failures.length ? table(d.recent_failures.map((row) => `${esc(row.case)} · ${esc(row.failure)}`)) : empty("No failed evaluation cases in the recorded workspace builds.")}</section></div>`;
+      ${reports}</div>`;
   }
 
   async function loadDashboard() {

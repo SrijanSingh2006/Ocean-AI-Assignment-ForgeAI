@@ -46,6 +46,21 @@ class AccessTests(unittest.TestCase):
 
 
 class ReviewerDemoTests(unittest.TestCase):
+    def test_dashboard_uses_recorded_sample_evaluations(self):
+        with patch.object(web, "REVIEW_DEMO", True), TestClient(web.app) as client:
+            samples = client.get("/api/runs").json()
+            runs = [client.get(f"/api/runs/{sample['id']}").json()["result"] for sample in samples]
+            cases = [case for run in runs for case in run["results"]]
+            response = client.get("/api/dashboard")
+            self.assertEqual(response.status_code, 200)
+            dashboard = response.json()
+            self.assertEqual(dashboard["recent"], samples)
+            self.assertEqual(dashboard["generated_agents"], len(runs))
+            self.assertEqual(dashboard["evaluation_cases"], len(cases))
+            self.assertGreater(dashboard["evaluation_cases"], 0)
+            self.assertEqual(dashboard["average_score"], round(sum(run["scorecard"]["score"] for run in runs) / len(runs), 1))
+            self.assertEqual(dashboard["grounding_rate"], round(sum(case["checks"]["grounded"] for case in cases) / len(cases), 3))
+
     def test_public_sample_access_is_read_only_and_does_not_store_questions(self):
         with TemporaryDirectory() as folder, patch.object(web, "REVIEW_DEMO", True), patch.object(web, "RUNS", Path(folder)):
             with TestClient(web.app) as client:

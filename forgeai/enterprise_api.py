@@ -147,13 +147,15 @@ def operation_error(exc):
 @router.get("/dashboard")
 def dashboard(request: Request):
     runs = web.runs(request)
-    completed_runs = [row for row in runs if not row["demo"] and row["status"] == "complete"]
+    dashboard_runs = [row for row in runs if row["demo"] == web.REVIEW_DEMO]
+    completed_runs = [row for row in dashboard_runs if row["status"] == "complete"]
     details = [read_json(web.completed(row["id"])[0] / "run.json") for row in completed_runs]
     results = [case for result in details for case in result["results"]]
     security = [result["security"] for result in details if result.get("security")]
     pending = []
-    for row in completed_runs:
-        pending.extend(feedback.list_feedback(feature_folder(request, row["id"]), run_id=row["id"], state="pending"))
+    if not web.REVIEW_DEMO:
+        for row in completed_runs:
+            pending.extend(feedback.list_feedback(feature_folder(request, row["id"]), run_id=row["id"], state="pending"))
     return {
         "generated_agents": len(completed_runs), "recorded_samples": sum(row["demo"] for row in runs),
         "evaluation_cases": len(results),
@@ -162,7 +164,7 @@ def dashboard(request: Request):
         "security_checks": sum(row["total"] for row in security),
         "regression_failures": sum(len(r.get("regression", {}).get("changes", {}).get("lost", [])) for r in details),
         "pending_approvals": sum(r["status"] == "approval" for r in runs), "pending_feedback": len(pending),
-        "recent": [row for row in runs if not row["demo"]][:10],
+        "recent": dashboard_runs[:10],
         "recent_failures": [{"case": row["id"], "failure": row["failure"]} for row in results if not row["passed"]][:10],
     }
 
