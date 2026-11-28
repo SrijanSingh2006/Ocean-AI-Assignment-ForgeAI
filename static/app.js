@@ -84,6 +84,14 @@ const isStaff = () => isAdmin() || state.session?.role === "reviewer";
 const visibleNav = () => navItems.filter(([key]) =>
   (key === "build" ? isAdmin() : ["dashboard", "history"].includes(key) ? isStaff() : state.session?.authenticated));
 
+function runtimeStatus() {
+  if (state.session?.authenticated === false) return ["Workspace", "Sign in to continue", false];
+  if (state.workspace.model_online === undefined) return ["Workspace", "Checking connection…", false];
+  if (state.session?.review_demo) return ["Reviewer demo", "Cited sample answers", true];
+  if (state.workspace.model_online) return ["Model connected", state.workspace.model, true];
+  return ["Document mode", "Model service unavailable", false];
+}
+
 function refreshNav() {
   const active = state.location === "run" ? "history" : state.location;
   const nav = $("nav");
@@ -95,9 +103,10 @@ function refreshNav() {
   }
   $("page-name").textContent = state.location === "run" ? "Run report" : navItems.find(([key]) => key === active)?.[2] || "Sign in";
   $("sign-out").hidden = !state.session?.required || !state.session.authenticated;
-  $("runtime-title").textContent = state.workspace.model_online ? "Local model online" : "Offline runtime";
-  $("runtime-subtitle").textContent = state.workspace.model_online ? state.workspace.model : "Deterministic fallback";
-  $("runtime-dot").classList.toggle("online", !!state.workspace.model_online);
+  const [runtimeTitle, runtimeSubtitle, runtimeActive] = runtimeStatus();
+  $("runtime-title").textContent = runtimeTitle;
+  $("runtime-subtitle").textContent = runtimeSubtitle;
+  $("runtime-dot").classList.toggle("online", runtimeActive);
 }
 
 function pipeline(run) {
