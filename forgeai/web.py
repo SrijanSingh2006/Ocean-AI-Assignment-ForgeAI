@@ -21,7 +21,7 @@ from .corpus import MAX_FILES, MAX_FILE_BYTES, SUPPORTED, Corpus
 from .embeddings import configured_embeddings
 from .factory import Agent, read_json, run_factory, write_json
 from .model import LocalModel, ROOT
-from .registry import REGISTRY
+from .registry import REGISTRY, WEATHER_NETWORK_REQUIRED
 from . import feedback, ocr, privacy, reviewer
 from .flight_recorder import FlightRecorder, store_trace, trace_retention
 
@@ -322,8 +322,11 @@ def workspace():
         demos.append({"id": key, **info, "brief": (root / "brief.txt").read_text().strip(),
                       "files": sorted(p.name for p in (root / "documents").iterdir()),
                       "recorded": (root / "artifacts" / "run.json").exists()})
+    tools = REGISTRY
+    if REVIEW_DEMO:
+        tools = {**REGISTRY, "weather": {**REGISTRY["weather"], "description": WEATHER_NETWORK_REQUIRED, "example": None}}
     return {"model_online": LocalModel().probe(), "model": LocalModel().name,
-            "demos": demos, "tools": REGISTRY, "max_files": MAX_FILES, "max_file_bytes": MAX_FILE_BYTES,
+            "demos": demos, "tools": tools, "max_files": MAX_FILES, "max_file_bytes": MAX_FILE_BYTES,
             "ocr_enabled": ocr.enabled() and ocr.available()}
 
 

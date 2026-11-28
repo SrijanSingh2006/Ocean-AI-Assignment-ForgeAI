@@ -231,7 +231,8 @@ function toolsScreen() {
   const toolIcons = { csv_lookup: "clipboard", calculator: "terminal", current_date: "history", weather: "chart" };
   return `<div class="screen"><div class="page-heading"><div><h1>Tool registry</h1><p>The factory attaches only tools supported by the brief and its sources.</p></div></div>
     <div class="tools-grid">${Object.entries(state.workspace.tools).map(([key, tool]) =>
-      `<article class="card tool-card">${section(toolIcons[key], tool.name, tool.description)}<code>${esc(tool.example)}</code></article>`).join("")}</div></div>`;
+      `<article class="card tool-card">${section(toolIcons[key], tool.name, tool.description)}
+        ${tool.example ? `<code>${esc(tool.example)}</code>` : ""}</article>`).join("")}</div></div>`;
 }
 
 function scoreRows(cards) {

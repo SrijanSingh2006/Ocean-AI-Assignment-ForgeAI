@@ -6,6 +6,12 @@ ForgeAI turns a short brief and a document collection into a runnable, tested qu
 
 ![ForgeAI Studio factory in dark mode](docs/screenshots/factory-dark.jpg)
 
+## Review the live app
+
+The Render link opens the public reviewer app without sign-in. Select **Open run** on any of the four samples to inspect its evaluation, then use **Open chat** to ask a question and expand its original citation. **Export agent** downloads the selected agent and its sources.
+
+For uploads, new builds, approvals and release management, run Studio locally or use an authenticated owner deployment. Model-assisted builds and broader translation coverage use configured model endpoints. Live weather requires a network-enabled workspace. [Deployment profiles](docs/deployment.md)
+
 ## Problem and approach
 
 Teams often have handbooks, catalogs, or operating procedures and need an assistant that stays within those sources. Building one requires deciding which questions are answerable, attaching the right tools, validating citations, and checking whether changes make the answers better.
@@ -17,7 +23,7 @@ ForgeAI automates that workflow. A brief defines the goal, audience, scope, tone
 Use Git and Python 3.10 or newer. The launcher creates a local virtual environment, installs dependencies, and starts Studio on loopback. Follow the address it prints, normally `http://127.0.0.1:8000`.
 
 ~~~sh
-git clone --branch enterprise/incremental-upgrade https://github.com/SrijanSingh2006/Ocean-AI-Assignment-ForgeAI.git
+git clone https://github.com/SrijanSingh2006/Ocean-AI-Assignment-ForgeAI.git
 cd Ocean-AI-Assignment-ForgeAI
 python launch.py
 ~~~

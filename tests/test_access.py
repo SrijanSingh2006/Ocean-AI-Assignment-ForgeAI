@@ -62,4 +62,13 @@ class ReviewerDemoTests(unittest.TestCase):
                 self.assertNotIn("trace_id", answer)
                 result = client.post("/api/chat", json={"run_id": "123456abcdef", "question": "Annual leave?"})
                 self.assertEqual(result.status_code, 404)
+                weather = client.get("/api/workspace").json()["tools"]["weather"]
+                self.assertIsNone(weather["example"])
+                with patch("forgeai.registry.urlopen") as weather_provider:
+                    response = client.post("/api/chat", json={
+                        "run_id": "operations-lab", "question": "Weather at 18.94, 72.83",
+                    }).json()
+                    weather_provider.assert_not_called()
+                self.assertEqual(response["status"], "error")
+                self.assertEqual(response["answer"], weather["description"])
                 self.assertFalse(list(Path(folder).iterdir()))

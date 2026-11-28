@@ -11,6 +11,8 @@ from urllib.request import urlopen
 
 from .corpus import terms
 
+WEATHER_NETWORK_REQUIRED = "Live weather requires a network-enabled workspace."
+
 REGISTRY = {
     "csv_lookup": {"name": "CSV lookup", "description": "Find matching rows in uploaded CSV tables.", "example": "Look up AF-310"},
     "calculator": {"name": "Calculator", "description": "Evaluate arithmetic expressions locally.", "example": "Calculate 12 * 4.5"},
@@ -77,7 +79,7 @@ def dispatch(question, enabled, index, permit_network=True, accepted_ids=None):
         if not (-90 <= lat <= 90 and -180 <= lon <= 180):
             return "weather", "Latitude must be in ±90° and longitude in ±180°.", [], "clarify"
         if not permit_network:
-            return "weather", "The weather request was omitted during offline evaluation.", [], "error"
+            return "weather", WEATHER_NETWORK_REQUIRED, [], "error"
         params = urlencode({"latitude": lat, "longitude": lon, "current": "temperature_2m,wind_speed_10m", "timezone": "auto"})
         try:
             with urlopen("https://api.open-meteo.com/v1/forecast?" + params, timeout=6) as response:
