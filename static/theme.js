@@ -8,7 +8,7 @@
     const saved = localStorage.getItem(storageKey);
     if (choices.includes(saved)) preference = saved;
   } catch {
-    // Theme changes also work when browser storage is unavailable.
+    // Storage may be blocked by browser settings.
   }
 
   function currentTheme() {
@@ -41,9 +41,7 @@
     preference = next;
     try {
       localStorage.setItem(storageKey, preference);
-    } catch {
-      // The current tab still uses the selected theme.
-    }
+    } catch {}
     applyTheme();
   });
 })();

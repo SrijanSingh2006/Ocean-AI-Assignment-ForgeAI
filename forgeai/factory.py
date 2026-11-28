@@ -346,7 +346,6 @@ class Agent:
                 valid = [hit for hit in valid if hit[1] >= 0.65 or len(set(terms(part)) & set(terms(hit[2]["heading"]))) >= 2]
             strategy = "BM25"
             if not valid and self.embeddings:
-                # A dense match needs a strong, distinct leader to stand in for lexical evidence.
                 dense_queries = (semantic_query, part) if semantic_query and len(queries) == 1 else (part,)
                 for dense_query in dict.fromkeys(dense_queries):
                     semantic = strong_semantic_match(self.embeddings, dense_query, self.corpus, self.eligible_ids)

@@ -1,8 +1,8 @@
 # Deploy ForgeAI Studio
 
-## Live deployments
+## Deployment profiles
 
-The public app offers fictional sample runs, evaluation reports, multilingual chat and agent exports. It opens without sign-in. The signed-in owner Studio provides new builds, uploads, reviews, feedback and version management. Both Sites deployments use long-running FastAPI services with an authenticated queue connector. [Public reviewer](https://forgeai-reviewer-demo.blondebiscuit2.chatgpt.site/) · [Owner Studio](https://forgeai-studio-project.blondebiscuit2.chatgpt.site/#build) · [Sites architecture and setup](../hosting/README.md)
+The public reviewer profile serves the four bundled fictional runs, their evaluation reports, live cited chat and agent ZIPs. The owner profile adds authenticated uploads, agent builds, requirements review, feedback and release management. A single Docker service serves both its static frontend and FastAPI endpoints from the same origin.
 
 ## Docker
 
@@ -35,7 +35,7 @@ The mounted files must be readable by the container user. The image requires aut
 2. Select `enterprise/incremental-upgrade` and apply `render.yaml`. Wait for the service to become healthy.
 3. Open the assigned HTTPS URL in a fresh browser. Open People Operations, try cited chat, download an agent, and check that only the published runs are visible.
 
-Render's free web services can sleep after inactivity and use ephemeral storage. The base image has the deterministic core and the sample localizations. The hosted Sites reviewer has configured NLLB and E5 for wider multilingual coverage. To provision a Render owner instance, use a separate Docker service with the authentication secret, a persistent disk mounted at `/data`, and enough resources for the chosen model providers. Managed multi-instance session storage and PostgreSQL require application changes. [Render Blueprint reference](https://render.com/docs/blueprint-spec) · [Render free tier](https://render.com/docs/free)
+Render's free web services can sleep after inactivity and use ephemeral storage. The base image runs deterministic retrieval and includes aligned translations for the bundled policy evidence. Configure translation and embedding endpoints for broader Hindi and Tamil question coverage. Recorded multilingual reports remain visible in either profile. To provision a Render owner instance, use a separate Docker service with the authentication secret, a persistent disk mounted at `/data`, and enough resources for the chosen model providers. Managed multi-instance session storage and PostgreSQL require application changes. [Render Blueprint reference](https://render.com/docs/blueprint-spec) · [Render free tier](https://render.com/docs/free)
 
 ## Models and document tools
 

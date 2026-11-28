@@ -7,8 +7,8 @@ RUN --mount=type=bind,target=/repository,readonly \
     && useradd -u 10001 -g forge -d /app -s /usr/sbin/nologin forge \
     && mkdir /data \
     && cp -R /repository/forgeai /repository/prompts /repository/static /repository/demos /repository/docs \
-      /repository/submission /repository/scripts /repository/hosting /repository/tests /repository/pyproject.toml \
-      /repository/README.md /repository/launch.py /repository/package.json /repository/.gitignore \
+      /repository/scripts /repository/tests /repository/pyproject.toml \
+      /repository/README.md /repository/launch.py /repository/.gitignore \
       /repository/.gitattributes /repository/.env.example /repository/.dockerignore \
       /repository/Dockerfile /repository/render.yaml /app/ \
     && if [ -r /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi \

@@ -203,7 +203,6 @@ pre{padding:15px;overflow:auto;border-radius:9px;background:var(--code-bg);color
 .review-editor textarea{min-height:82px}
 .review-editor .field:last-child{margin-bottom:4px}
 
-/* Theme controls, navigation, and motion. */
 .topbar-actions {
   display: flex;
   align-items: center;
