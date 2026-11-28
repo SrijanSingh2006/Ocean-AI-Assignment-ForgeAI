@@ -11,7 +11,7 @@ from .blind_eval import stratified_holdout
 from .confidence import evidence_confidence
 from .conflict_detector import document_conflicts, resolve_conflicts
 from .corpus import Corpus, Index, clean, least_duplicate, terms
-from .embeddings import configured_embeddings
+from .embeddings import configured_embeddings, strong_semantic_match
 from .model import LatencyBudgetExceeded, LocalModel
 from .multilingual import LANGUAGES, detect_language, detection_confidence, normalize_roman_query, translate, translated_answer
 from .policy_localizations import localize_evidence
@@ -130,7 +130,7 @@ def ingest_requirements(brief, corpus, model, answers=None, edits=None):
         viable = [p for _, coverage, p in hits if coverage >= 0.55]
         basis = "document"
         if not viable and semantic:
-            viable = [p for _, _, p in semantic.search(topic, corpus, eligible, 2)]
+            viable = [p for _, _, p in strong_semantic_match(semantic, topic, corpus, eligible)]
             basis = "semantic evidence candidate"
         if not viable:
             gaps.append({"topic": topic, "reason": "The configured retrieval found no passage that supports this topic."})
@@ -349,11 +349,9 @@ class Agent:
                 # A dense match needs a strong, distinct leader to stand in for lexical evidence.
                 dense_queries = (semantic_query, part) if semantic_query and len(queries) == 1 else (part,)
                 for dense_query in dict.fromkeys(dense_queries):
-                    semantic = self.embeddings.search(dense_query, self.corpus, self.eligible_ids, 2)
-                    if semantic and semantic[0][0] >= 0.80 and (
-                        len(semantic) == 1 or semantic[0][0] - semantic[1][0] >= 0.025
-                    ):
-                        hits = valid = semantic[:1]
+                    semantic = strong_semantic_match(self.embeddings, dense_query, self.corpus, self.eligible_ids)
+                    if semantic:
+                        hits = valid = semantic
                         strategy = "multilingual_embedding"
                         break
             if recorder:
@@ -534,6 +532,8 @@ def judge(case, response, corpus):
         if c["passage_id"] in corpus.by_id
         and c["document"] == corpus.by_id[c["passage_id"]]["document"]
         and c["quote"] == corpus.by_id[c["passage_id"]]["text"]
+        and c.get("heading") == corpus.by_id[c["passage_id"]]["heading"]
+        and c.get("locator") == corpus.by_id[c["passage_id"]]["locator"]
     ]
     canonical = "\n\n".join(c["quote"] for c in verified)
     if response.get("tool") == "csv_lookup":
@@ -549,7 +549,7 @@ def judge(case, response, corpus):
                        for c in verified):
                 missing.append({"document": anchor["document"], "fact": fact})
     correct = expected == actual and not missing
-    if actual == "answered" and not grounding:
+    if not grounding:
         failure = "hallucination"
     elif expected == "refused" and actual != expected:
         failure = "wrong refusal"

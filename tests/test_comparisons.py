@@ -29,6 +29,14 @@ class ComparisonTests(unittest.TestCase):
         self.assertEqual(hits[0][2]["document"], "leave.md")
         self.assertEqual(encode.call_args.args[0][0], "Holiday")
 
+    def test_intake_keeps_weak_semantic_matches_as_a_coverage_gap(self):
+        embeddings = Mock()
+        embeddings.search.return_value = [(0.78, 0.78, self.corpus.passages[0])]
+        with patch("forgeai.factory.configured_embeddings", return_value=embeddings):
+            requirements = ingest_requirements("Cover income tax filing deadline.", self.corpus, LocalModel(False))
+        self.assertEqual([gap["topic"] for gap in requirements["groundability_gaps"]], ["income tax filing deadline"])
+        self.assertIn("income tax filing deadline", generate_definition(requirements, LocalModel(False))["denied_topics"])
+
     def test_unavailable_models_do_not_win(self):
         candidate = {"id": "unavailable", "url": "http://localhost:8760/v1", "model": "missing"}
         with patch.object(LocalModel, "probe", return_value=False):

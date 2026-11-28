@@ -10,6 +10,15 @@ The project implements the OceanAI **Agent That Builds Agents** assignment. It p
 
 The dossier records the OceanAI requirements, measured results, verified workflows and open acceptance gates. Visitors can open the public reviewer app without signing in, explore four fictional sample agents, ask cited questions, and download runnable agent ZIPs.
 
+| Start here | What you can do |
+| --- | --- |
+| [Public reviewer app](https://forgeai-reviewer-demo.blondebiscuit2.chatgpt.site/) | Open **People Operations → Language evaluation** for English, Hindi, Tamil and mixed-language results. Open **Marine Procurement → Chat** and ask `Look up AF-310` to exercise CSV retrieval. |
+| [Full Studio](https://forgeai-studio-project.blondebiscuit2.chatgpt.site/#build) | Sign in as the owner, upload documents, build a new agent, and use reviews, feedback, traces and releases. |
+| [Sample documents ZIP](https://forgeai-reviewer-demo.blondebiscuit2.chatgpt.site/sample-documents) | Download the fictional briefs and source files, including catalogue, inventory and shipment CSVs. |
+| [Final acceptance](submission/FINAL_REPORT.md) | Review the original requirements, six optional features, additional features, measured checks and open gates. |
+
+![ForgeAI agent factory showing the brief, document upload, settings and build pipeline in dark mode](docs/screenshots/factory-dark.jpg)
+
 ## Contents
 
 - [Problem and solution](#problem-and-solution)
@@ -23,6 +32,7 @@ The dossier records the OceanAI requirements, measured results, verified workflo
 - [Sample packs and measured results](#sample-packs-and-measured-results)
 - [Outputs and API](#outputs-and-api)
 - [Enterprise workflows](#enterprise-workflows)
+- [Deploy Studio](#deploy-studio)
 - [Studio screenshots](#studio-screenshots)
 - [Repository layout](#repository-layout)
 - [Verification and limitations](#verification-and-limitations)
@@ -40,7 +50,7 @@ The main design choice is to give the model bounded jobs such as drafting, propo
 Use Python **3.10 or newer** and Git. The first startup installs Python dependencies into a project-local virtual environment. With Git already available, run the following in a terminal.
 
 ```sh
-git clone https://github.com/SrijanSingh2006/Ocean-AI-Assignment-ForgeAI.git
+git clone --branch enterprise/incremental-upgrade https://github.com/SrijanSingh2006/Ocean-AI-Assignment-ForgeAI.git
 cd Ocean-AI-Assignment-ForgeAI
 python launch.py
 ```
@@ -113,19 +123,24 @@ The web server accepts uploads and schedules builds on a single background worke
 
 ### Hosted deployment
 
-The hosted Studio serves the same browser interface under owner-only access. The browser sends application requests to a Sites Worker. The Worker temporarily stages requests and responses in Cloudflare R2, an object store. An authenticated connector in the running Cloud workspace claims those requests and forwards allowlisted operations to FastAPI. The workspace runs Qwen and stores completed runs.
+The public reviewer site serves fictional sample runs. The signed-in owner site serves uploads, builds and administration. Each browser sends application requests to its Sites Worker. The Worker temporarily stages requests and responses in Cloudflare R2, an object store. An authenticated connector in the Cloud workspace claims those requests and forwards allowlisted operations to FastAPI.
 
 ```mermaid
 flowchart LR
-    B["Owner browser"] --> W["Private Sites Worker"]
-    W <-->|Temporary request and response objects| R[("Private R2 storage")]
-    C["Workspace connector"] <-->|Authenticated HTTPS polling and delivery| W
-    C <-->|Allowlisted application calls| F["FastAPI in Cloud workspace"]
-    F --> M["Local Qwen over HTTP"]
-    F --> D[("Workspace run files")]
+    B["Guest browser"] --> W["Public Sites Worker"]
+    O["Owner browser"] --> OW["Signed-in Sites Worker"]
+    W <-->|Temporary objects| R[("Reviewer R2 queue")]
+    OW <-->|Temporary objects| OR[("Owner R2 queue")]
+    R <-->|Worker and connector relay| G["Sample-only FastAPI"]
+    OR <-->|Worker and connector relay| F["Owner FastAPI"]
+    F --> M["Qwen for model-assisted builds"]
+    F --> D[("Run files and SQLite metadata")]
+    G --> S[("Fictional sample runs")]
+    F --> L["NLLB translation and multilingual E5"]
+    G --> L
 ```
 
-The upgraded private Studio has been deployed and verified through its hosted URL. The hosted verification covered the dashboard, a cited People Operations answer, its execution trace, and the standalone agent ZIP. Use the Site owner's ChatGPT session to open it. Builds and chat require the FastAPI workspace and connector to stay active. Reviewers can run the public repository with the local launcher. [Open the private Studio](https://forgeai-studio-project.blondebiscuit2.chatgpt.site/) · [Hosting source and setup](hosting/README.md)
+Both Sites deployments have been verified over HTTPS. Live requests depend on the running Python backends and connectors. The Docker image can also serve the application directly through a platform reverse proxy. [Hosting source and setup](hosting/README.md) · [Deployment guide](docs/deployment.md)
 
 ## How the factory works
 
@@ -240,11 +255,12 @@ A **tool registry** is the set of named functions the runner can invoke. The fac
 | --- | --- |
 | Frontend | HTML, CSS, and vanilla JavaScript provide the Studio screens, run polling, report tabs, chat, and persistent themes. Node.js provides the optional development wrapper and syntax checks. |
 | Server | Python 3.10+ contains the factory and runner. FastAPI implements HTTP routes. Pydantic validates structured request payloads, python-multipart reads file upload forms, and Uvicorn serves the application. |
-| Document processing | `pypdf` and `python-docx` parse office formats. Python standard-library modules handle CSV, Markdown or text splitting, normalized evidence, JSON, and ZIP exports. |
-| Search | An in-memory BM25-style index uses case-folded terms, stop-word filtering, document-frequency weights, and heading matches. |
+| Document processing | `pypdf` and `python-docx` parse PDF and DOCX. Python handles CSV, Markdown, text, JSON and ZIP. Tesseract, Poppler and Pillow support optional OCR and labeled bar-chart extraction. |
+| Search | BM25 ranks passages by term matches, term rarity and headings. Optional multilingual E5 vectors compare meaning across languages. Semantic fallback requires a strong score and a clear lead over the next candidate. |
 | Model | Qwen2.5-0.5B-Instruct is a roughly half-billion-parameter instruction model. The bundled setup uses mixed 4-bit Q4_K_M weights in GGUF, a format llama.cpp can load. llama.cpp or Ollama exposes the chat API. |
-| Storage and hosting | Local runs write file-based state, source documents, and artifacts. The optional private deployment uses a Sites Worker, temporary R2 objects, and a connector to the Cloud workspace. |
-| Validation | `unittest` covers the factory and FastAPI routes. FastAPI's test client uses `httpx` for request testing. The network-backed weather tool can be exercised manually in Warehouse Tools. |
+| Translation | NLLB-200 runs through CTranslate2 and SentencePiece. Multilingual E5 runs through ONNX Runtime and tokenizers. Compatible external endpoints can be configured. |
+| Storage and hosting | Run inputs and outputs use workspace files. SQLite stores workspace metadata. Docker packages FastAPI and the static frontend. Sites serves the live app through Workers and temporary R2 queues. |
+| Validation | `unittest` and `httpx` cover the factory and API. Chromium checks the actual UI. A separate public language replay verifies facts, refusal, answer language and exact citations. |
 
 ## CLI and configuration
 
@@ -464,13 +480,44 @@ The People Operations **Language evaluation** tab shows fact, number, response-l
 
 Conflict detection covers comparable numeric, date, and scoped policy claims. Verified labeled PDF bar charts can answer maximum, minimum and trend questions from the extracted figure. Other chart types and complex document layout remain open. Security testing covers the fixed conformance suite and static source scanning. Confidence scores express heuristic evidence quality, with calibration results reported separately on user-supplied labeled data.
 
+### Multilingual answer flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Agent as Shared agent runtime
+    participant Search as BM25 and multilingual E5
+    participant Sources as Original document passages
+    User->>Agent: Ask in Hindi, Tamil, English, or a mix
+    Agent->>Agent: Detect input and apply response preference
+    Agent->>Search: Search translated or normalized query and original script
+    Search->>Sources: Select eligible source passages
+    Sources-->>Agent: Passage text, file, heading and locator
+    Agent->>Agent: Check source and localize or verify translation
+    Agent-->>User: Answer with separate original evidence
+```
+
+The runtime can clarify when sources disagree or when it cannot verify a translation. Aligned sample text is keyed to exact evidence. Edited passages go through the configured translator.
+
+## Deploy Studio
+
+The Docker image serves the frontend and FastAPI together. It accepts the host platform's `PORT`, checks `/api/health`, and starts owner mode only when an authorization file is configured. Render can use the included free reviewer Blueprint for a Docker-hosted replica of the fictional sample workspace. The current public and owner URLs above are Sites deployments. [Docker, Render, persistence and model configuration](docs/deployment.md)
+
 ## Studio screenshots
 
-The screenshots below were captured from the running branch in Chromium. Open the [blind evaluation](docs/screenshots/blind-results.jpg), [execution trace](docs/screenshots/execution-trace.jpg), [workspace dashboard](docs/screenshots/dashboard.jpg), and [mobile dashboard](docs/screenshots/dashboard-mobile.jpg).
+The factory, blind evaluation, trace and dashboards were captured in an isolated Chromium run using fictional documents. The reviewer captures are from the public HTTPS app.
 
-| Light | Dark |
+| Light theme and build form | Tamil answer and original PDF evidence |
 | --- | --- |
-| ![ForgeAI factory in light mode](docs/screenshots/factory-light.jpg) | ![ForgeAI factory in dark mode](docs/screenshots/factory-dark.jpg) |
+| ![ForgeAI factory in light mode](docs/screenshots/factory-light.jpg) | ![Tamil training allowance answer with English policy PDF citation](docs/screenshots/reviewer-tamil-chat.jpg) |
+
+| View | What it shows |
+| --- | --- |
+| [Public reviewer home](docs/screenshots/reviewer-home.jpg) | Four sample agents and their reports |
+| [Filtered language evaluation](docs/screenshots/reviewer-language-evaluation.jpg) | Per-language counts and the Tamil evidence cases |
+| [Blind evaluation](docs/screenshots/blind-results.jpg) | Held-out cases and grading outcomes |
+| [Execution trace](docs/screenshots/execution-trace.jpg) | Normalization, retrieval and verification events |
+| [Desktop dashboard](docs/screenshots/dashboard.jpg) · [Mobile dashboard](docs/screenshots/dashboard-mobile.jpg) | Workspace metrics, responsive navigation and theme controls |
 
 ## Repository layout
 
@@ -491,6 +538,8 @@ ForgeAI/
 ├── hosting/               Private Sites Worker, connector, and packager
 ├── scripts/               Model setup, dev server wrapper, and browser checks
 ├── tests/                 Unit tests and HTTP integration tests
+├── Dockerfile             Non-root application image and health check
+├── render.yaml            Free sample-only Docker deployment profile
 ├── launch.py              Local dependency setup and browser launcher
 └── pyproject.toml         Python package metadata and dependency ranges
 ```
@@ -509,7 +558,7 @@ node --check static/theme.js
 node --check static/enterprise.js
 ```
 
-The verified submission suite passed **36 tests**, with OCR dependencies installed. The checks cover file extraction, citation integrity, budgets, contracts for held-out evaluation, workspace access, trace redaction, feedback, rollback, and the upload-to-export workflow. The four original sample builds replayed with local Qwen. The People Operations and observatory replays both recorded 24/24 development and 8/8 blind cases. [Verification report](docs/enterprise-upgrade.md) · [Sample guide](demos/SAMPLE_GUIDE.md)
+The final suite passed **40 tests** with OCR dependencies installed. The checks cover file extraction, citation integrity, budgets, held-out evaluation, workspace access, trace redaction, feedback, rollback, and upload-to-export. Chromium exercised the full local workflow and public report filtering, Tamil chat, and source citations. The four original sample builds replayed with Qwen. People Operations and the observatory recorded 24/24 development and 8/8 holdout cases on their respective replays. [Final audit and commands](submission/TEST_REPORT.md) · [Sample guide](demos/SAMPLE_GUIDE.md)
 
 | Area | Current boundary |
 | --- | --- |

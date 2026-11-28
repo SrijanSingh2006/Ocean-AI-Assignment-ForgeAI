@@ -53,3 +53,13 @@ def configured_embeddings():
         from .local_language import local_embeddings
         return local_embeddings(folder)
     return None
+
+
+def strong_semantic_match(embeddings, query, corpus, eligible):
+    """Accept a semantic fallback when its first result is strong and distinct."""
+    matches = embeddings.search(query, corpus, eligible, 2)
+    if not matches or matches[0][0] < 0.80:
+        return []
+    if len(matches) == 2 and matches[0][0] - matches[1][0] < 0.025:
+        return []
+    return matches[:1]

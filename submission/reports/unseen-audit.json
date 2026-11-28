@@ -1,0 +1,127 @@
+{
+  "scope": "New fictional input created for the final audit",
+  "brief": "Build an aquarium assistant. Cover intake quarantine, pump inspection, and employee mortgage rates. Never provide personal medical diagnosis.",
+  "documents": {
+    "Maintenance.md": "# Pump inspection\nThe duty aquarist inspects the backup pump every Wednesday at 08:00. Record pressure in the maintenance binder.\n\n# Filter replacement\nReplace the observation filter every 12 working days. Keep the used cartridge in a labeled sample tray.\n\n# Electrical isolation\nA facilities supervisor verifies the equipment is disconnected before work. Record the supervisor's approval in the incident log.",
+    "Quarantine.md": "# Intake quarantine\nNew seahorses remain in the observation tank for 18 days. Aquarists log dissolved oxygen twice daily.\n\n# Release approval\nA veterinarian signs the release register after the final examination. Volunteers change the tank sign only after that approval.\n\n# Emergency relocation\nMove animals to the backup observation tank after 4 minutes of interrupted circulation. Notify the duty aquarist by radio."
+  },
+  "model": "qwen2.5-0.5b",
+  "successful_model_calls": 14,
+  "groundability_gaps": [
+    {
+      "topic": "employee mortgage rates",
+      "reason": "The configured retrieval found no passage that supports this topic."
+    },
+    {
+      "topic": "personal medical diagnosis",
+      "reason": "The configured retrieval found no passage that supports this topic."
+    }
+  ],
+  "scorecards": [
+    {
+      "iteration": 0,
+      "passed": 18,
+      "total": 24,
+      "score": 75.0,
+      "categories": {
+        "answerable": {
+          "passed": 13,
+          "total": 13
+        },
+        "cross_document": {
+          "passed": 0,
+          "total": 4
+        },
+        "ambiguous": {
+          "passed": 0,
+          "total": 2
+        },
+        "out_of_scope": {
+          "passed": 5,
+          "total": 5
+        }
+      },
+      "failures": {
+        "retrieval miss": 4,
+        "prompt defect": 2
+      }
+    },
+    {
+      "iteration": 1,
+      "passed": 22,
+      "total": 24,
+      "score": 91.7,
+      "categories": {
+        "answerable": {
+          "passed": 13,
+          "total": 13
+        },
+        "cross_document": {
+          "passed": 4,
+          "total": 4
+        },
+        "ambiguous": {
+          "passed": 0,
+          "total": 2
+        },
+        "out_of_scope": {
+          "passed": 5,
+          "total": 5
+        }
+      },
+      "failures": {
+        "prompt defect": 2
+      }
+    },
+    {
+      "iteration": 2,
+      "passed": 24,
+      "total": 24,
+      "score": 100.0,
+      "categories": {
+        "answerable": {
+          "passed": 13,
+          "total": 13
+        },
+        "cross_document": {
+          "passed": 4,
+          "total": 4
+        },
+        "ambiguous": {
+          "passed": 2,
+          "total": 2
+        },
+        "out_of_scope": {
+          "passed": 5,
+          "total": 5
+        }
+      },
+      "failures": {}
+    }
+  ],
+  "holdout": {
+    "iteration": 0,
+    "passed": 8,
+    "total": 8,
+    "score": 100.0,
+    "categories": {
+      "answerable": {
+        "passed": 4,
+        "total": 4
+      },
+      "cross_document": {
+        "passed": 1,
+        "total": 1
+      },
+      "ambiguous": {
+        "passed": 1,
+        "total": 1
+      },
+      "out_of_scope": {
+        "passed": 2,
+        "total": 2
+      }
+    },
+    "failures": {}
+  }
+}

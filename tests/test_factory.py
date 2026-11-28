@@ -85,6 +85,9 @@ class FactoryTests(unittest.TestCase):
         altered = copy.deepcopy(answer)
         altered["citations"][0]["document"] = "Anonymous.pdf"
         self.assertEqual(judge(case, altered, corpus)["failure"], "hallucination")
+        altered = copy.deepcopy(answer)
+        altered["citations"][0]["locator"] = "page 999"
+        self.assertEqual(judge(case, altered, corpus)["failure"], "hallucination")
 
     def test_pdf_docx_and_csv_provenance(self):
         word = Document()

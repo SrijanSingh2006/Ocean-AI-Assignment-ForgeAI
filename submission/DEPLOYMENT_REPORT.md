@@ -14,6 +14,8 @@
 
 The reviewer deployment needs an active cloud backend and connector. Shared PostgreSQL, distributed sessions and backup restoration need separate infrastructure.
 
+The [Render Blueprint](../render.yaml) passed Render's published schema. Its Docker configuration was exercised with a non-default platform port. A Render instance still requires an authorized account connection. The verified URLs in this submission use Sites. [Deployment and configuration guide](../docs/deployment.md)
+
 ## Reproduce
 
 ```bash

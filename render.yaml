@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: forgeai-reviewer
+    runtime: docker
+    branch: enterprise/incremental-upgrade
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: FORGE_REVIEW_DEMO
+        value: "1"
+      - key: FORGE_COOKIE_SECURE
+        value: "1"

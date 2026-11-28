@@ -2,7 +2,7 @@
 
 ## 1. Original company assignment
 
-The nine requirements, source paths, evidence and statuses are in the [mandatory compliance matrix](COMPLIANCE_MATRIX.md). The factory, intake, runnable agent, optimizer, quality artifacts and both primary demos passed their verified workflows. Complete semantic groundability and broader generated and judged cases remain partial.
+All nine original requirements have implementations and measured evidence. The final audit verified intake, coverage checks, definition generation, evaluation generation, judging, optimization, reporting, the runnable agent and both primary demos. Coverage remains bounded by evidence quality and what the retrieval methods can identify. The additional multilingual, tool and chart checks have their own coverage records. [Mandatory compliance matrix](COMPLIANCE_MATRIX.md)
 
 ## 2. Optional company features
 
@@ -14,11 +14,11 @@ The [14-feature acceptance matrix](FEATURE_MATRIX.md) records tested scope and r
 
 ## 4. Tests
 
-The original 32 tests and final 39 tests passed with zero failures or skips. The multilingual reviewer suite passed 19 cases with exact source checks, and the uploaded English HR PDF passed eight more cases. Chromium checked the real factory, chat, export, timeline, blind evaluation and responsive controls during the earlier recorded run. Docker verified reviewer restrictions and an authenticated agent build that survived restart. The recorded development suite improved from 18/24 through 22/24 to 24/24, with 8/8 on the separate holdout. Scores apply to those cases. [Commands and test evidence](TEST_REPORT.md)
+The original 32 tests and final 40 tests passed with zero failures or skips. The public multilingual replay passed 19 cases with exact source checks, and the uploaded English HR PDF passed eight more. Chromium checked the factory, chat, exports, traces, blind evaluation, mobile layout and the public Tamil workflow. A fresh unseen aquarium build with Qwen passed 24/24 development and 8/8 holdout cases and flagged an unsupported mortgage topic at intake. Scores apply to the measured cases. [Commands and test evidence](TEST_REPORT.md)
 
 ## 5. Deployment
 
-ChatGPT Sites serves the public reviewer frontend and a restricted relay. A FastAPI service uses cloud workspace files and SQLite metadata. Reviewers can open the public site without signing in. [Deployment report](DEPLOYMENT_REPORT.md) · [Hosted access](HOSTED_APP_URL.md)
+ChatGPT Sites serves the public reviewer and signed-in owner Studio. Live requests use FastAPI, cloud workspace files and SQLite metadata. The Render Blueprint and port-aware Docker image were validated. A Render account connection is required to launch it there. [Deployment report](DEPLOYMENT_REPORT.md) · [Hosted access](HOSTED_APP_URL.md)
 
 ## 6. Demo video
 
